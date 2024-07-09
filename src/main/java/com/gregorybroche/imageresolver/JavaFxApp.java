@@ -1,30 +1,41 @@
 package com.gregorybroche.imageresolver;
 
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.context.ApplicationContextInitializer;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.support.GenericApplicationContext;
+
+import com.gregorybroche.imageresolver.event.StageReadyEvent;
+
 import javafx.application.Application;
-import javafx.scene.Group;
-import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
+import javafx.application.Platform;
 import javafx.stage.Stage;
 
 public class JavaFxApp extends Application{
-    static final String APP_NAME = "ReSolver";
-    static final int APP_BASE_WIDTH = 1080;
-    static final int APP_BASE_HEIGHT = 720;
-    static final Color APP_BACKGROUND_COLOR = Color.valueOf("#193947");
+    private ConfigurableApplicationContext context;
+
+    @Override
+    public void init(){
+        ApplicationContextInitializer<GenericApplicationContext> initializer =
+            context -> {
+                context.registerBean(Application.class, () -> JavaFxApp.this);
+                context.registerBean(Parameters.class, this::getParameters);
+            };
+        this.context = new SpringApplicationBuilder()
+            .sources(ImageresolverApplication.class)
+            .initializers(initializer)
+            .run(getParameters().getRaw().toArray(new String[0]));
+    }
 
     @Override
     public void start(Stage stage) throws Exception{
-        Pane testPane = new Pane(new Label("test"));
+        this.context.publishEvent(new StageReadyEvent(stage));
+    }
 
-        Group root = new Group(testPane);
-
-        Scene mainScene = new Scene(root, JavaFxApp.APP_BASE_WIDTH, JavaFxApp.APP_BASE_HEIGHT, JavaFxApp.APP_BACKGROUND_COLOR);
-
-        stage.setTitle(JavaFxApp.APP_NAME);
-        stage.setScene(mainScene);
-        stage.show();
+    @Override
+    public void stop() {
+        this.context.close();
+        Platform.exit();
     }
     
 }

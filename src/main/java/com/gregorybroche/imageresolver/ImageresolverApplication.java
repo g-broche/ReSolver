@@ -1,6 +1,5 @@
 package com.gregorybroche.imageresolver;
 
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import javafx.application.Application;
