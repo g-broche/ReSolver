@@ -13,18 +13,21 @@ import org.springframework.stereotype.Component;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 @Component
 public class StageReadyEventListener implements ApplicationListener<StageReadyEvent>{
     private final ApplicationContext APP_CONTEXT;
     private final Resource FXML;
+    private final Resource CSS;
     private final String APP_NAME = "ReSolver";
 
-    public StageReadyEventListener(ApplicationContext applicationContext, @Value("classpath:/com/gregorybroche/imageresolver/views/main.fxml") Resource fxml){
+    public StageReadyEventListener( ApplicationContext applicationContext,
+                                    @Value("classpath:/com/gregorybroche/imageresolver/views/main.fxml") Resource fxml,
+                                    @Value("classpath:/com/gregorybroche/imageresolver/style/app.css") Resource css){
         this.APP_CONTEXT = applicationContext;
         this.FXML = fxml;
+        this.CSS = css;
     }
 
     @Override
@@ -36,6 +39,10 @@ public class StageReadyEventListener implements ApplicationListener<StageReadyEv
             loader.setControllerFactory(this.APP_CONTEXT::getBean);
             Parent root = loader.load();
             Scene mainScene = new Scene(root);
+
+            String css = this.CSS.getURL().toExternalForm();
+            mainScene.getStylesheets().add(css);
+
             stage.setTitle(this.APP_NAME);
             stage.setScene(mainScene);
             stage.show();

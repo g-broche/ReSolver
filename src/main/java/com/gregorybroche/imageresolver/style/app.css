@@ -1,0 +1,9 @@
+.root{
+    background-color: #193947;
+    -fx-background-color: #193947;
+}
+
+#testlabel{
+    -fx-text-fill: white;
+}
+
