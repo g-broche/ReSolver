@@ -17,15 +17,15 @@ import javafx.stage.Stage;
 
 @Component
 public class StageReadyEventListener implements ApplicationListener<StageReadyEvent>{
-    private final ApplicationContext APP_CONTEXT;
+    private final ApplicationContext applicationContext;
     private final Resource FXML;
     private final Resource CSS;
-    private final String APP_NAME = "ReSolver";
+    private final String appName = "ReSolver";
 
     public StageReadyEventListener( ApplicationContext applicationContext,
                                     @Value("classpath:/com/gregorybroche/imageresolver/views/main.fxml") Resource fxml,
                                     @Value("classpath:/com/gregorybroche/imageresolver/style/app.css") Resource css){
-        this.APP_CONTEXT = applicationContext;
+        this.applicationContext = applicationContext;
         this.FXML = fxml;
         this.CSS = css;
     }
@@ -36,14 +36,14 @@ public class StageReadyEventListener implements ApplicationListener<StageReadyEv
             Stage stage = event.getStage();
             URL viewUrl = this.FXML.getURL();
             FXMLLoader loader = new FXMLLoader(viewUrl);
-            loader.setControllerFactory(this.APP_CONTEXT::getBean);
+            loader.setControllerFactory(this.applicationContext::getBean);
             Parent root = loader.load();
             Scene mainScene = new Scene(root);
 
             String css = this.CSS.getURL().toExternalForm();
             mainScene.getStylesheets().add(css);
 
-            stage.setTitle(this.APP_NAME);
+            stage.setTitle(this.appName);
             stage.setScene(mainScene);
             stage.show();
         } catch (IOException e) {
