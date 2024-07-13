@@ -36,8 +36,7 @@ public class MainController {
     void selectImage(MouseEvent event) {
         try {
             File selectedFile = userDialogService.selectImageFile();
-            // Path savedFile = fileHandlerService.saveFileToTemp(selectedFile);
-            // System.out.println(savedFile);
+            Path savedFilePath = fileHandlerService.saveFileToTemp(selectedFile);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
