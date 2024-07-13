@@ -1,6 +1,7 @@
 package com.gregorybroche.imageresolver.controller;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.nio.file.Path;
 
 import org.springframework.stereotype.Component;
@@ -10,6 +11,7 @@ import com.gregorybroche.imageresolver.service.UserDialogService;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 
@@ -17,6 +19,7 @@ import javafx.scene.input.MouseEvent;
 public class MainController {
     private final UserDialogService userDialogService;
     private final FileHandlerService fileHandlerService;
+    private Image imageToResolve = null;
 
     public MainController(UserDialogService userDialogService, FileHandlerService fileHandlerService) {
         this.userDialogService = userDialogService;
@@ -37,6 +40,8 @@ public class MainController {
         try {
             File selectedFile = userDialogService.selectImageFile();
             Path savedFilePath = fileHandlerService.saveFileToTemp(selectedFile);
+            this.imageToResolve = this.getImageFromFilePath(savedFilePath);
+            this.displaySelectedImagePreview();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -45,6 +50,29 @@ public class MainController {
     @FXML
     void resolveImage(MouseEvent event) {
 
+    }
+
+    /**
+     * Return an Image object generated based on a given file path
+     * @param filePath instance of Path corresponding to the target file
+     * @return Image object generated
+     */
+    private Image getImageFromFilePath(Path filePath){
+        try {
+            FileInputStream inputStream = new FileInputStream(filePath.toFile());
+            Image image = new Image(inputStream);
+            return image;
+        } catch (Exception e) {
+            System.err.println("Error : unable to generate image element from the selected file");
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Display preview of currently selected image
+     */
+    private void displaySelectedImagePreview(){
+        imagePreview.setImage(this.imageToResolve);
     }
 
 }
