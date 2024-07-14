@@ -20,14 +20,16 @@ public class StageReadyEventListener implements ApplicationListener<StageReadyEv
     private final ApplicationContext applicationContext;
     private final Resource FXML;
     private final Resource CSS;
-    private final String appName = "ReSolver";
+    private final String appName;
 
     public StageReadyEventListener( ApplicationContext applicationContext,
                                     @Value("classpath:/com/gregorybroche/imageresolver/views/main.fxml") Resource fxml,
-                                    @Value("classpath:/com/gregorybroche/imageresolver/style/app.css") Resource css){
+                                    @Value("classpath:/com/gregorybroche/imageresolver/style/app.css") Resource css,
+                                    @Value("${spring.application.name}") String appName){
         this.applicationContext = applicationContext;
         this.FXML = fxml;
         this.CSS = css;
+        this.appName = appName;
     }
 
     @Override

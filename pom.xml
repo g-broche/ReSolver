@@ -11,7 +11,7 @@
 	<groupId>com.gregorybroche</groupId>
 	<artifactId>imageresolver</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>imageresolver</name>
+	<name>resolver</name>
 	<description>Software to create dupplicates of an image in various resolution and formats</description>
 	<url/>
 	<licenses>

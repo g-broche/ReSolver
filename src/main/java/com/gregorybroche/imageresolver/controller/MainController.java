@@ -48,7 +48,7 @@ public class MainController {
             }
             Path savedFilePath = fileHandlerService.saveFileToTemp(selectedFile);
             this.imageToResolve = this.getImageFromFilePath(savedFilePath);
-            this.displaySelectedImagePreview();
+            this.displaySelectedImagePreview(this.imageToResolve);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -78,8 +78,8 @@ public class MainController {
     /**
      * Display preview of currently selected image
      */
-    private void displaySelectedImagePreview(){
-        imagePreview.setImage(this.imageToResolve);
+    private void displaySelectedImagePreview(Image image){
+        imagePreview.setImage(image);
     }
 
 }
