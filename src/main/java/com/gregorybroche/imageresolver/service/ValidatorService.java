@@ -19,7 +19,6 @@ public class ValidatorService {
     public Boolean isFileValidImageFormat(File file){
         try {
             String mimeType = Files.probeContentType(file.toPath());
-            System.out.println("mime ="+mimeType);
             if (mimeType == null || !this.allowedImageMimeTypes.contains(mimeType)) {
                 System.out.println("invalid image format");
                 return false;
