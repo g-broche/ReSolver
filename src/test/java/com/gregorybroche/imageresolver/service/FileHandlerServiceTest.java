@@ -152,7 +152,7 @@ public class FileHandlerServiceTest {
 
             assertTrue(Files.exists(testTempDirectory), "Directory should exist before testing method");
 
-            fileHandlerService.createAppFolder();
+            fileHandlerService.createTempFolder();
 
             assertTrue(Files.exists(testTempDirectory), "Directory should still exist");
 
