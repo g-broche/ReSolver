@@ -43,14 +43,20 @@ public class FileHandlerService {
         this.appPresetsFileName = presetFileName;
     }
 
+    public Path getAppDirectoryPath(){
+        return this.appDirectoryPath;
+    }
+    public Path getAppTempDirectoryPath(){
+        return this.appTempDirectoryPath;
+    }
+
     /**
      * Creates copy of a file into the temp folder, will create temp folder if not already present.
      * @param sourceFile
-     * @return
+     * @return path of saved file
      * @throws IOException
      */
     public Path saveFileToTemp(File sourceFile) throws IOException{
-        this.createAppFolder();
         if(!Files.exists(this.appTempDirectoryPath)){
             this.createTempFolder();
         }
@@ -60,7 +66,7 @@ public class FileHandlerService {
         return savedFilePath;
     }
 
-    private void createAppFolder(){
+    public void createAppFolder(){
         try {
             Files.createDirectory(this.appDirectoryPath);
         } catch (FileAlreadyExistsException e) {
@@ -69,7 +75,8 @@ public class FileHandlerService {
             throw new RuntimeException(e);
         }
     }
-    private void createTempFolder(){
+    
+    public void createTempFolder(){
         try {
             Files.createDirectory(this.appTempDirectoryPath);
         } catch (FileAlreadyExistsException e) {
