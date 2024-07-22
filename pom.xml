@@ -11,7 +11,7 @@
 	<groupId>com.gregorybroche</groupId>
 	<artifactId>imageresolver</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>imageresolver</name>
+	<name>resolver</name>
 	<description>Software to create dupplicates of an image in various resolution and formats</description>
 	<url/>
 	<licenses>
@@ -44,6 +44,12 @@
 			<groupId>org.openjfx</groupId>
 			<artifactId>javafx-fxml</artifactId>
 			<version>22.0.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.twelvemonkeys.imageio</groupId>
+			<artifactId>imageio</artifactId>
+			<version>3.11.0</version>
+			<type>POM</type>
 		</dependency>
 
 		<dependency>
