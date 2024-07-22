@@ -20,12 +20,10 @@ public class ValidatorService {
         try {
             String mimeType = Files.probeContentType(file.toPath());
             if (mimeType == null || !this.allowedImageMimeTypes.contains(mimeType)) {
-                System.out.println("invalid image format");
                 return false;
             }
             return true;
         } catch (Exception e) {
-            System.err.println("Error : Could not validate file compliance with allowed image formats");
             throw new RuntimeException(e);
         }
     }

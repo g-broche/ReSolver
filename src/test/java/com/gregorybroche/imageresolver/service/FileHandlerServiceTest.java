@@ -8,8 +8,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import javax.imageio.ImageIO;
-
 import java.awt.image.BufferedImage;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -28,6 +26,8 @@ public class FileHandlerServiceTest {
 
     @Autowired
     private ApplicationContext applicationContext;
+    ImageEditorService imageEditorService;
+    BufferedImage testImageBufferedContent;
 
     @Value("${resolver.directory.main}")
     private String mainDirectoryName;
@@ -60,14 +60,17 @@ public class FileHandlerServiceTest {
                 windowsAppMainDirectoryRoot,
                 unixAppMainDirectoryRoot);
 
-                String testAppPath = fileHandlerService.getAppDirectoryPath().toString() + "-test";
-                testAppDirectory = Paths.get(testAppPath);
-                ReflectionTestUtils.setField(fileHandlerService, "appDirectoryPath", testAppDirectory);
+        String testAppPath = fileHandlerService.getAppDirectoryPath().toString() + "-test";
+        testAppDirectory = Paths.get(testAppPath);
+        ReflectionTestUtils.setField(fileHandlerService, "appDirectoryPath", testAppDirectory);
 
-                String testTempPath = fileHandlerService.getAppTempDirectoryPath().toString() + "-test";
-                testTempDirectory = Paths.get(testTempPath);
-                ReflectionTestUtils.setField(fileHandlerService, "appTempDirectoryPath", testTempDirectory);
+        String testTempPath = fileHandlerService.getAppTempDirectoryPath().toString() + "-test";
+        testTempDirectory = Paths.get(testTempPath);
+        ReflectionTestUtils.setField(fileHandlerService, "appTempDirectoryPath", testTempDirectory);
 
+        imageEditorService = new ImageEditorService();
+
+        testImageBufferedContent = imageEditorService.createTestImageContent();
 
     }
 
@@ -172,18 +175,11 @@ public class FileHandlerServiceTest {
         try {
             // creating valid image for testing
             File testImageFile = File.createTempFile("testValidImage", ".png");
-            BufferedImage bufferedImage = new BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB);
-            for (int x = 0; x < 100; x++) {
-                for (int y = 0; y < 100; y++) {
-                    bufferedImage.setRGB(x, y, (x * y) % 256);
-                }
-            }
-            ImageIO.write(bufferedImage, "png", testImageFile);
+            imageEditorService.createPNGImage(testImageFile, testImageBufferedContent);
 
             assertFalse(Files.exists(testTempDirectory));
 
             Path savedFilePath = fileHandlerService.saveFileToTemp(testImageFile);
-            System.out.println("saved file path : " + savedFilePath.toString());
             assertAll(
                     () -> assertTrue(Files.exists(testTempDirectory), "Directory should exist"),
                     () -> assertTrue(Files.exists(savedFilePath), "File should exist"));
