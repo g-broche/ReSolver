@@ -4,7 +4,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
+import java.util.Set;
 
 import javax.imageio.ImageIO;
 
@@ -14,6 +14,10 @@ import com.gregorybroche.imageresolver.classes.ImageTemplate;
 
 @Service
 public class ImageEditorService {
+    private ValidatorService validatorService;
+    public ImageEditorService(ValidatorService validatorService){
+        this.validatorService = validatorService;
+    }
     /**
      * Takes an image content and creates a new image content based on it and defined template to apply
      * @param baseImageContent buffered image content of a source image
@@ -40,8 +44,37 @@ public class ImageEditorService {
         return bufferedImage;
     }
 
-    public void createImage(File imageFile, String format, BufferedImage bufferedImageContent) throws IOException{
-        ImageIO.write(bufferedImageContent, format, imageFile);
+    public void createImage(File imageFile, String extension, BufferedImage bufferedImageContent) throws IOException{
+        Set<String> allowedExtensions = validatorService.getAllowedImageFormatsAsExtension();
+        if(!allowedExtensions.contains(extension)){
+            String errorMessage = "Invalid format requested: requested "+extension+" not in allowed formats ("+validatorService.getAllowedImageFormatsAsString()+")";
+            throw new IOException(errorMessage);
+        }
+        switch (extension) {
+            case "jpg":
+                createJPGImage(imageFile, bufferedImageContent);
+                break;
+        
+            case "jpeg":
+                createJPEGImage(imageFile, bufferedImageContent);
+                break;
+        
+            case "png":
+                createPNGImage(imageFile, bufferedImageContent);
+                break;
+        
+            case "bmp":
+                createBMPImage(imageFile, bufferedImageContent);
+                break;
+        
+            case "webp":
+                createWEBPImage(imageFile, bufferedImageContent);
+                break;
+        
+            default:
+                ImageIO.write(bufferedImageContent, extension, imageFile);
+                break;
+        } 
     }
 
     public void createJPGImage(File imageFile, BufferedImage bufferedImageContent) throws IOException{

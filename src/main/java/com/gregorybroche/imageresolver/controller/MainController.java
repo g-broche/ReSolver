@@ -73,7 +73,7 @@ public class MainController {
             ImageTemplate template = getTemplateParameters();
             Path directory = fileHandlerService.getAppDirectoryPath(); //Temporary for testing until logic for defining templates and presets through inputs is done
             BufferedImage editedImageContent = imageEditorService.editImage(sourceBufferedImage, template);
-            fileHandlerService.saveEditedImageToFolder(editedImageContent, template, directory, imageEditorService);
+            fileHandlerService.saveEditedImageToFolder(editedImageContent, template, directory);
         } catch (Exception e) {
             System.err.println("Error : unable to resolve image");
             throw new RuntimeException(e);
