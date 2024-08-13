@@ -4,7 +4,7 @@ public class ImageTemplate {
     private int width = 600;
     private int height = 400;
     private String newImageName = "test-editing";
-    private String format = "jpg";
+    private String format = "webp";
 
     public void setHeight(int height) {
         this.height = height;
