@@ -1,6 +1,6 @@
 package com.gregorybroche.imageresolver.service;
 
-import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -27,11 +27,10 @@ public class ImageEditorService {
     public BufferedImage editImage(BufferedImage baseImageContent, ImageTemplate templateParameters){
         int targetWidth = templateParameters.getWidth();
         int targetHeight = templateParameters.getHeight();
-        BufferedImage editedImage = new BufferedImage(targetWidth, targetHeight, BufferedImage.TYPE_INT_RGB);
-        Graphics2D graphics2d = editedImage.createGraphics();
-        graphics2d.drawImage(baseImageContent, 0, 0, targetWidth, targetHeight, null);
-        graphics2d.dispose();
-        return editedImage;
+        Image editedImage = baseImageContent.getScaledInstance(targetWidth, targetHeight, Image.SCALE_SMOOTH);
+        BufferedImage outputImage = new BufferedImage(targetWidth, targetHeight, BufferedImage.TYPE_INT_RGB);
+        outputImage.getGraphics().drawImage(editedImage, 0, 0, null);
+        return outputImage;
     }
 
     public BufferedImage createTestImageContent() {
