@@ -51,6 +51,11 @@
 			<version>3.11.0</version>
 			<type>POM</type>
 		</dependency>
+		<dependency>
+			<groupId>org.sejda.webp-imageio</groupId>
+			<artifactId>webp-imageio-sejda</artifactId>
+			<version>0.1.0</version>
+		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

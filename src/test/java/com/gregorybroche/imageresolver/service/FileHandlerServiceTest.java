@@ -51,9 +51,11 @@ public class FileHandlerServiceTest {
 
     @BeforeEach
     void setUp() throws IOException {
-
+        ValidatorService validatorService = new ValidatorService();
+        imageEditorService = new ImageEditorService(validatorService);
         fileHandlerService = new FileHandlerService(
                 applicationContext,
+                imageEditorService,
                 mainDirectoryName,
                 tempDirectoryName,
                 presetFileName,
@@ -67,8 +69,6 @@ public class FileHandlerServiceTest {
         String testTempPath = fileHandlerService.getAppTempDirectoryPath().toString() + "-test";
         testTempDirectory = Paths.get(testTempPath);
         ReflectionTestUtils.setField(fileHandlerService, "appTempDirectoryPath", testTempDirectory);
-
-        imageEditorService = new ImageEditorService();
 
         testImageBufferedContent = imageEditorService.createTestImageContent();
 
@@ -173,6 +173,7 @@ public class FileHandlerServiceTest {
     @Test
     void saveFileToTemp_tempFolderDoesNotExist_shouldCreateTempDirectoryAndSaveFile() {
         try {
+            System.out.println(imageEditorService);
             // creating valid image for testing
             File testImageFile = File.createTempFile("testValidImage", ".png");
             imageEditorService.createPNGImage(testImageFile, testImageBufferedContent);

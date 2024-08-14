@@ -1,5 +1,6 @@
 package com.gregorybroche.imageresolver.service;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
@@ -8,21 +9,26 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
+import com.gregorybroche.imageresolver.classes.ImageTemplate;
+
 @Service
 public class FileHandlerService {
-    private final ApplicationContext applicationContext;
+    private ApplicationContext applicationContext;
+    private ImageEditorService imageEditorService;
     private final Path appDirectoryPath;
     private final Path appTempDirectoryPath;
     private final String appPresetsFileName;
     private final Path appPresetsFilePath;
     
     public FileHandlerService(  ApplicationContext applicationContext,
+                                ImageEditorService imageEditorService,
                                 @Value("${resolver.directory.main}") String mainDirectoryName,
                                 @Value("${resolver.directory.temp}") String tempDirectoryName,
                                 @Value("${resolver.file.presets}") String presetFileName,
                                 @Value("${resolver.directory.windows}") String windowsAppMainDirectoryRoot,
                                 @Value("${resolver.directory.unix}") String unixAppMainDirectoryRoot){
         this.applicationContext = applicationContext;
+        this.imageEditorService = imageEditorService;
         String userTempDirectoryPath = System.getProperty("java.io.tmpdir");
         String userHomeDirectoryPath = System.getProperty("user.home");
 
@@ -66,23 +72,38 @@ public class FileHandlerService {
         return savedFilePath;
     }
 
-    public void createAppFolder(){
+    /**
+     * Saves image bytes into a an image file
+     * @param imageContent bufferedImage of the desired file content
+     * @param imageTemplate image template instance for the file name specification
+     * @param targetDirectory directory where the image must be saved
+     * @param imageEditorService
+     * @throws IOException
+     */
+    public void saveEditedImageToFolder(BufferedImage imageContent, ImageTemplate imageTemplate, Path targetDirectory) throws IOException{
+        if(!Files.exists(targetDirectory)){
+            this.createFolder(targetDirectory);
+        }
+        String newImageFullName = imageTemplate.getNewImageName()+"."+imageTemplate.getFormat();
+        File toSaveFile = targetDirectory.resolve(newImageFullName).toFile();
+        this.imageEditorService.createImage(toSaveFile, imageTemplate.getFormat(), imageContent);
+    }
+
+    public void createFolder(Path directory){
         try {
-            Files.createDirectory(this.appDirectoryPath);
+            Files.createDirectory(directory);
         } catch (FileAlreadyExistsException e) {
             return;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
+
+    public void createAppFolder(){
+        createFolder(this.appDirectoryPath);
+    }
     
     public void createTempFolder(){
-        try {
-            Files.createDirectory(this.appTempDirectoryPath);
-        } catch (FileAlreadyExistsException e) {
-            return;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        createFolder(this.appTempDirectoryPath);
     }
 }

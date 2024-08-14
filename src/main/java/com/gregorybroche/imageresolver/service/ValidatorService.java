@@ -3,13 +3,16 @@ package com.gregorybroche.imageresolver.service;
 import java.io.File;
 import java.nio.file.Files;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
 import org.springframework.stereotype.Service;
 
 @Service
 public class ValidatorService {
-    private final List<String> allowedImageFormats = Arrays.asList("*.jpg", "*.jpeg", "*.png", "*.gif", "*.bmp", "*.webp");
-    private final List<String> allowedImageMimeTypes = Arrays.asList("image/jpeg", "image/png", "image/gif", "image/bmp", "image/webp");
+    private final List<String> allowedImageFormats = Arrays.asList("*.jpg", "*.jpeg", "*.png", "*.bmp", "*.webp");
+    private final List<String> allowedImageMimeTypes = Arrays.asList("image/jpeg", "image/png", "image/bmp", "image/webp");
 
     /**
      * Validate that a file mime type complies with allowed mime types. 
@@ -29,11 +32,22 @@ public class ValidatorService {
     }
 
     /**
-     * return List of allowed image formats with syntax like *.webp
+     * return List of allowed image formats with syntax like "*.webp"
      * @return
      */
     public List<String> getAllowedImageFormats(){
         return this.allowedImageFormats;
+    }
+    /**
+     * return List of allowed image extension with syntax like "webp"
+     * @return
+     */
+    public Set<String> getAllowedImageFormatsAsExtension(){
+        Set<String> allowedExtensions = new HashSet<String>();
+        for (String format : allowedImageFormats) {
+            allowedExtensions.add(format.replace("*.", ""));
+        }
+        return allowedExtensions;
     }
 
     /**

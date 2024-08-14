@@ -27,7 +27,7 @@ public class ValidatorServiceTest {
     @BeforeEach
     void setUp(){
         validatorService = new ValidatorService(); 
-        imageEditorService = new ImageEditorService();
+        imageEditorService = new ImageEditorService(validatorService);
         ReflectionTestUtils.setField(validatorService, "allowedImageMimeTypes", testAllowedImageMimeTypes);
         ReflectionTestUtils.setField(validatorService, "allowedImageFormats", testAllowedImageFormats);
         testImageBufferedContent = imageEditorService.createTestImageContent();
