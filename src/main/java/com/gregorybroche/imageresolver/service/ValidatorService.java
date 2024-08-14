@@ -19,7 +19,7 @@ public class ValidatorService {
      * @param file file to validate
      * @return true if file complies, false otherwise
      */
-    public Boolean isFileValidImageFormat(File file){
+    public Boolean isFileValidImageFormat(File file) {
         try {
             String mimeType = Files.probeContentType(file.toPath());
             if (mimeType == null || !this.allowedImageMimeTypes.contains(mimeType)) {
@@ -27,8 +27,12 @@ public class ValidatorService {
             }
             return true;
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            return false;
         }
+    }
+
+    public Boolean isExtensionValid(String extension){
+        return getAllowedImageFormatsAsExtension().contains(extension);
     }
 
     /**

@@ -52,10 +52,11 @@ public class FileHandlerServiceTest {
     @BeforeEach
     void setUp() throws IOException {
         ValidatorService validatorService = new ValidatorService();
-        imageEditorService = new ImageEditorService(validatorService);
+        UserDialogService userDialogService = new UserDialogService(validatorService);
+        imageEditorService = new ImageEditorService(validatorService, userDialogService);
         fileHandlerService = new FileHandlerService(
                 applicationContext,
-                imageEditorService,
+                userDialogService,
                 mainDirectoryName,
                 tempDirectoryName,
                 presetFileName,
@@ -176,7 +177,7 @@ public class FileHandlerServiceTest {
             System.out.println(imageEditorService);
             // creating valid image for testing
             File testImageFile = File.createTempFile("testValidImage", ".png");
-            imageEditorService.createPNGImage(testImageFile, testImageBufferedContent);
+            imageEditorService.createPNGImage(testImageBufferedContent, testImageFile);
 
             assertFalse(Files.exists(testTempDirectory));
 
