@@ -36,7 +36,6 @@ public class ImageEditorService {
             userDialogService.showErrorMessage("Image extraction error", "The content of the source image file could not be extracted");
             return null;
         }
-        
     }
 
     /**

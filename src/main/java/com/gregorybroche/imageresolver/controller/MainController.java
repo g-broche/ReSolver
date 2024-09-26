@@ -5,8 +5,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.nio.file.Path;
 
-import javax.imageio.ImageIO;
-
 import org.springframework.stereotype.Component;
 
 import com.gregorybroche.imageresolver.classes.ImageTemplate;
@@ -29,8 +27,7 @@ public class MainController {
     private ValidatorService validatorService;
     private ImageEditorService imageEditorService;
     private ResolverProcessorService resolverProcessorService;
-    private Image imageToResolve = null;
-    private Path imageToResolveTempPath = null;
+    private File imageToResolve = null;
 
     public MainController(  UserDialogService userDialogService,
                             FileHandlerService fileHandlerService,
@@ -61,10 +58,9 @@ public class MainController {
                 this.userDialogService.showInvalidSelectedFileFormatError();
                 return;
             }
-            Path savedFilePath = fileHandlerService.saveFileToTemp(selectedFile);
-            this.imageToResolveTempPath = savedFilePath;
-            this.imageToResolve = this.getImageFromFilePath(savedFilePath);
-            this.displaySelectedImagePreview(this.imageToResolve);
+            this.imageToResolve = fileHandlerService.saveFileToTemp(selectedFile).toFile();
+            Image previewImage = getImageFromFilePath(imageToResolve.toPath());
+            this.displaySelectedImagePreview(previewImage);
         } catch (Exception e) {
             userDialogService.showErrorMessage("failed to select image", e.getMessage());
             throw new RuntimeException(e);
@@ -74,7 +70,7 @@ public class MainController {
     @FXML
     void resolveImage(MouseEvent event) {
         try{
-            BufferedImage sourceBufferedImage = imageEditorService.getImageContentFromFile(imageToResolveTempPath.toFile());
+            BufferedImage sourceBufferedImage = imageEditorService.getImageContentFromFile(imageToResolve);
             ImageTemplate template = getTemplateParameters();
             Path directory = fileHandlerService.getAppDirectoryPath(); //Temporary for testing until logic for defining templates and presets through inputs is done
             resolverProcessorService.processImageForTemplate(sourceBufferedImage, template, directory);
