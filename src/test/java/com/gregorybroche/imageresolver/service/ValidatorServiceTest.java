@@ -15,8 +15,9 @@ import org.junit.jupiter.api.io.TempDir;
 import org.springframework.test.util.ReflectionTestUtils;
 
 public class ValidatorServiceTest {
-    private final List<String> testAllowedImageFormats = Arrays.asList("*.jpg", "*.jpeg", "*.png", "*.bmp", "*.webp");
-    private final List<String> testAllowedImageMimeTypes = Arrays.asList("image/jpeg", "image/png", "image/bmp", "image/webp");
+    private final List<String> testAllowedImageFormats = Arrays.asList("*.jpg", "*.jpeg", "*.png", "*.bmp", "*.webp", "*.avif");
+    private final String expectedStringifiedValue = ".jpg, .jpeg, .png, .bmp, .webp, .avif";
+    private final List<String> testAllowedImageMimeTypes = Arrays.asList("image/jpeg", "image/png", "image/bmp", "image/webp", "image/avif");
     ValidatorService validatorService;
     ImageEditorService imageEditorService;
     BufferedImage testImageBufferedContent;
@@ -56,7 +57,6 @@ public class ValidatorServiceTest {
     @Test
     void getAllowedImageFormatsAsString_shouldReturnStringInExpectedFormat() {
         try {
-            String expectedStringifiedValue = ".jpg, .jpeg, .png, .bmp, .webp";
             String allowedFormatResultAsString = this.validatorService.getAllowedImageFormatsAsString();
             assertTrue(allowedFormatResultAsString.equals(expectedStringifiedValue), "Should return string: "+expectedStringifiedValue);
         } catch (Exception e) {
