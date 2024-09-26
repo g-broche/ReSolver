@@ -15,8 +15,9 @@ import org.junit.jupiter.api.io.TempDir;
 import org.springframework.test.util.ReflectionTestUtils;
 
 public class ValidatorServiceTest {
-    private final List<String> testAllowedImageFormats = Arrays.asList("*.jpg", "*.jpeg", "*.png", "*.bmp", "*.webp");
-    private final List<String> testAllowedImageMimeTypes = Arrays.asList("image/jpeg", "image/png", "image/bmp", "image/webp");
+    private final List<String> testAllowedImageFormats = Arrays.asList("*.jpg", "*.jpeg", "*.png", "*.bmp", "*.webp", "*.avif");
+    private final String expectedStringifiedValue = ".jpg, .jpeg, .png, .bmp, .webp, .avif";
+    private final List<String> testAllowedImageMimeTypes = Arrays.asList("image/jpeg", "image/png", "image/bmp", "image/webp", "image/avif");
     ValidatorService validatorService;
     ImageEditorService imageEditorService;
     BufferedImage testImageBufferedContent;
@@ -27,7 +28,8 @@ public class ValidatorServiceTest {
     @BeforeEach
     void setUp(){
         validatorService = new ValidatorService(); 
-        imageEditorService = new ImageEditorService(validatorService);
+        UserDialogService userDialogService = new UserDialogService(validatorService);
+        imageEditorService = new ImageEditorService(validatorService, userDialogService);
         ReflectionTestUtils.setField(validatorService, "allowedImageMimeTypes", testAllowedImageMimeTypes);
         ReflectionTestUtils.setField(validatorService, "allowedImageFormats", testAllowedImageFormats);
         testImageBufferedContent = imageEditorService.createTestImageContent();
@@ -55,7 +57,6 @@ public class ValidatorServiceTest {
     @Test
     void getAllowedImageFormatsAsString_shouldReturnStringInExpectedFormat() {
         try {
-            String expectedStringifiedValue = ".jpg, .jpeg, .png, .bmp, .webp";
             String allowedFormatResultAsString = this.validatorService.getAllowedImageFormatsAsString();
             assertTrue(allowedFormatResultAsString.equals(expectedStringifiedValue), "Should return string: "+expectedStringifiedValue);
         } catch (Exception e) {
@@ -71,7 +72,7 @@ public class ValidatorServiceTest {
     void isFileValidImageFormat_fileAsPNG_ShouldReturnTrue() {
         try {
             File testPNGFile = tempDir.resolve("testImage.png").toFile();
-            imageEditorService.createPNGImage(testPNGFile, testImageBufferedContent);
+            imageEditorService.createPNGImage(testImageBufferedContent, testPNGFile);
             assertTrue(validatorService.isFileValidImageFormat(testPNGFile));
         } catch (Exception e) {
             fail("Exception triggered " + e.getMessage());
@@ -82,7 +83,7 @@ public class ValidatorServiceTest {
     void isFileValidImageFormat_fileAsJPG_ShouldReturnTrue() {
         try {
             File testJPGFile = tempDir.resolve("testImage.jpg").toFile();
-            imageEditorService.createPNGImage(testJPGFile, testImageBufferedContent);
+            imageEditorService.createPNGImage(testImageBufferedContent, testJPGFile);
             assertTrue(validatorService.isFileValidImageFormat(testJPGFile));
         } catch (Exception e) {
             fail("Exception triggered " + e.getMessage());
@@ -93,7 +94,7 @@ public class ValidatorServiceTest {
     void isFileValidImageFormat_fileAsJPEG_ShouldReturnTrue() {
         try {
             File testJPEGFile = tempDir.resolve("testImage.jpeg").toFile();
-            imageEditorService.createPNGImage(testJPEGFile, testImageBufferedContent);
+            imageEditorService.createPNGImage(testImageBufferedContent, testJPEGFile);
             assertTrue(validatorService.isFileValidImageFormat(testJPEGFile));
         } catch (Exception e) {
             fail("Exception triggered " + e.getMessage());
@@ -104,7 +105,7 @@ public class ValidatorServiceTest {
     void isFileValidImageFormat_fileAsBMP_ShouldReturnTrue() {
         try {
             File testBMPFile = tempDir.resolve("testImage.bmp").toFile();
-            imageEditorService.createPNGImage(testBMPFile, testImageBufferedContent);
+            imageEditorService.createPNGImage(testImageBufferedContent, testBMPFile);
             assertTrue(validatorService.isFileValidImageFormat(testBMPFile));
         } catch (Exception e) {
             fail("Exception triggered " + e.getMessage());
@@ -114,7 +115,7 @@ public class ValidatorServiceTest {
     void isFileValidImageFormat_fileAsWEBP_ShouldReturnTrue() {
         try {
             File testWEBPFile = tempDir.resolve("testImage.webp").toFile();
-            imageEditorService.createPNGImage(testWEBPFile, testImageBufferedContent);
+            imageEditorService.createPNGImage(testImageBufferedContent, testWEBPFile);
             assertTrue(validatorService.isFileValidImageFormat(testWEBPFile));
         } catch (Exception e) {
             fail("Exception triggered " + e.getMessage());

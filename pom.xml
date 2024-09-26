@@ -52,9 +52,24 @@
 			<type>POM</type>
 		</dependency>
 		<dependency>
+			<groupId>org.jcodec</groupId>
+			<artifactId>jcodec</artifactId>
+			<version>0.2.5</version>
+		</dependency>
+		<dependency>
 			<groupId>org.sejda.webp-imageio</groupId>
 			<artifactId>webp-imageio-sejda</artifactId>
 			<version>0.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.tika</groupId>
+			<artifactId>tika-core</artifactId>
+			<version>2.9.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.openjfx</groupId>
+			<artifactId>javafx-swing</artifactId>
+			<version>23</version>
 		</dependency>
 
 		<dependency>

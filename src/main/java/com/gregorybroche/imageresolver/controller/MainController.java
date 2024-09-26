@@ -5,13 +5,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.nio.file.Path;
 
-import javax.imageio.ImageIO;
-
 import org.springframework.stereotype.Component;
 
 import com.gregorybroche.imageresolver.classes.ImageTemplate;
 import com.gregorybroche.imageresolver.service.FileHandlerService;
 import com.gregorybroche.imageresolver.service.ImageEditorService;
+import com.gregorybroche.imageresolver.service.ResolverProcessorService;
 import com.gregorybroche.imageresolver.service.UserDialogService;
 import com.gregorybroche.imageresolver.service.ValidatorService;
 
@@ -23,21 +22,23 @@ import javafx.scene.input.MouseEvent;
 
 @Component
 public class MainController {
-    private final UserDialogService userDialogService;
-    private final FileHandlerService fileHandlerService;
-    private final ValidatorService validatorService;
-    private final ImageEditorService imageEditorService;
-    private Image imageToResolve = null;
-    private Path imageToResolveTempPath = null;
+    private UserDialogService userDialogService;
+    private FileHandlerService fileHandlerService;
+    private ValidatorService validatorService;
+    private ImageEditorService imageEditorService;
+    private ResolverProcessorService resolverProcessorService;
+    private File imageToResolve = null;
 
     public MainController(  UserDialogService userDialogService,
                             FileHandlerService fileHandlerService,
                             ValidatorService validatorService,
-                            ImageEditorService imageEditorService) {
+                            ImageEditorService imageEditorService,
+                            ResolverProcessorService resolverProcessorService) {
         this.userDialogService = userDialogService;
         this.fileHandlerService = fileHandlerService;
         this.validatorService = validatorService;
         this.imageEditorService = imageEditorService;
+        this.resolverProcessorService = resolverProcessorService;
     } 
     
     @FXML
@@ -57,11 +58,11 @@ public class MainController {
                 this.userDialogService.showInvalidSelectedFileFormatError();
                 return;
             }
-            Path savedFilePath = fileHandlerService.saveFileToTemp(selectedFile);
-            this.imageToResolveTempPath = savedFilePath;
-            this.imageToResolve = this.getImageFromFilePath(savedFilePath);
-            this.displaySelectedImagePreview(this.imageToResolve);
+            this.imageToResolve = fileHandlerService.saveFileToTemp(selectedFile).toFile();
+            Image previewImage = getImageFromFilePath(imageToResolve.toPath());
+            this.displaySelectedImagePreview(previewImage);
         } catch (Exception e) {
+            userDialogService.showErrorMessage("failed to select image", e.getMessage());
             throw new RuntimeException(e);
         }
     }
@@ -69,14 +70,12 @@ public class MainController {
     @FXML
     void resolveImage(MouseEvent event) {
         try{
-            BufferedImage sourceBufferedImage = ImageIO.read(imageToResolveTempPath.toFile());
+            BufferedImage sourceBufferedImage = imageEditorService.getImageContentFromFile(imageToResolve);
             ImageTemplate template = getTemplateParameters();
             Path directory = fileHandlerService.getAppDirectoryPath(); //Temporary for testing until logic for defining templates and presets through inputs is done
-            BufferedImage editedImageContent = imageEditorService.editImage(sourceBufferedImage, template);
-            fileHandlerService.saveEditedImageToFolder(editedImageContent, template, directory);
+            resolverProcessorService.processImageForTemplate(sourceBufferedImage, template, directory);
         } catch (Exception e) {
-            System.err.println("Error : unable to resolve image");
-            throw new RuntimeException(e);
+            userDialogService.showErrorMessage("failed to resolve image", e.getMessage());
         }
     }
 
