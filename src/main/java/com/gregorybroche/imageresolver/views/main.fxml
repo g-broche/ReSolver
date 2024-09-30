@@ -6,6 +6,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1080.0" style="-fx-background-color: #2F3346;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.gregorybroche.imageresolver.controller.MainController">
    <children>
@@ -30,8 +31,12 @@
             <Pane id="templatesWrapper" layoutY="165.0" prefHeight="450.0" prefWidth="300.0" style="-fx-background-color: #D9D9D9;">
                <children>
                   <Label layoutX="106.0" layoutY="14.0" text="Preset templates" />
-                  <ScrollPane id="templateList" layoutY="50.0" prefHeight="400.0" prefWidth="300.0" style="-fx-background-color: green;" />
-                  <Button layoutX="234.0" layoutY="10.0" mnemonicParsing="false" style="-fx-background-color: #5BB2E2;" text="Add" />
+                  <ScrollPane id="templateList" layoutY="50.0" prefHeight="400.0" prefWidth="300.0" style="-fx-background-color: green;">
+                     <content>
+                        <VBox fx:id="templateContainer" spacing="10.0" />
+                     </content>
+                  </ScrollPane>
+                  <Button fx:id="createTemplateButton" layoutX="234.0" layoutY="10.0" mnemonicParsing="false" onMouseClicked="#createTemplate" style="-fx-background-color: #5BB2E2;" text="Add" />
                </children>
             </Pane>
          </children>

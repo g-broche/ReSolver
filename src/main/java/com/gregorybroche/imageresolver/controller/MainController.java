@@ -19,6 +19,7 @@ import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.VBox;
 
 @Component
 public class MainController {
@@ -51,6 +52,12 @@ public class MainController {
     private Button imageSelectorButton;
 
     @FXML
+    private Button createTemplateButton;
+
+    @FXML
+    private VBox templateContainer;
+
+    @FXML
     void selectImage(MouseEvent event) {
         try {
             File selectedFile = userDialogService.selectImageFile();
@@ -77,6 +84,24 @@ public class MainController {
         } catch (Exception e) {
             userDialogService.showErrorMessage("failed to resolve image", e.getMessage());
         }
+    }
+
+    @FXML
+    /**
+     * Implementation as proof of concept of creating an ImageTemplate instance and displaying the
+     * corresponding data into an appended fxml component
+     * @param event
+     */
+    void createTemplate(MouseEvent event){
+        System.out.println("***CREATING TEMPLATE VIEW***");
+        System.out.println(templateContainer);
+        // Create a new ImageTemplate instance
+        ImageTemplate newTemplate = new ImageTemplate();
+        System.out.println("***CREATING IMAGE TEMPLATE INSTANCE***");
+
+        // Create the template pane (an HBox) using the FXML and add it to the VBox
+        templateContainer.getChildren().add(newTemplate.createTemplatePane());
+        System.out.println("***DISPLAY TEMPLATE***");
     }
 
     /**

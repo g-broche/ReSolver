@@ -1,5 +1,16 @@
 package com.gregorybroche.imageresolver.classes;
 
+import java.io.IOException;
+
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+
+import com.gregorybroche.imageresolver.controller.TemplateItemController;
+
+import javafx.fxml.FXMLLoader;
+import javafx.scene.layout.HBox;
+
 public class ImageTemplate {
     private int width = 600;
     private int height = 400;
@@ -32,5 +43,26 @@ public class ImageTemplate {
     }
     public String getFormat() {
         return format;
+    }
+
+    /**
+     * Creates and returns the FXML component view with data corresponding to this instance of ImageTemplate
+     * @return
+     */
+    public HBox createTemplatePane() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("../views/templateComponent.fxml"));
+            HBox templatePane = loader.load();
+
+            TemplateItemController controller = loader.getController();
+
+            controller.setTemplateData(newImageName, width, height, format);
+
+            return templatePane;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

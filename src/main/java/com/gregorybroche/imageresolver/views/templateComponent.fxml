@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<HBox xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.gregorybroche.imageresolver.controller.TemplateItemController" spacing="10" alignment="CENTER">
+    <Label fx:id="nameLabel" text="Name" />
+    <Label fx:id="sizeLabel" text="Size" />
+    <Label fx:id="formatLabel" text="Format" />
+</HBox>
