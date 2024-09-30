@@ -100,7 +100,7 @@ public class MainController {
         System.out.println("***CREATING IMAGE TEMPLATE INSTANCE***");
 
         // Create the template pane (an HBox) using the FXML and add it to the VBox
-        templateContainer.getChildren().add(newTemplate.createTemplatePane());
+        templateContainer.getChildren().add(newTemplate.createTemplatePane(0));
         System.out.println("***DISPLAY TEMPLATE***");
     }
 

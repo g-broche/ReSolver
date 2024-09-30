@@ -25,13 +25,13 @@
             <Button id="imageResolverButton" fx:id="imageResolverButton" layoutX="678.0" layoutY="515.0" mnemonicParsing="false" onMouseClicked="#resolveImage" text="Resolve" />
          </children>
       </Pane>
-      <Pane id="controlWrapper" layoutX="770.0" layoutY="50.0" prefHeight="615.0" prefWidth="300.0" style="-fx-background-color: blue;">
+      <Pane id="controlWrapper" layoutX="770.0" layoutY="50.0" prefHeight="615.0" prefWidth="300.0">
          <children>
             <Pane id="presetWrapper" prefHeight="150.0" prefWidth="300.0" style="-fx-background-color: #D9D9D9;" />
             <Pane id="templatesWrapper" layoutY="165.0" prefHeight="450.0" prefWidth="300.0" style="-fx-background-color: #D9D9D9;">
                <children>
                   <Label layoutX="106.0" layoutY="14.0" text="Preset templates" />
-                  <ScrollPane id="templateList" layoutY="50.0" prefHeight="400.0" prefWidth="300.0" style="-fx-background-color: green;">
+                  <ScrollPane id="templateList" hbarPolicy="NEVER" layoutY="50.0" prefHeight="400.0" prefWidth="300.0" style="-fx-background-color: green;">
                      <content>
                         <VBox fx:id="templateContainer" spacing="10.0" />
                      </content>

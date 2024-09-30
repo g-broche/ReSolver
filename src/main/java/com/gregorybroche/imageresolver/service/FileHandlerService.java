@@ -82,7 +82,7 @@ public class FileHandlerService {
         if(!Files.exists(targetDirectory)){
             this.createFolder(targetDirectory);
         }
-        String newImageFullName = imageTemplate.getNewImageName()+"."+imageTemplate.getFormat();
+        String newImageFullName = imageTemplate.getCompleteFileName();
         File toSaveFile = targetDirectory.resolve(newImageFullName).toFile();
         return toSaveFile;
     }
