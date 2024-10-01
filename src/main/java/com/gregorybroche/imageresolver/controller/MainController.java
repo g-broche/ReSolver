@@ -96,7 +96,7 @@ public class MainController {
         System.out.println("***CREATING TEMPLATE VIEW***");
         System.out.println(templateContainer);
         // Create a new ImageTemplate instance
-        ImageTemplate newTemplate = new ImageTemplate();
+        ImageTemplate newTemplate = new ImageTemplate(null, 600, 400, null, null, null, null, "jpg");
         System.out.println("***CREATING IMAGE TEMPLATE INSTANCE***");
 
         // Create the template pane (an HBox) using the FXML and add it to the VBox
@@ -129,7 +129,7 @@ public class MainController {
 
     // Proof of concept testing until proper definition of templates through user inputs
     private ImageTemplate getTemplateParameters(){
-        return new ImageTemplate();
+        return new ImageTemplate(null, 600, 400, null, null, null, null, "jpg");
     }
 
 }
