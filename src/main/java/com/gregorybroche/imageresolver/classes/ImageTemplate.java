@@ -1,6 +1,8 @@
 package com.gregorybroche.imageresolver.classes;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.gregorybroche.imageresolver.controller.TemplateItemController;
 
@@ -17,6 +19,12 @@ public class ImageTemplate {
     private String newImageSuffix = "-post";
     private String format = "jpg";
     private int defaultResolution = 90;
+
+    private static final Map<String, InputConstraint[]> formConstraints = new HashMap<String, InputConstraint[]>();
+
+    //filling up rules
+    static {
+    }
 
     public ImageTemplate(String templateName,
                         int width,
