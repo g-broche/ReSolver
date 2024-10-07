@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.gregorybroche.imageresolver.Enums.ConstraintType;
 import com.gregorybroche.imageresolver.controller.TemplateItemController;
 
 import javafx.fxml.FXMLLoader;
@@ -20,7 +21,7 @@ public class ImageTemplate {
     private String format = "jpg";
     private int defaultResolution = 90;
 
-    private static final Map<String, InputConstraint[]> formConstraints = new HashMap<String, InputConstraint[]>();
+    
 
     //filling up rules
     static {

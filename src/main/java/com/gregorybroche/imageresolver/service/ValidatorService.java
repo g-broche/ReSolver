@@ -56,7 +56,7 @@ public class ValidatorService {
     }
 
     /**
-     * return List of allowed image extension with syntax like "webp"
+     * return set of allowed image extension with syntax like "webp"
      * 
      * @return
      */
