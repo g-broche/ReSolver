@@ -5,5 +5,6 @@ public enum ConstraintType {
     GREATER_THAN,
     LESS_THAN,
     LONGER_THAN,
-    SHORTER_THAN
+    SHORTER_THAN,
+    INCLUDED_IN
 }
