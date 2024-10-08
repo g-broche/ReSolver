@@ -15,6 +15,10 @@ import org.junit.jupiter.api.io.TempDir;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.util.Assert;
 
+import com.gregorybroche.imageresolver.Enums.ConstraintType;
+import com.gregorybroche.imageresolver.classes.InputConstraint;
+import com.gregorybroche.imageresolver.classes.ValidationResponse;
+
 public class ValidatorServiceTest {
     private final List<String> testAllowedImageFormats = Arrays.asList("*.jpg", "*.jpeg", "*.png", "*.bmp", "*.webp", "*.avif");
     private final String expectedStringifiedValue = ".jpg, .jpeg, .png, .bmp, .webp, .avif";
@@ -423,16 +427,39 @@ public class ValidatorServiceTest {
     @Test
     void isIncludedIn_valueIsInArrayUsingRealConstraint_ShouldReturnTrue() {
         String value = "webp";
-        TemplateSubmitterService templateSubmitterService = new TemplateSubmitterService(this.validatorService);
+        TemplateSubmitterService templateSubmitterService = new TemplateSubmitterService(validatorService);
         assertTrue(validatorService.isIncludedIn(value, templateSubmitterService.getAllowedFormats()));
     }
 
-    // public boolean isIncludedIn(Object input, Object[] allowedValues) {
-    //     for (Object allowedValue : allowedValues) {
-    //         if (input.equals(allowedValue)) {
-    //             return true;
-    //         }
-    //     }
-    //     return false;
-    // }
+    /* ***** isConstraintValidated ***** */
+
+    @Test
+    void isConstraintValidated_constraintIsNotValidated_ShouldReturnValidationResponseFalseNullErrorMessage() {
+        int value = 479;
+        InputConstraint testConstraint = new InputConstraint(
+            "testConstraint",
+            ConstraintType.GREATER_THAN,
+            480,
+            "test has failed"
+            );
+        ValidationResponse testResult = validatorService.isConstraintValidated(value, testConstraint);
+        assertFalse(testResult.getIsSuccess());
+        assertNull(testResult.getData());
+        assertEquals(testResult.getMessage(), "test has failed");
+    }
+
+    @Test
+    void isConstraintValidated_constraintIsValidated_ShouldReturnValidationResponseTrueNullNull() {
+        int value = 480;
+        InputConstraint testConstraint = new InputConstraint(
+            "testConstraint",
+            ConstraintType.GREATER_THAN,
+            480,
+            "test has passed"
+            );
+        ValidationResponse testResult = validatorService.isConstraintValidated(value, testConstraint);
+        assertTrue(testResult.getIsSuccess());
+        assertNull(testResult.getData());
+        assertNull(testResult.getMessage());
+    }
 }

@@ -11,6 +11,8 @@ import org.apache.tika.Tika;
 import org.springframework.stereotype.Service;
 
 import com.gregorybroche.imageresolver.Enums.ConstraintType;
+import com.gregorybroche.imageresolver.classes.InputConstraint;
+import com.gregorybroche.imageresolver.classes.ValidationResponse;
 
 @Service
 public class ValidatorService {
@@ -85,37 +87,39 @@ public class ValidatorService {
      * @param constraintType Type of the constraint based on an enum
      * @return True if input is compliant with the constraint
      */
-    public boolean isConstraintValidated(Object input, Object constraintValue, ConstraintType constraintType) {
+    public ValidationResponse isConstraintValidated(Object input, InputConstraint inputConstraint) {
         boolean isConstraintValid = false;
-        switch (constraintType) {
+        switch (inputConstraint.getConstraintType()) {
             case REQUIRED:
                 isConstraintValid = isNotEmpty(input);
                 break;
 
             case GREATER_THAN:
-                isConstraintValid = isGreaterThan(input, (Integer) constraintValue);
+                isConstraintValid = isGreaterThan(input, (Integer) inputConstraint.getValue());
                 break;
 
             case LESS_THAN:
-                isConstraintValid = isLessThan(input, (Integer) constraintValue);
+                isConstraintValid = isLessThan(input, (Integer) inputConstraint.getValue());
                 break;
 
             case LONGER_THAN:
-                isConstraintValid = isLongerThan(input, (Integer) constraintValue);
+                isConstraintValid = isLongerThan(input, (Integer) inputConstraint.getValue());
                 break;
 
             case SHORTER_THAN:
-                isConstraintValid = isShorterThan(input, (Integer) constraintValue);
+                isConstraintValid = isShorterThan(input, (Integer) inputConstraint.getValue());
                 break;
 
             case INCLUDED_IN:
-                isConstraintValid = isIncludedIn(input, (Object[]) constraintValue);
+                isConstraintValid = isIncludedIn(input, (Object[]) inputConstraint.getValue());
                 break;
 
             default:
                 break;
         }
-        return isConstraintValid;
+        return isConstraintValid
+            ? new ValidationResponse(true, null, null)
+            : new ValidationResponse(false, null, inputConstraint.getErrorMessage());
     }
 
     /**
