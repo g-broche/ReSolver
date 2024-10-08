@@ -59,6 +59,10 @@ public class TemplateSubmitterService {
         return this.formConstraints;
     }
 
+    public String[] getAllowedFormats(){
+        return this.allowedFormats;
+    }
+
     public void setAllConstraints() {
         addInputConstraints("templateName", generateTemplateNameConstraints());
         addInputConstraints("width", generateWidthConstraints());
@@ -153,7 +157,7 @@ public class TemplateSubmitterService {
                 "The resolution must be an int less than " + this.maxResolution));
         return templateResolutionConstraints.toArray(new InputConstraint[templateResolutionConstraints.size()]);
     }
-    
+
     private InputConstraint[] generateImagePrefixConstraints() {
         List<InputConstraint> templateImagePrefixConstraints = new ArrayList<InputConstraint>();
         templateImagePrefixConstraints.add(new InputConstraint(
@@ -161,19 +165,20 @@ public class TemplateSubmitterService {
                 ConstraintType.REQUIRED,
                 this.isImagePrefixRequired,
                 "The image name prefix is required"));
-                templateImagePrefixConstraints.add(new InputConstraint(
+        templateImagePrefixConstraints.add(new InputConstraint(
                 "minimumPrefixLength",
                 ConstraintType.LONGER_THAN,
                 this.minLengthImagePrefix,
                 "The prefix must be longer than " + this.minLengthImagePrefix + " characters"));
-                templateImagePrefixConstraints.add(new InputConstraint(
+        templateImagePrefixConstraints.add(new InputConstraint(
                 "maximumPrefixLength",
                 ConstraintType.LESS_THAN,
                 this.maxLengthImagePrefix,
                 "The prefix must be shorter than " + this.minLengthImagePrefix + " characters"));
-        return templateImagePrefixConstraints.toArray(new InputConstraint[templateImagePrefixConstraints.size()]);
+        return templateImagePrefixConstraints
+                .toArray(new InputConstraint[templateImagePrefixConstraints.size()]);
     }
-    
+
     private InputConstraint[] generateImageBaseNameConstraints() {
         List<InputConstraint> templateImageBaseNameConstraints = new ArrayList<InputConstraint>();
         templateImageBaseNameConstraints.add(new InputConstraint(
@@ -181,19 +186,22 @@ public class TemplateSubmitterService {
                 ConstraintType.REQUIRED,
                 this.isImageBaseNameRequired,
                 "The image base name is required"));
-                templateImageBaseNameConstraints.add(new InputConstraint(
+        templateImageBaseNameConstraints.add(new InputConstraint(
                 "minimumBaseNameLength",
                 ConstraintType.LONGER_THAN,
                 this.minLengthImageBaseName,
-                "The image base name must be longer than " + this.minLengthImageBaseName + " characters"));
-                templateImageBaseNameConstraints.add(new InputConstraint(
+                "The image base name must be longer than " + this.minLengthImageBaseName
+                        + " characters"));
+        templateImageBaseNameConstraints.add(new InputConstraint(
                 "maximumPrefixLength",
                 ConstraintType.LESS_THAN,
                 this.maxLengthImageBaseName,
-                "The image base name must be shorter than " + this.maxLengthImageBaseName + " characters"));
-        return templateImageBaseNameConstraints.toArray(new InputConstraint[templateImageBaseNameConstraints.size()]);
+                "The image base name must be shorter than " + this.maxLengthImageBaseName
+                        + " characters"));
+        return templateImageBaseNameConstraints
+                .toArray(new InputConstraint[templateImageBaseNameConstraints.size()]);
     }
-        
+
     private InputConstraint[] generateImageSuffixConstraints() {
         List<InputConstraint> templateImageSuffixConstraints = new ArrayList<InputConstraint>();
         templateImageSuffixConstraints.add(new InputConstraint(
@@ -201,17 +209,18 @@ public class TemplateSubmitterService {
                 ConstraintType.REQUIRED,
                 this.isImageSuffixRequired,
                 "The image name suffix is required"));
-                templateImageSuffixConstraints.add(new InputConstraint(
+        templateImageSuffixConstraints.add(new InputConstraint(
                 "minimumSuffixLength",
                 ConstraintType.LONGER_THAN,
                 this.minLengthImageSuffix,
                 "The suffix must be longer than " + this.minLengthImageSuffix + " characters"));
-                templateImageSuffixConstraints.add(new InputConstraint(
+        templateImageSuffixConstraints.add(new InputConstraint(
                 "maximumSuffixLength",
                 ConstraintType.LESS_THAN,
                 this.maxLengthImageSuffix,
                 "The suffix must be shorter than " + this.minLengthImageSuffix + " characters"));
-        return templateImageSuffixConstraints.toArray(new InputConstraint[templateImageSuffixConstraints.size()]);
+        return templateImageSuffixConstraints
+                .toArray(new InputConstraint[templateImageSuffixConstraints.size()]);
     }
 
     private InputConstraint[] generateFormatConstraints() {
@@ -221,7 +230,7 @@ public class TemplateSubmitterService {
                 ConstraintType.REQUIRED,
                 this.isFormatRequired,
                 "The format is required"));
-                templateFormatConstraints.add(new InputConstraint(
+        templateFormatConstraints.add(new InputConstraint(
                 "allowedFormat",
                 ConstraintType.INCLUDED_IN,
                 this.allowedFormats,

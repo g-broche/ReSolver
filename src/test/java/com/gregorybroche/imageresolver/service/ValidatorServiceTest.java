@@ -367,4 +367,72 @@ public class ValidatorServiceTest {
         Integer maxLen = 4;
         assertFalse(validatorService.isShorterThan(value, maxLen));
     }
+
+    /* ***** isIncludedIn ***** */
+
+    @Test
+    void isIncludedIn_valueAsNullAndArrayIsEmpty_ShouldReturnFalse() {
+        String value = null;
+        String[] haystack = new String[5];
+        assertFalse(validatorService.isIncludedIn(value, haystack));
+    }
+
+    @Test
+    void isIncludedIn_valueAndArrayTypesAreMismatched_ShouldReturnFalse() {
+        int value = 3;
+        String[] haystack = new String[5];
+        haystack[0] = "1";
+        haystack[1] = "2";
+        haystack[2] = "3";
+        haystack[3] = "4";
+        haystack[4] = "5";
+        assertFalse(validatorService.isIncludedIn(value, haystack));
+    }
+
+    @Test
+    void isIncludedIn_valueIsNotInArray_ShouldReturnFalse() {
+        String value = "tiff";
+        String[] haystack = new String[5];
+        haystack[0] = "jpg";
+        haystack[1] = "png";
+        haystack[2] = "webp";
+        haystack[3] = "jpeg";
+        haystack[4] = "avif";
+        assertFalse(validatorService.isIncludedIn(value, haystack));
+    }
+
+    @Test
+    void isIncludedIn_valueIsInArray_ShouldReturnTrue() {
+        String value = "webp";
+        String[] haystack = new String[5];
+        haystack[0] = "jpg";
+        haystack[1] = "png";
+        haystack[2] = "webp";
+        haystack[3] = "jpeg";
+        haystack[4] = "avif";
+        assertTrue(validatorService.isIncludedIn(value, haystack));
+    }
+
+    @Test
+    void isIncludedIn_valueIsNotInArrayUsingRealConstraint_ShouldReturnFalse() {
+        String value = "tiff";
+        TemplateSubmitterService templateSubmitterService = new TemplateSubmitterService(this.validatorService);
+        assertFalse(validatorService.isIncludedIn(value, templateSubmitterService.getAllowedFormats()));
+    }
+
+    @Test
+    void isIncludedIn_valueIsInArrayUsingRealConstraint_ShouldReturnTrue() {
+        String value = "webp";
+        TemplateSubmitterService templateSubmitterService = new TemplateSubmitterService(this.validatorService);
+        assertTrue(validatorService.isIncludedIn(value, templateSubmitterService.getAllowedFormats()));
+    }
+
+    // public boolean isIncludedIn(Object input, Object[] allowedValues) {
+    //     for (Object allowedValue : allowedValues) {
+    //         if (input.equals(allowedValue)) {
+    //             return true;
+    //         }
+    //     }
+    //     return false;
+    // }
 }

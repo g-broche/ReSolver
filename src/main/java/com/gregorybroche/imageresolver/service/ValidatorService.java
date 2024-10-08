@@ -108,6 +108,10 @@ public class ValidatorService {
                 isConstraintValid = isShorterThan(input, (Integer) constraintValue);
                 break;
 
+            case INCLUDED_IN:
+                isConstraintValid = isIncludedIn(input, (Object[]) constraintValue);
+                break;
+
             default:
                 break;
         }
@@ -180,12 +184,21 @@ public class ValidatorService {
         return input.toString().length() <= maxLen;
     }
 
-    // public boolean isIncludedIn(Object input, Object[] allowedValues) {
-    //     for (Object allowedValue : allowedValues) {
-    //         if (input.equals(allowedValue)) {
-    //             return true;
-    //         }
-    //     }
-    //     return false;
-    // }
+    /**
+     * Validates if an input is equal to an object contained in an array
+     * @param input Object to evaluate
+     * @param allowedValues haystack
+     * @return true if object is found in collection
+     */
+    public boolean isIncludedIn(Object input, Object[] allowedValues) {
+        if(input == null){
+            return false;
+        }
+        for (Object allowedValue : allowedValues) {
+            if (input.equals(allowedValue)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
