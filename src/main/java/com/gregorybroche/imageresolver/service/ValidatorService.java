@@ -85,7 +85,7 @@ public class ValidatorService {
      * @param input Input to validate, accepts Object to cover all case
      * @param constraintValue Value of the constraint, accepts Object to cover all case
      * @param constraintType Type of the constraint based on an enum
-     * @return True if input is compliant with the constraint
+     * @return ValidationReponse instance with a success state, possible data object array, and possible error message
      */
     public ValidationResponse isConstraintValidated(Object input, InputConstraint inputConstraint) {
         boolean isConstraintValid = false;

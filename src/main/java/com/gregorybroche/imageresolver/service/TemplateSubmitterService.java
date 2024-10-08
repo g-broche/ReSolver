@@ -2,7 +2,6 @@ package com.gregorybroche.imageresolver.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -11,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.gregorybroche.imageresolver.Enums.ConstraintType;
 import com.gregorybroche.imageresolver.classes.InputConstraint;
+import com.gregorybroche.imageresolver.classes.ValidationResponse;
 
 @Service
 public class TemplateSubmitterService {
@@ -59,10 +59,13 @@ public class TemplateSubmitterService {
         return this.formConstraints;
     }
 
-    public String[] getAllowedFormats(){
+    public String[] getAllowedFormats() {
         return this.allowedFormats;
     }
 
+    /**
+     * Set constraints required for all inputs
+     */
     public void setAllConstraints() {
         addInputConstraints("templateName", generateTemplateNameConstraints());
         addInputConstraints("width", generateWidthConstraints());
@@ -74,6 +77,31 @@ public class TemplateSubmitterService {
         addInputConstraints("format", generateFormatConstraints());
     }
 
+    /**
+     * Takes in a value to compare it to a set of constraints defined my a constraint key and returns an 
+     * instance of ValidationResponse with properties isSuccess, data and message
+     * @param input 
+     * @param inputConstraintKey key correspondind to the constraints defined in setAllConstraints
+     * @return if a constraint check failed return will have isSuccess at false and the message corresponding to the failed constraint error message,
+     * otherwise isSuccess will be true and message is null
+     */
+    public ValidationResponse validateInput(Object input, String inputConstraintKey) {
+        InputConstraint[] inputConstraints = this.formConstraints.get(inputConstraintKey);
+        for (InputConstraint inputConstraint : inputConstraints) {
+            ValidationResponse inputContraintResponse = this.validatorService.isConstraintValidated(input,
+                    inputConstraint);
+            if (!inputContraintResponse.getIsSuccess()) {
+                return inputContraintResponse;
+            }
+        }
+        return new ValidationResponse(true, null, null);
+    }
+
+    /**
+     * Adds all constraints relative to a specific input
+     * @param inputKey key reference for the map collection <String, InputConstraint[]> formConstraints and corresponding to the input
+     * @param constraints array of InputConstraint
+     */
     private void addInputConstraints(String inputKey, InputConstraint[] constraints) {
         this.formConstraints.put(inputKey, constraints);
     }

@@ -13,7 +13,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.springframework.test.util.ReflectionTestUtils;
-import org.springframework.util.Assert;
 
 import com.gregorybroche.imageresolver.Enums.ConstraintType;
 import com.gregorybroche.imageresolver.classes.InputConstraint;
