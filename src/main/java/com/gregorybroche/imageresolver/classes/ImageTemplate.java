@@ -1,10 +1,6 @@
 package com.gregorybroche.imageresolver.classes;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
-import com.gregorybroche.imageresolver.Enums.ConstraintType;
 import com.gregorybroche.imageresolver.controller.TemplateItemController;
 
 import javafx.fxml.FXMLLoader;
@@ -20,12 +16,6 @@ public class ImageTemplate {
     private String newImageSuffix = "-post";
     private String format = "jpg";
     private int defaultResolution = 90;
-
-    
-
-    //filling up rules
-    static {
-    }
 
     public ImageTemplate(String templateName,
                         int width,

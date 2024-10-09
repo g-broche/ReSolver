@@ -419,14 +419,14 @@ public class ValidatorServiceTest {
     @Test
     void isIncludedIn_valueIsNotInArrayUsingRealConstraint_ShouldReturnFalse() {
         String value = "tiff";
-        TemplateSubmitterService templateSubmitterService = new TemplateSubmitterService(this.validatorService);
+        TemplateFormValidatorService templateSubmitterService = new TemplateFormValidatorService(this.validatorService);
         assertFalse(validatorService.isIncludedIn(value, templateSubmitterService.getAllowedFormats()));
     }
 
     @Test
     void isIncludedIn_valueIsInArrayUsingRealConstraint_ShouldReturnTrue() {
         String value = "webp";
-        TemplateSubmitterService templateSubmitterService = new TemplateSubmitterService(validatorService);
+        TemplateFormValidatorService templateSubmitterService = new TemplateFormValidatorService(validatorService);
         assertTrue(validatorService.isIncludedIn(value, templateSubmitterService.getAllowedFormats()));
     }
 

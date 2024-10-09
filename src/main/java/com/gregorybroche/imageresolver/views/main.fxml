@@ -36,7 +36,7 @@
                         <VBox fx:id="templateContainer" spacing="10.0" />
                      </content>
                   </ScrollPane>
-                  <Button fx:id="createTemplateButton" layoutX="234.0" layoutY="10.0" mnemonicParsing="false" onMouseClicked="#createTemplate" style="-fx-background-color: #5BB2E2;" text="Add" />
+                  <Button fx:id="createTemplateButton" layoutX="234.0" layoutY="10.0" mnemonicParsing="false" onMouseClicked="#openTemplateForm" style="-fx-background-color: #5BB2E2;" text="Add" />
                </children>
             </Pane>
          </children>

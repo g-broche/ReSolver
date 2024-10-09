@@ -13,19 +13,19 @@ import org.junit.jupiter.api.Test;
 import com.gregorybroche.imageresolver.classes.InputConstraint;
 import com.gregorybroche.imageresolver.classes.ValidationResponse;
 
-public class TemplateSubmitterServiceTest {
-    private TemplateSubmitterService templateSubmitterService;
+public class TemplateFormValidatorServiceTest {
+    private TemplateFormValidatorService templateSubmitterService;
 
     @BeforeEach
     void setUp(){
         ValidatorService validatorService = new ValidatorService();
-        templateSubmitterService = new TemplateSubmitterService(validatorService);
+        templateSubmitterService = new TemplateFormValidatorService(validatorService);
     }
 
     @Test
     void generateTemplateNameConstraints_shouldReturnAdequateConstraints() {
         try {
-            Method generateTemplateNameConstraintsMethod = TemplateSubmitterService.class.getDeclaredMethod("generateTemplateNameConstraints");
+            Method generateTemplateNameConstraintsMethod = TemplateFormValidatorService.class.getDeclaredMethod("generateTemplateNameConstraints");
             generateTemplateNameConstraintsMethod.setAccessible(true);
             InputConstraint[] templateNameConstraints = (InputConstraint[]) generateTemplateNameConstraintsMethod.invoke(this.templateSubmitterService);
             assertEquals(templateNameConstraints[0].getConstraintName(), "requiredTemplateName");

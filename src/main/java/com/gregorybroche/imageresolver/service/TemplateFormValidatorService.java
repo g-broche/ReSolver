@@ -13,7 +13,7 @@ import com.gregorybroche.imageresolver.classes.InputConstraint;
 import com.gregorybroche.imageresolver.classes.ValidationResponse;
 
 @Service
-public class TemplateSubmitterService {
+public class TemplateFormValidatorService {
     private ValidatorService validatorService;
 
     private boolean isTemplateNameRequired = true;
@@ -49,7 +49,7 @@ public class TemplateSubmitterService {
 
     private final Map<String, InputConstraint[]> formConstraints = new HashMap<String, InputConstraint[]>();
 
-    public TemplateSubmitterService(ValidatorService validatorService) {
+    public TemplateFormValidatorService(ValidatorService validatorService) {
         this.validatorService = validatorService;
         Set<String> allowedFormatsSet = validatorService.getAllowedImageFormatsAsExtension();
         this.allowedFormats = allowedFormatsSet.toArray(new String[allowedFormatsSet.size()]);

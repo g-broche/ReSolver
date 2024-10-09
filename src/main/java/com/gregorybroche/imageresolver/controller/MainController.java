@@ -15,11 +15,17 @@ import com.gregorybroche.imageresolver.service.UserDialogService;
 import com.gregorybroche.imageresolver.service.ValidatorService;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 @Component
 public class MainController {
@@ -30,18 +36,18 @@ public class MainController {
     private ResolverProcessorService resolverProcessorService;
     private File imageToResolve = null;
 
-    public MainController(  UserDialogService userDialogService,
-                            FileHandlerService fileHandlerService,
-                            ValidatorService validatorService,
-                            ImageEditorService imageEditorService,
-                            ResolverProcessorService resolverProcessorService) {
+    public MainController(UserDialogService userDialogService,
+            FileHandlerService fileHandlerService,
+            ValidatorService validatorService,
+            ImageEditorService imageEditorService,
+            ResolverProcessorService resolverProcessorService) {
         this.userDialogService = userDialogService;
         this.fileHandlerService = fileHandlerService;
         this.validatorService = validatorService;
         this.imageEditorService = imageEditorService;
         this.resolverProcessorService = resolverProcessorService;
-    } 
-    
+    }
+
     @FXML
     private ImageView imagePreview;
 
@@ -76,10 +82,11 @@ public class MainController {
 
     @FXML
     void resolveImage(MouseEvent event) {
-        try{
+        try {
             BufferedImage sourceBufferedImage = imageEditorService.getImageContentFromFile(imageToResolve);
             ImageTemplate template = getTemplateParameters();
-            Path directory = fileHandlerService.getAppDirectoryPath(); //Temporary for testing until logic for defining templates and presets through inputs is done
+            Path directory = fileHandlerService.getAppDirectoryPath(); // Temporary for testing until logic for defining
+                                                                       // templates and presets through inputs is done
             resolverProcessorService.processImageForTemplate(sourceBufferedImage, template, directory);
         } catch (Exception e) {
             userDialogService.showErrorMessage("failed to resolve image", e.getMessage());
@@ -87,29 +94,35 @@ public class MainController {
     }
 
     @FXML
-    /**
-     * Implementation as proof of concept of creating an ImageTemplate instance and displaying the
-     * corresponding data into an appended fxml component
-     * @param event
-     */
-    void createTemplate(MouseEvent event){
-        System.out.println("***CREATING TEMPLATE VIEW***");
-        System.out.println(templateContainer);
-        // Create a new ImageTemplate instance
-        ImageTemplate newTemplate = new ImageTemplate(null, 600, 400, null, null, null, null, "jpg");
-        System.out.println("***CREATING IMAGE TEMPLATE INSTANCE***");
+    void openTemplateForm(MouseEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("../views/templateForm.fxml"));
+            Parent root = loader.load();
 
-        // Create the template pane (an HBox) using the FXML and add it to the VBox
-        templateContainer.getChildren().add(newTemplate.createTemplatePane(0));
-        System.out.println("***DISPLAY TEMPLATE***");
+            Stage stage = new Stage();
+            stage.setTitle("Template Form");
+
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+
+            stage.initModality(Modality.WINDOW_MODAL);
+
+            stage.initOwner(((Node) event.getSource()).getScene().getWindow());
+
+            stage.showAndWait();
+
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
     }
 
     /**
      * Return an Image object generated based on a given file path
+     * 
      * @param filePath instance of Path corresponding to the target file
      * @return Image object generated
      */
-    private Image getImageFromFilePath(Path filePath){
+    private Image getImageFromFilePath(Path filePath) {
         try {
             FileInputStream inputStream = new FileInputStream(filePath.toFile());
             Image image = new Image(inputStream);
@@ -123,12 +136,13 @@ public class MainController {
     /**
      * Display preview of currently selected image
      */
-    private void displaySelectedImagePreview(Image image){
+    private void displaySelectedImagePreview(Image image) {
         imagePreview.setImage(image);
     }
 
-    // Proof of concept testing until proper definition of templates through user inputs
-    private ImageTemplate getTemplateParameters(){
+    // Proof of concept testing until proper definition of templates through user
+    // inputs
+    private ImageTemplate getTemplateParameters() {
         return new ImageTemplate(null, 600, 400, null, null, null, null, "jpg");
     }
 
