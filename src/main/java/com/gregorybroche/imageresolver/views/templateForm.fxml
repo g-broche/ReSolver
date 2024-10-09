@@ -7,43 +7,51 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
-
+<?import javafx.scene.text.Text?>
 
 <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Pane prefHeight="300.0" prefWidth="500.0" style="-fx-background-color: #D9D9D9;">
+      <Pane prefHeight="400.0" prefWidth="500.0" style="-fx-background-color: #D9D9D9;">
          <children>
-            <Pane layoutX="15.0" layoutY="5.0" prefHeight="33.0" prefWidth="471.0">
+            <Pane layoutX="15.0" layoutY="14.0" prefHeight="65.0" prefWidth="471.0">
                <children>
                   <TextField fx:id="InputTemplateName" layoutX="250.0" layoutY="3.0" />
                   <Label fx:id="templateFormTitleLabel" layoutX="140.0" layoutY="8.0" text="ADD TEMPLATE" />
+                  <Text fx:id="InputTemplateNameError" fill="#cd2828" layoutX="164.0" layoutY="46.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Erreur Template name" />
                </children>
             </Pane>
-            <Pane layoutX="15.0" layoutY="40.0" prefHeight="80.0" prefWidth="470.0">
+            <Pane layoutX="15.0" layoutY="80.0" prefHeight="105.0" prefWidth="470.0">
                <children>
-                  <Label layoutX="-1.0" layoutY="6.0" text="Name" />
-                  <Label layoutY="40.0" text="Prefix" />
-                  <Label layoutX="235.0" layoutY="40.0" text="Suffix" />
-                  <TextField fx:id="InputFileBaseName" layoutX="45.0" layoutY="2.0" />
-                  <TextField fx:id="InputFilePrefix" layoutX="45.0" layoutY="35.0" />
-                  <TextField fx:id="InputFileSuffix" layoutX="280.0" layoutY="35.0" />
+                  <Label layoutY="12.0" text="Name" />
+                  <Label layoutX="1.0" layoutY="46.0" text="Prefix" />
+                  <Label layoutX="1.0" layoutY="78.0" text="Suffix" />
+                  <TextField fx:id="InputFileBaseName" layoutX="46.0" layoutY="8.0" />
+                  <TextField fx:id="InputFilePrefix" layoutX="46.0" layoutY="41.0" />
+                  <TextField fx:id="InputFileSuffix" layoutX="46.0" layoutY="73.0" />
+                  <Text fx:id="InputFileBaseNameError" fill="#cd2828" layoutX="211.0" layoutY="25.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Erreur name" />
+                  <Text fx:id="InputFilePrefixError" fill="#cd2828" layoutX="211.0" layoutY="60.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Erreur prefix" />
+                  <Text fx:id="InputFileSuffixError" fill="#cd2828" layoutX="211.0" layoutY="90.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Erreur suffix" />
                </children>
             </Pane>
-            <Pane layoutX="15.0" layoutY="120.0" prefHeight="130.0" prefWidth="470.0">
+            <Pane layoutX="15.0" layoutY="185.0" prefHeight="160.0" prefWidth="470.0">
                <children>
                   <CheckBox fx:id="CheckboxMaintainRatio" layoutY="5.0" mnemonicParsing="false" text="Preserve image ratio" />
-                  <Label layoutX="-1.0" layoutY="48.0" text="Width" />
-                  <TextField fx:id="inputWidth" layoutX="45.0" layoutY="44.0" />
-                  <Label layoutX="235.0" layoutY="48.0" text="Height" />
-                  <TextField fx:id="inputHeight" layoutX="281.0" layoutY="44.0" />
-                  <Label layoutX="-1.0" layoutY="94.0" text="Res" />
-                  <TextField fx:id="inputResolution" layoutX="45.0" layoutY="90.0" prefHeight="25.0" prefWidth="101.0" />
-                  <Label layoutX="235.0" layoutY="94.0" text="Format" />
-                  <ChoiceBox fx:id="selectFormat" layoutX="280.0" layoutY="90.0" prefWidth="150.0" />
-                  <Label layoutX="146.0" layoutY="94.0" text="px/inc" />
+                  <Label layoutY="36.0" text="Width" />
+                  <TextField fx:id="inputWidth" layoutX="46.0" layoutY="32.0" />
+                  <Label layoutX="-1.0" layoutY="67.0" text="Height" />
+                  <TextField fx:id="inputHeight" layoutX="45.0" layoutY="63.0" />
+                  <Label layoutX="-1.0" layoutY="133.0" text="Res" />
+                  <TextField fx:id="inputResolution" layoutX="45.0" layoutY="129.0" prefHeight="25.0" prefWidth="101.0" />
+                  <Label layoutY="100.0" text="Format" />
+                  <ChoiceBox fx:id="selectFormat" layoutX="45.0" layoutY="96.0" prefWidth="150.0" />
+                  <Label layoutX="146.0" layoutY="133.0" text="px/inc" />
+                  <Text fx:id="inputWidthError" fill="#cd2828" layoutX="210.0" layoutY="49.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Erreur width" />
+                  <Text fx:id="inputHeightError" fill="#cd2828" layoutX="210.0" layoutY="80.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Erreur height" />
+                  <Text fx:id="selectFormatError" fill="#cd2828" layoutX="210.0" layoutY="113.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Erreur format" />
+                  <Text fx:id="inputResolutionError" fill="#cd2828" layoutX="210.0" layoutY="146.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Erreur resolution" />
                </children>
             </Pane>
-            <Pane layoutX="15.0" layoutY="250.0" prefHeight="50.0" prefWidth="470.0">
+            <Pane layoutX="15.0" layoutY="345.0" prefHeight="50.0" prefWidth="470.0">
                <children>
                   <Button fx:id="buttonSave" layoutX="355.0" layoutY="13.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="75.0" text="Save" />
                   <Button fx:id="buttonCancel" layoutX="255.0" layoutY="13.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="75.0" text="Cancel" />

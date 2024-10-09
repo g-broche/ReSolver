@@ -78,12 +78,15 @@ public class TemplateSubmitterService {
     }
 
     /**
-     * Takes in a value to compare it to a set of constraints defined my a constraint key and returns an 
-     * instance of ValidationResponse with properties isSuccess, data and message
-     * @param input 
-     * @param inputConstraintKey key correspondind to the constraints defined in setAllConstraints
-     * @return if a constraint check failed return will have isSuccess at false and the message corresponding to the failed constraint error message,
-     * otherwise isSuccess will be true and message is null
+     * Takes in a value to compare it to a set of constraints defined my a constraint key and returns an instance of
+     * ValidationResponse with properties isSuccess, data and message
+     * 
+     * @param input
+     * @param inputConstraintKey key correspondind to the constraints defined in
+     *                           setAllConstraints
+     * @return if a constraint check failed return will have isSuccess at false and
+     *         the message corresponding to the failed constraint error message,
+     *         otherwise isSuccess will be true and message is null
      */
     public ValidationResponse validateInput(Object input, String inputConstraintKey) {
         InputConstraint[] inputConstraints = this.formConstraints.get(inputConstraintKey);
@@ -99,7 +102,10 @@ public class TemplateSubmitterService {
 
     /**
      * Adds all constraints relative to a specific input
-     * @param inputKey key reference for the map collection <String, InputConstraint[]> formConstraints and corresponding to the input
+     * 
+     * @param inputKey    key reference for the map collection <String,
+     *                    InputConstraint[]> formConstraints and corresponding to
+     *                    the input
      * @param constraints array of InputConstraint
      */
     private void addInputConstraints(String inputKey, InputConstraint[] constraints) {
