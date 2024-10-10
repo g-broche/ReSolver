@@ -1,10 +1,9 @@
 package com.gregorybroche.imageresolver.controller;
 
-import java.awt.event.ActionEvent;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.gregorybroche.imageresolver.classes.ValidationResponse;
 import com.gregorybroche.imageresolver.service.TemplateFormValidatorService;
 import com.gregorybroche.imageresolver.service.ValidatorService;
 
@@ -13,7 +12,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.text.Text;
 
 @Component
@@ -22,10 +20,12 @@ public class TemplateFormController {
 
     @Autowired
     private TemplateFormValidatorService templateFormValidatorService;
+
+    @Autowired
+    private ValidatorService validatorService;
     
     public void setFormSubmitListener(TemplateFormSubmitListener listener) {
         this.submitListener = listener;
-
     }
     public interface TemplateFormSubmitListener {
         void onFormSubmit();
@@ -98,8 +98,13 @@ public class TemplateFormController {
 
     @FXML
     void validateTemplateNameChange() {
-        String templateName = inputTemplateName.getText();
-        System.out.println(templateName);
+        String input = validatorService.sanitizeString(inputTemplateName.getText());
+        ValidationResponse validationState = templateFormValidatorService.validateTemplateNameInput(input);
+        if(!validationState.getIsSuccess()){
+            showInputError(inputTemplateNameError, validationState.getMessage());
+            return;
+        }
+        hideInputError(inputTemplateNameError);
     }
 
     @FXML
@@ -128,5 +133,15 @@ public class TemplateFormController {
 
     @FXML
     void validateFormatChange() {
+    }
+
+    
+    public void showInputError(Text textElement, String text){
+        textElement.setText(text);
+        textElement.setVisible(true);
+    }
+    public void hideInputError(Text textElement){
+        textElement.setVisible(false);
+        textElement.setText("");
     }
 }

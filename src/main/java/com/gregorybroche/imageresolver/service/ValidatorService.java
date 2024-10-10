@@ -10,7 +10,6 @@ import java.util.Set;
 import org.apache.tika.Tika;
 import org.springframework.stereotype.Service;
 
-import com.gregorybroche.imageresolver.Enums.ConstraintType;
 import com.gregorybroche.imageresolver.classes.InputConstraint;
 import com.gregorybroche.imageresolver.classes.ValidationResponse;
 
@@ -123,12 +122,53 @@ public class ValidatorService {
     }
 
     /**
-     * Validates if an input is one allowed for string comparisons (string & integer)
+     * Sanitize and parses a string as an integer
+     * @param string String to parse
+     * @return null if string is not valid or its corresponding parseInt value if valid
+     */
+    public Integer sanitizeStringAsInteger(String string){
+        string = sanitizeString(string);
+        if(!isStringValidInteger(string)){
+            return null;
+        }
+        return Integer.parseInt(string);
+    }
+
+    /**
+     * sanitize a string
+     * @param string String to sanitize
+     * @return sanitized string value if string is valid, otherwise null (null or empty string input)
+     */
+    public String sanitizeString(String string){
+        if(string == null){
+            return null;
+        }
+        string = string.trim();
+        return string.length() > 0 ? string : null;
+    }
+
+    /**
+     * Checks if an input is one allowed for string comparisons (string & integer)
      * @param input
      * @return True if validated
      */
     public boolean isValueStringCompatible(Object input) {
         return (input instanceof Integer) || (input instanceof String);
+    }
+
+    /**
+     * Checks if a String is a valid Integer format
+     * @param input
+     * @return True if valid
+     */
+    public boolean isStringValidInteger(String string) {
+        if(string == null || string.isEmpty()){return false;}
+        try {
+            Integer.parseInt(string);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     /**

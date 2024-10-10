@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.nio.file.Path;
 
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import com.gregorybroche.imageresolver.classes.ImageTemplate;
@@ -29,6 +30,7 @@ import javafx.stage.Stage;
 
 @Component
 public class MainController {
+    private ApplicationContext applicationContext;
     private UserDialogService userDialogService;
     private FileHandlerService fileHandlerService;
     private ValidatorService validatorService;
@@ -36,11 +38,15 @@ public class MainController {
     private ResolverProcessorService resolverProcessorService;
     private File imageToResolve = null;
 
-    public MainController(UserDialogService userDialogService,
+    public MainController(
+            ApplicationContext applicationContext,
+            UserDialogService userDialogService,
             FileHandlerService fileHandlerService,
             ValidatorService validatorService,
             ImageEditorService imageEditorService,
-            ResolverProcessorService resolverProcessorService) {
+            ResolverProcessorService resolverProcessorService
+            ) {
+        this.applicationContext = applicationContext;
         this.userDialogService = userDialogService;
         this.fileHandlerService = fileHandlerService;
         this.validatorService = validatorService;
@@ -97,6 +103,7 @@ public class MainController {
     void openTemplateForm(MouseEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("../views/templateForm.fxml"));
+            loader.setControllerFactory(applicationContext::getBean);
             Parent root = loader.load();
 
             Stage stage = new Stage();

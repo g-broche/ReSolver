@@ -64,7 +64,7 @@ public class ImageTemplate {
     }
 
     public void setNewImagePrefix(String prefix) {
-        this.newImagePrefix = prefix.length() > 0 ? prefix : "";
+        this.newImagePrefix = prefix == null || prefix.length() == 0 ? "" : prefix;
     }
     public String getNewImagePrefix() {
         return this.newImagePrefix;
@@ -78,7 +78,7 @@ public class ImageTemplate {
     }
 
     public void setNewImageSuffix(String suffix) {
-        this.newImageSuffix = suffix.length() > 0 ? suffix : "";
+        this.newImageSuffix = suffix == null || suffix.length() == 0 ? "" : suffix;
     }
     public String getNewImageSuffix() {
         return this.newImageSuffix;

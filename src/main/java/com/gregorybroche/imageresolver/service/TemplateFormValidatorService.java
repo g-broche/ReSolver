@@ -53,6 +53,7 @@ public class TemplateFormValidatorService {
         this.validatorService = validatorService;
         Set<String> allowedFormatsSet = validatorService.getAllowedImageFormatsAsExtension();
         this.allowedFormats = allowedFormatsSet.toArray(new String[allowedFormatsSet.size()]);
+        setAllConstraints();
     }
 
     public Map<String, InputConstraint[]> getFormConstraints() {
@@ -77,8 +78,38 @@ public class TemplateFormValidatorService {
         addInputConstraints("format", generateFormatConstraints());
     }
 
+    public ValidationResponse validateTemplateNameInput(Object input){
+        return validateInput(input,"templateName" );
+    }
+    public ValidationResponse validateWidthInput(Object input){
+        return validateInput(input,"width" );
+    }
+    public ValidationResponse validateHeightInput(Object input){
+        return validateInput(input,"height" );
+    }
+    public ValidationResponse validateResolutionInput(Object input){
+        return validateInput(input,"resolution" );
+    }
+
+    public ValidationResponse validatePrefixInput(Object input){
+        return validateInput(input,"prefix" );
+    }
+
+    public ValidationResponse validateBaseNameInput(Object input){
+        return validateInput(input,"baseName" );
+    }
+
+    public ValidationResponse validateSuffixInput(Object input){
+        return validateInput(input,"suffix" );
+    }
+
+    public ValidationResponse validateFormat(Object input){
+        return validateInput(input,"format");
+    }
+
     /**
-     * Takes in a value to compare it to a set of constraints defined my a constraint key and returns an instance of
+     * Takes in a value to compare it to a set of constraints defined my a
+     * constraint key and returns an instance of
      * ValidationResponse with properties isSuccess, data and message
      * 
      * @param input
@@ -91,8 +122,7 @@ public class TemplateFormValidatorService {
     public ValidationResponse validateInput(Object input, String inputConstraintKey) {
         InputConstraint[] inputConstraints = this.formConstraints.get(inputConstraintKey);
         for (InputConstraint inputConstraint : inputConstraints) {
-            ValidationResponse inputContraintResponse = this.validatorService.isConstraintValidated(input,
-                    inputConstraint);
+            ValidationResponse inputContraintResponse = this.validatorService.isConstraintValidated(input, inputConstraint);
             if (!inputContraintResponse.getIsSuccess()) {
                 return inputContraintResponse;
             }
