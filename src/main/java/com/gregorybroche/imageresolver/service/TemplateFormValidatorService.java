@@ -66,6 +66,31 @@ public class TemplateFormValidatorService {
         return this.allowedFormats;
     }
 
+    public boolean isTemplateNameRequired(){
+        return this.isTemplateNameRequired;
+    }
+    public boolean isWidthRequired(){
+        return this.isWidthRequired;
+    }
+    public boolean isHeightRequired(){
+        return this.isHeightRequired;
+    }
+    public boolean isResolutionRequired(){
+        return this.isResolutionRequired;
+    }
+    public boolean isImagePrefixRequired(){
+        return this.isImagePrefixRequired;
+    }
+    public boolean isImageSuffixRequired(){
+        return this.isImageSuffixRequired;
+    }
+    public boolean isImageBaseNameRequired(){
+        return this.isImageBaseNameRequired;
+    }
+    public boolean isFormatRequired(){
+        return this.isFormatRequired;
+    }
+
     /**
      * Set constraints required for all inputs
      */

@@ -34,7 +34,7 @@ public class TemplateFormController {
     }
 
     public interface TemplateFormSubmitListener {
-        void onFormSubmit(ImageTemplate submittedTemplate);
+        void onFormSubmit(String submittedTemplate);
     }
 
     @FXML
@@ -102,7 +102,7 @@ public class TemplateFormController {
     }
 
     @FXML
-    void validateTemplateNameChange() {
+    private void validateTemplateNameChange() {
         String input = validatorService.sanitizeString(inputTemplateName.getText());
         ValidationResponse validationState = templateFormValidatorService.validateTemplateNameInput(input);
         if (!validationState.getIsSuccess()) {
@@ -115,7 +115,7 @@ public class TemplateFormController {
     }
 
     @FXML
-    void validateImageBaseNameChange() {
+    private void validateImageBaseNameChange() {
         String input = validatorService.sanitizeString(inputFileBaseName.getText());
         ValidationResponse validationState = templateFormValidatorService.validateBaseNameInput(input);
         if (!validationState.getIsSuccess()) {
@@ -128,7 +128,7 @@ public class TemplateFormController {
     }
 
     @FXML
-    void validateImagePrefixChange() {
+    private void validateImagePrefixChange() {
         String input = validatorService.sanitizeString(inputFilePrefix.getText());
         ValidationResponse validationState = templateFormValidatorService.validatePrefixInput(input);
         if (!validationState.getIsSuccess()) {
@@ -141,7 +141,7 @@ public class TemplateFormController {
     }
 
     @FXML
-    void validateImageSuffixChange() {
+    private void validateImageSuffixChange() {
         String input = validatorService.sanitizeString(inputFileSuffix.getText());
         ValidationResponse validationState = templateFormValidatorService.validateSuffixInput(input);
         if (!validationState.getIsSuccess()) {
@@ -154,7 +154,7 @@ public class TemplateFormController {
     }
 
     @FXML
-    void validateWidthChange() {
+    private void validateWidthChange() {
         String input = validatorService.sanitizeString(inputWidth.getText());
         ValidationResponse validationState = templateFormValidatorService.validateWidthInput(input);
         if (!validationState.getIsSuccess()) {
@@ -167,7 +167,7 @@ public class TemplateFormController {
     }
 
     @FXML
-    void validateHeightChange() {
+    private void validateHeightChange() {
         String input = validatorService.sanitizeString(inputHeight.getText());
         ValidationResponse validationState = templateFormValidatorService.validateHeightInput(input);
         if (!validationState.getIsSuccess()) {
@@ -180,7 +180,7 @@ public class TemplateFormController {
     }
 
     @FXML
-    void validateResolutionChange() {
+    private void validateResolutionChange() {
         String input = validatorService.sanitizeString(inputResolution.getText());
         ValidationResponse validationState = templateFormValidatorService.validateResolutionInput(input);
         if (!validationState.getIsSuccess()) {
@@ -193,7 +193,7 @@ public class TemplateFormController {
     }
 
     @FXML
-    void validateFormatChange() {
+    private void validateFormatChange() {
         String input = validatorService.sanitizeString(selectFormat.getValue());
         System.out.println(input);
         ValidationResponse validationState = templateFormValidatorService.validateFormatInput(input);
@@ -204,6 +204,33 @@ public class TemplateFormController {
         }
         setInputValidationForFormat(validationState.getIsSuccess());
         toggleSaveButton(areInputsValid());
+    }
+
+    @FXML
+    private void handleSubmit() {
+        if(!areInputsValid()){
+            return;
+        }
+        if(this.submitListener == null){
+            System.err.println("listener not set");
+            return;
+        }
+        try {
+            String templateName = validatorService.sanitizeString(inputTemplateName.getText());
+            // ImageTemplate templateToAdd = new ImageTemplate(
+            //     null,
+            //     0,
+            //     0,
+            //     null,
+            //     null,
+            //     null,
+            //     null,
+            //     null);
+            this.submitListener.onFormSubmit(templateName);
+        } catch (Exception e) {
+            System.err.println("handle submit - catch");
+            System.err.println(e.getMessage());
+        }
     }
 
     public void showInputError(Text textElement, String text) {
@@ -217,14 +244,14 @@ public class TemplateFormController {
     }
 
     public void initializeInputValidationMap() {
-        setInputValidationForTemplateName(false);
-        setInputValidationForBaseName(false);
-        setInputValidationForPrefix(false);
-        setInputValidationForSuffix(false);
-        setInputValidationForWidth(false);
-        setInputValidationForHeight(false);
-        setInputValidationForResolution(false);
-        setInputValidationForFormat(false);
+        setInputValidationForTemplateName(!templateFormValidatorService.isTemplateNameRequired());
+        setInputValidationForBaseName(!templateFormValidatorService.isImageBaseNameRequired());
+        setInputValidationForPrefix(!templateFormValidatorService.isImagePrefixRequired());
+        setInputValidationForSuffix(!templateFormValidatorService.isImageSuffixRequired());
+        setInputValidationForWidth(!templateFormValidatorService.isWidthRequired());
+        setInputValidationForHeight(!templateFormValidatorService.isHeightRequired());
+        setInputValidationForResolution(!templateFormValidatorService.isResolutionRequired());
+        setInputValidationForFormat(!templateFormValidatorService.isFormatRequired());
     }
 
     public void toggleSaveButton(boolean mustEnableButton) {

@@ -106,6 +106,12 @@ public class MainController {
             loader.setControllerFactory(applicationContext::getBean);
             Parent root = loader.load();
 
+            TemplateFormController templateFormController = loader.getController();
+            templateFormController.setFormSubmitListener(test -> {
+                handleSubmittedNewTemplate(test);
+            }
+            );
+
             Stage stage = new Stage();
             stage.setTitle("Template Form");
 
@@ -153,4 +159,7 @@ public class MainController {
         return new ImageTemplate(null, 600, 400, null, null, null, null, "jpg");
     }
 
+    private void handleSubmittedNewTemplate(String test) {
+        System.out.println("submitted template : "+test);
+    }
 }
