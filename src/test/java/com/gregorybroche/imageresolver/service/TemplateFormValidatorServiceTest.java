@@ -63,7 +63,7 @@ public class TemplateFormValidatorServiceTest {
     @Test
     void validateInput_widthIsLessThanAllowed_shouldReturnValidationResponseFalseWithErrorWidthLessThanAllowed(){
         this.templateSubmitterService.setAllConstraints();
-        int value = 5;
+        String value = "5";
         String expectedMessage = "The width must be an int greater than";
         ValidationResponse testResponse = this.templateSubmitterService.validateInput(value, "width");
         assertFalse(testResponse.getIsSuccess());
@@ -73,7 +73,7 @@ public class TemplateFormValidatorServiceTest {
     @Test
     void validateInput_widthIsMoreThanAllowed_shouldReturnValidationResponseFalseWithErrorWidthGreaterThanAllowed(){
         this.templateSubmitterService.setAllConstraints();
-        int value = 11000;
+        String value = "11000";
         String expectedMessage = "The width must be an int less than";
         ValidationResponse testResponse = this.templateSubmitterService.validateInput(value, "width");
         assertFalse(testResponse.getIsSuccess());

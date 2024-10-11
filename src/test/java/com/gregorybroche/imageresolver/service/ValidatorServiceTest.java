@@ -436,7 +436,7 @@ public class ValidatorServiceTest {
     @Test
     void isConstraintValidated_constraintIsNotValidated_ShouldReturnValidationResponseFalseNullErrorMessage() {
         try {
-            int value = 479;
+            String value = "479";
             InputConstraint testConstraint = new InputConstraint(
                 "testConstraint",
                 ConstraintType.GREATER_THAN,
@@ -456,7 +456,7 @@ public class ValidatorServiceTest {
     @Test
     void isConstraintValidated_constraintIsValidated_ShouldReturnValidationResponseTrueNullNull() {
         try {
-            int value = 480;
+            String value = "480";
             InputConstraint testConstraint = new InputConstraint(
                 "testConstraint",
                 ConstraintType.GREATER_THAN,

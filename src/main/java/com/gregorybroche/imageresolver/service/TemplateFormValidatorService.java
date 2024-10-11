@@ -80,35 +80,35 @@ public class TemplateFormValidatorService {
         addInputConstraints("format", generateFormatConstraints());
     }
 
-    public ValidationResponse validateTemplateNameInput(Object input) {
+    public ValidationResponse validateTemplateNameInput(String input) {
         return validateInput(input, "templateName");
     }
 
-    public ValidationResponse validateWidthInput(Object input) {
+    public ValidationResponse validateWidthInput(String input) {
         return validateInput(input, "width");
     }
 
-    public ValidationResponse validateHeightInput(Object input) {
+    public ValidationResponse validateHeightInput(String input) {
         return validateInput(input, "height");
     }
 
-    public ValidationResponse validateResolutionInput(Object input) {
+    public ValidationResponse validateResolutionInput(String input) {
         return validateInput(input, "resolution");
     }
 
-    public ValidationResponse validatePrefixInput(Object input) {
+    public ValidationResponse validatePrefixInput(String input) {
         return validateInput(input, "prefix");
     }
 
-    public ValidationResponse validateBaseNameInput(Object input) {
+    public ValidationResponse validateBaseNameInput(String input) {
         return validateInput(input, "baseName");
     }
 
-    public ValidationResponse validateSuffixInput(Object input) {
+    public ValidationResponse validateSuffixInput(String input) {
         return validateInput(input, "suffix");
     }
 
-    public ValidationResponse validateFormatInput(Object input) {
+    public ValidationResponse validateFormatInput(String input) {
         return validateInput(input, "format");
     }
 
@@ -124,11 +124,12 @@ public class TemplateFormValidatorService {
      *         the message corresponding to the failed constraint error message,
      *         otherwise isSuccess will be true and message is null
      */
-    public ValidationResponse validateInput(Object input, String inputConstraintKey) {
+    public ValidationResponse validateInput(String input, String inputConstraintKey) {
         try {
             InputConstraint[] inputConstraints = this.formConstraints.get(inputConstraintKey);
             for (InputConstraint inputConstraint : inputConstraints) {
-                ValidationResponse inputContraintResponse = this.validatorService.isConstraintValidated(input, inputConstraint);
+                ValidationResponse inputContraintResponse = this.validatorService.isConstraintValidated(input,
+                        inputConstraint);
                 if (!inputContraintResponse.getIsSuccess()) {
                     return inputContraintResponse;
                 }
@@ -180,6 +181,11 @@ public class TemplateFormValidatorService {
                 this.isWidthRequired,
                 "The width is required"));
         templateWidthConstraints.add(new InputConstraint(
+                "widthMustBeInteger",
+                ConstraintType.IS_INTEGER_STRING,
+                true,
+                "The width must be a valid integer"));
+        templateWidthConstraints.add(new InputConstraint(
                 "minimumWidth",
                 ConstraintType.GREATER_THAN,
                 this.minWidth,
@@ -199,6 +205,11 @@ public class TemplateFormValidatorService {
                 ConstraintType.REQUIRED,
                 this.isResolutionRequired,
                 "The height is required"));
+        templateHeightConstraints.add(new InputConstraint(
+                "heightMustBeInteger",
+                ConstraintType.IS_INTEGER_STRING,
+                true,
+                "The height must be a valid integer"));
         templateHeightConstraints.add(new InputConstraint(
                 "minimumHeight",
                 ConstraintType.GREATER_THAN,

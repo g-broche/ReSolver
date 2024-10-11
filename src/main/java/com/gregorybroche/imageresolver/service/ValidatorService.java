@@ -89,35 +89,35 @@ public class ValidatorService {
      * @return ValidationReponse instance with a success state, possible data object
      *         array, and possible error message
      */
-    public ValidationResponse isConstraintValidated(Object input, InputConstraint inputConstraint) throws Exception {
+    public ValidationResponse isConstraintValidated(String input, InputConstraint inputConstraint) throws Exception {
         boolean isConstraintValid = false;
         switch (inputConstraint.getConstraintType()) {
             case REQUIRED:
                 isConstraintValid = (Boolean) inputConstraint.getValue() ? isNotEmpty(input) : true;
                 break;
 
+            case IS_INTEGER_STRING:
+                isConstraintValid = input == null || isStringValidInteger(input.toString());
+                break;
+
             case GREATER_THAN:
-                System.out.println("greater than case");
-                isConstraintValid = isGreaterThan(input, (Integer) inputConstraint.getValue());
+                isConstraintValid = input == null || isGreaterThan(sanitizeStringAsInteger(input), (Integer) inputConstraint.getValue());
                 break;
 
             case LESS_THAN:
-                System.out.println("less than case");
-                isConstraintValid = isLessThan(input, (Integer) inputConstraint.getValue());
+                isConstraintValid = input == null || isLessThan(sanitizeStringAsInteger(input), (Integer) inputConstraint.getValue());
                 break;
 
             case LONGER_THAN:
-                System.out.println("longer than case");
-                isConstraintValid = isLongerThan(input, (Integer) inputConstraint.getValue());
+                isConstraintValid = input == null || isLongerThan(input, (Integer) inputConstraint.getValue());
                 break;
 
             case SHORTER_THAN:
-                System.out.println("shorter than case");
-                isConstraintValid = isShorterThan(input, (Integer) inputConstraint.getValue());
+                isConstraintValid = input == null || isShorterThan(input, (Integer) inputConstraint.getValue());
                 break;
 
             case INCLUDED_IN:
-                isConstraintValid = isIncludedIn(input, (Object[]) inputConstraint.getValue());
+                isConstraintValid = input == null || isIncludedIn(input, (Object[]) inputConstraint.getValue());
                 break;
 
             default:

@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.gregorybroche.imageresolver.classes.ImageTemplate;
 import com.gregorybroche.imageresolver.classes.ValidationResponse;
 import com.gregorybroche.imageresolver.service.TemplateFormValidatorService;
 import com.gregorybroche.imageresolver.service.ValidatorService;
@@ -33,7 +34,7 @@ public class TemplateFormController {
     }
 
     public interface TemplateFormSubmitListener {
-        void onFormSubmit();
+        void onFormSubmit(ImageTemplate submittedTemplate);
     }
 
     @FXML
@@ -154,7 +155,7 @@ public class TemplateFormController {
 
     @FXML
     void validateWidthChange() {
-        Integer input = validatorService.sanitizeStringAsInteger(inputWidth.getText());
+        String input = validatorService.sanitizeString(inputWidth.getText());
         ValidationResponse validationState = templateFormValidatorService.validateWidthInput(input);
         if (!validationState.getIsSuccess()) {
             showInputError(inputWidthError, validationState.getMessage());
@@ -167,7 +168,7 @@ public class TemplateFormController {
 
     @FXML
     void validateHeightChange() {
-        Integer input = validatorService.sanitizeStringAsInteger(inputHeight.getText());
+        String input = validatorService.sanitizeString(inputHeight.getText());
         ValidationResponse validationState = templateFormValidatorService.validateHeightInput(input);
         if (!validationState.getIsSuccess()) {
             showInputError(inputHeightError, validationState.getMessage());
@@ -180,7 +181,7 @@ public class TemplateFormController {
 
     @FXML
     void validateResolutionChange() {
-        Integer input = validatorService.sanitizeStringAsInteger(inputResolution.getText());
+        String input = validatorService.sanitizeString(inputResolution.getText());
         ValidationResponse validationState = templateFormValidatorService.validateResolutionInput(input);
         if (!validationState.getIsSuccess()) {
             showInputError(inputResolutionError, validationState.getMessage());
