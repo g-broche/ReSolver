@@ -24,6 +24,8 @@ public class ValidatorServiceTest {
     private final List<String> testAllowedImageMimeTypes = Arrays.asList("image/jpeg", "image/png", "image/bmp", "image/webp", "image/avif");
     ValidatorService validatorService;
     ImageEditorService imageEditorService;
+    UserDialogService userDialogService;
+    TemplateFormValidatorService templateSubmitterService;
     BufferedImage testImageBufferedContent;
 
     @TempDir
@@ -32,8 +34,9 @@ public class ValidatorServiceTest {
     @BeforeEach
     void setUp(){
         validatorService = new ValidatorService(); 
-        UserDialogService userDialogService = new UserDialogService(validatorService);
+        userDialogService = new UserDialogService(validatorService);
         imageEditorService = new ImageEditorService(validatorService, userDialogService);
+        templateSubmitterService = new TemplateFormValidatorService(this.validatorService, userDialogService);
         ReflectionTestUtils.setField(validatorService, "allowedImageMimeTypes", testAllowedImageMimeTypes);
         ReflectionTestUtils.setField(validatorService, "allowedImageFormats", testAllowedImageFormats);
     }
@@ -419,14 +422,12 @@ public class ValidatorServiceTest {
     @Test
     void isIncludedIn_valueIsNotInArrayUsingRealConstraint_ShouldReturnFalse() {
         String value = "tiff";
-        TemplateFormValidatorService templateSubmitterService = new TemplateFormValidatorService(this.validatorService);
         assertFalse(validatorService.isIncludedIn(value, templateSubmitterService.getAllowedFormats()));
     }
 
     @Test
     void isIncludedIn_valueIsInArrayUsingRealConstraint_ShouldReturnTrue() {
         String value = "webp";
-        TemplateFormValidatorService templateSubmitterService = new TemplateFormValidatorService(validatorService);
         assertTrue(validatorService.isIncludedIn(value, templateSubmitterService.getAllowedFormats()));
     }
 
@@ -434,31 +435,41 @@ public class ValidatorServiceTest {
 
     @Test
     void isConstraintValidated_constraintIsNotValidated_ShouldReturnValidationResponseFalseNullErrorMessage() {
-        int value = 479;
-        InputConstraint testConstraint = new InputConstraint(
-            "testConstraint",
-            ConstraintType.GREATER_THAN,
-            480,
-            "test has failed"
-            );
-        ValidationResponse testResult = validatorService.isConstraintValidated(value, testConstraint);
-        assertFalse(testResult.getIsSuccess());
-        assertNull(testResult.getData());
-        assertEquals(testResult.getMessage(), "test has failed");
+        try {
+            int value = 479;
+            InputConstraint testConstraint = new InputConstraint(
+                "testConstraint",
+                ConstraintType.GREATER_THAN,
+                480,
+                "test has failed"
+                );
+            ValidationResponse testResult = validatorService.isConstraintValidated(value, testConstraint);
+            assertFalse(testResult.getIsSuccess());
+            assertNull(testResult.getData());
+            assertEquals(testResult.getMessage(), "test has failed");
+        } catch (Exception e) {
+            fail();
+        }
+
     }
 
     @Test
     void isConstraintValidated_constraintIsValidated_ShouldReturnValidationResponseTrueNullNull() {
-        int value = 480;
-        InputConstraint testConstraint = new InputConstraint(
-            "testConstraint",
-            ConstraintType.GREATER_THAN,
-            480,
-            "test has passed"
-            );
-        ValidationResponse testResult = validatorService.isConstraintValidated(value, testConstraint);
-        assertTrue(testResult.getIsSuccess());
-        assertNull(testResult.getData());
-        assertNull(testResult.getMessage());
+        try {
+            int value = 480;
+            InputConstraint testConstraint = new InputConstraint(
+                "testConstraint",
+                ConstraintType.GREATER_THAN,
+                480,
+                "test has passed"
+                );
+            ValidationResponse testResult = validatorService.isConstraintValidated(value, testConstraint);
+            assertTrue(testResult.getIsSuccess());
+            assertNull(testResult.getData());
+            assertNull(testResult.getMessage());
+        } catch (Exception e) {
+            fail();
+        }
+
     }
 }

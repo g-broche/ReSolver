@@ -81,31 +81,38 @@ public class ValidatorService {
 
     /**
      * Validates if an input complies with a constraint
-     * @param input Input to validate, accepts Object to cover all case
-     * @param constraintValue Value of the constraint, accepts Object to cover all case
-     * @param constraintType Type of the constraint based on an enum
-     * @return ValidationReponse instance with a success state, possible data object array, and possible error message
+     * 
+     * @param input           Input to validate, accepts Object to cover all case
+     * @param constraintValue Value of the constraint, accepts Object to cover all
+     *                        case
+     * @param constraintType  Type of the constraint based on an enum
+     * @return ValidationReponse instance with a success state, possible data object
+     *         array, and possible error message
      */
-    public ValidationResponse isConstraintValidated(Object input, InputConstraint inputConstraint) {
+    public ValidationResponse isConstraintValidated(Object input, InputConstraint inputConstraint) throws Exception {
         boolean isConstraintValid = false;
         switch (inputConstraint.getConstraintType()) {
             case REQUIRED:
-                isConstraintValid = isNotEmpty(input);
+                isConstraintValid = (Boolean) inputConstraint.getValue() ? isNotEmpty(input) : true;
                 break;
 
             case GREATER_THAN:
+                System.out.println("greater than case");
                 isConstraintValid = isGreaterThan(input, (Integer) inputConstraint.getValue());
                 break;
 
             case LESS_THAN:
+                System.out.println("less than case");
                 isConstraintValid = isLessThan(input, (Integer) inputConstraint.getValue());
                 break;
 
             case LONGER_THAN:
+                System.out.println("longer than case");
                 isConstraintValid = isLongerThan(input, (Integer) inputConstraint.getValue());
                 break;
 
             case SHORTER_THAN:
+                System.out.println("shorter than case");
                 isConstraintValid = isShorterThan(input, (Integer) inputConstraint.getValue());
                 break;
 
@@ -117,18 +124,20 @@ public class ValidatorService {
                 break;
         }
         return isConstraintValid
-            ? new ValidationResponse(true, null, null)
-            : new ValidationResponse(false, null, inputConstraint.getErrorMessage());
+                ? new ValidationResponse(true, null, null)
+                : new ValidationResponse(false, null, inputConstraint.getErrorMessage());
     }
 
     /**
      * Sanitize and parses a string as an integer
+     * 
      * @param string String to parse
-     * @return null if string is not valid or its corresponding parseInt value if valid
+     * @return null if string is not valid or its corresponding parseInt value if
+     *         valid
      */
-    public Integer sanitizeStringAsInteger(String string){
+    public Integer sanitizeStringAsInteger(String string) {
         string = sanitizeString(string);
-        if(!isStringValidInteger(string)){
+        if (!isStringValidInteger(string)) {
             return null;
         }
         return Integer.parseInt(string);
@@ -136,11 +145,13 @@ public class ValidatorService {
 
     /**
      * sanitize a string
+     * 
      * @param string String to sanitize
-     * @return sanitized string value if string is valid, otherwise null (null or empty string input)
+     * @return sanitized string value if string is valid, otherwise null (null or
+     *         empty string input)
      */
-    public String sanitizeString(String string){
-        if(string == null){
+    public String sanitizeString(String string) {
+        if (string == null) {
             return null;
         }
         string = string.trim();
@@ -149,20 +160,25 @@ public class ValidatorService {
 
     /**
      * Checks if an input is one allowed for string comparisons (string & integer)
+     * 
      * @param input
      * @return True if validated
      */
     public boolean isValueStringCompatible(Object input) {
+        if(input == null){return false;}
         return (input instanceof Integer) || (input instanceof String);
     }
 
     /**
      * Checks if a String is a valid Integer format
+     * 
      * @param input
      * @return True if valid
      */
     public boolean isStringValidInteger(String string) {
-        if(string == null || string.isEmpty()){return false;}
+        if (string == null || string.isEmpty()) {
+            return false;
+        }
         try {
             Integer.parseInt(string);
             return true;
@@ -173,6 +189,7 @@ public class ValidatorService {
 
     /**
      * Validates if an input is not considered empty (null & empty string)
+     * 
      * @param input
      * @return True if input is not empty
      */
@@ -182,6 +199,7 @@ public class ValidatorService {
 
     /**
      * Validates if an input has a greater numerical value than the minimum allowed
+     * 
      * @param input
      * @return True if input is greater than the minimum
      */
@@ -194,6 +212,7 @@ public class ValidatorService {
 
     /**
      * Validates if an input has a lower numerical value than the maximum allowed
+     * 
      * @param input
      * @return True if input is lower than the minimum
      */
@@ -206,6 +225,7 @@ public class ValidatorService {
 
     /**
      * Validates if an input has more characters than the minimum allowed
+     * 
      * @param input
      * @return True if input is longer than the minimum
      */
@@ -218,6 +238,7 @@ public class ValidatorService {
 
     /**
      * Validates if an input has less characters than the maximum allowed
+     * 
      * @param input
      * @return True if input is short than the maximum
      */
@@ -230,12 +251,13 @@ public class ValidatorService {
 
     /**
      * Validates if an input is equal to an object contained in an array
-     * @param input Object to evaluate
+     * 
+     * @param input         Object to evaluate
      * @param allowedValues haystack
      * @return true if object is found in collection
      */
     public boolean isIncludedIn(Object input, Object[] allowedValues) {
-        if(input == null){
+        if (input == null) {
             return false;
         }
         for (Object allowedValue : allowedValues) {

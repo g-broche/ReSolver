@@ -19,7 +19,8 @@ public class TemplateFormValidatorServiceTest {
     @BeforeEach
     void setUp(){
         ValidatorService validatorService = new ValidatorService();
-        templateSubmitterService = new TemplateFormValidatorService(validatorService);
+        UserDialogService userDialogService = new UserDialogService(validatorService);
+        templateSubmitterService = new TemplateFormValidatorService(validatorService, userDialogService);
     }
 
     @Test

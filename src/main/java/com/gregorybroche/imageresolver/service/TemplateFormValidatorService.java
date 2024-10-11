@@ -15,6 +15,7 @@ import com.gregorybroche.imageresolver.classes.ValidationResponse;
 @Service
 public class TemplateFormValidatorService {
     private ValidatorService validatorService;
+    private UserDialogService userDialogService;
 
     private boolean isTemplateNameRequired = true;
     private int minLengthTemplateName = 1;
@@ -49,8 +50,9 @@ public class TemplateFormValidatorService {
 
     private final Map<String, InputConstraint[]> formConstraints = new HashMap<String, InputConstraint[]>();
 
-    public TemplateFormValidatorService(ValidatorService validatorService) {
+    public TemplateFormValidatorService(ValidatorService validatorService, UserDialogService userDialogService) {
         this.validatorService = validatorService;
+        this.userDialogService = userDialogService;
         Set<String> allowedFormatsSet = validatorService.getAllowedImageFormatsAsExtension();
         this.allowedFormats = allowedFormatsSet.toArray(new String[allowedFormatsSet.size()]);
         setAllConstraints();
@@ -78,33 +80,36 @@ public class TemplateFormValidatorService {
         addInputConstraints("format", generateFormatConstraints());
     }
 
-    public ValidationResponse validateTemplateNameInput(Object input){
-        return validateInput(input,"templateName" );
-    }
-    public ValidationResponse validateWidthInput(Object input){
-        return validateInput(input,"width" );
-    }
-    public ValidationResponse validateHeightInput(Object input){
-        return validateInput(input,"height" );
-    }
-    public ValidationResponse validateResolutionInput(Object input){
-        return validateInput(input,"resolution" );
+    public ValidationResponse validateTemplateNameInput(Object input) {
+        return validateInput(input, "templateName");
     }
 
-    public ValidationResponse validatePrefixInput(Object input){
-        return validateInput(input,"prefix" );
+    public ValidationResponse validateWidthInput(Object input) {
+        return validateInput(input, "width");
     }
 
-    public ValidationResponse validateBaseNameInput(Object input){
-        return validateInput(input,"baseName" );
+    public ValidationResponse validateHeightInput(Object input) {
+        return validateInput(input, "height");
     }
 
-    public ValidationResponse validateSuffixInput(Object input){
-        return validateInput(input,"suffix" );
+    public ValidationResponse validateResolutionInput(Object input) {
+        return validateInput(input, "resolution");
     }
 
-    public ValidationResponse validateFormat(Object input){
-        return validateInput(input,"format");
+    public ValidationResponse validatePrefixInput(Object input) {
+        return validateInput(input, "prefix");
+    }
+
+    public ValidationResponse validateBaseNameInput(Object input) {
+        return validateInput(input, "baseName");
+    }
+
+    public ValidationResponse validateSuffixInput(Object input) {
+        return validateInput(input, "suffix");
+    }
+
+    public ValidationResponse validateFormatInput(Object input) {
+        return validateInput(input, "format");
     }
 
     /**
@@ -120,13 +125,18 @@ public class TemplateFormValidatorService {
      *         otherwise isSuccess will be true and message is null
      */
     public ValidationResponse validateInput(Object input, String inputConstraintKey) {
-        InputConstraint[] inputConstraints = this.formConstraints.get(inputConstraintKey);
-        for (InputConstraint inputConstraint : inputConstraints) {
-            ValidationResponse inputContraintResponse = this.validatorService.isConstraintValidated(input, inputConstraint);
-            if (!inputContraintResponse.getIsSuccess()) {
-                return inputContraintResponse;
+        try {
+            InputConstraint[] inputConstraints = this.formConstraints.get(inputConstraintKey);
+            for (InputConstraint inputConstraint : inputConstraints) {
+                ValidationResponse inputContraintResponse = this.validatorService.isConstraintValidated(input, inputConstraint);
+                if (!inputContraintResponse.getIsSuccess()) {
+                    return inputContraintResponse;
+                }
             }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
+
         return new ValidationResponse(true, null, null);
     }
 
@@ -236,7 +246,7 @@ public class TemplateFormValidatorService {
                 "The prefix must be longer than " + this.minLengthImagePrefix + " characters"));
         templateImagePrefixConstraints.add(new InputConstraint(
                 "maximumPrefixLength",
-                ConstraintType.LESS_THAN,
+                ConstraintType.SHORTER_THAN,
                 this.maxLengthImagePrefix,
                 "The prefix must be shorter than " + this.minLengthImagePrefix + " characters"));
         return templateImagePrefixConstraints
@@ -258,7 +268,7 @@ public class TemplateFormValidatorService {
                         + " characters"));
         templateImageBaseNameConstraints.add(new InputConstraint(
                 "maximumPrefixLength",
-                ConstraintType.LESS_THAN,
+                ConstraintType.SHORTER_THAN,
                 this.maxLengthImageBaseName,
                 "The image base name must be shorter than " + this.maxLengthImageBaseName
                         + " characters"));
@@ -280,7 +290,7 @@ public class TemplateFormValidatorService {
                 "The suffix must be longer than " + this.minLengthImageSuffix + " characters"));
         templateImageSuffixConstraints.add(new InputConstraint(
                 "maximumSuffixLength",
-                ConstraintType.LESS_THAN,
+                ConstraintType.SHORTER_THAN,
                 this.maxLengthImageSuffix,
                 "The suffix must be shorter than " + this.minLengthImageSuffix + " characters"));
         return templateImageSuffixConstraints
