@@ -17,6 +17,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 
 @Component
 public class TemplateFormController {
@@ -97,8 +98,9 @@ public class TemplateFormController {
     @FXML
     public void initialize() {
         initializeInputValidationMap();
-        selectFormat.getItems().addAll("png", "jpg", "bmp", "gif");
-        selectFormat.setValue("png");
+        String[] allowedOutputFormats = templateFormValidatorService.getAllowedFormats();
+        selectFormat.getItems().addAll(allowedOutputFormats);
+        selectFormat.setValue(allowedOutputFormats[0]);
     }
 
     @FXML
@@ -235,10 +237,22 @@ public class TemplateFormController {
                 format);
 
             this.submitListener.onFormSubmit(templateToAdd);
+            closeModal();
+            
         } catch (Exception e) {
             System.err.println("handle submit - catch");
             System.err.println(e.getMessage());
         }
+    }
+
+    @FXML
+    private void cancelForm(){
+        closeModal();
+    }
+
+    private void closeModal(){
+        Stage modalStage = (Stage) buttonSave.getScene().getWindow();
+        modalStage.close();
     }
 
     public void showInputError(Text textElement, String text) {

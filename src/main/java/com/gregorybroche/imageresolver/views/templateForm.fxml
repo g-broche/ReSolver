@@ -54,7 +54,7 @@
             <Pane layoutX="15.0" layoutY="345.0" prefHeight="50.0" prefWidth="470.0">
                <children>
                   <Button fx:id="buttonSave" layoutX="355.0" layoutY="13.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="75.0" text="Save" onAction="#handleSubmit" disable="true" />
-                  <Button fx:id="buttonCancel" layoutX="255.0" layoutY="13.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="75.0" text="Cancel" />
+                  <Button fx:id="buttonCancel" layoutX="255.0" layoutY="13.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="75.0" text="Cancel" onAction="#cancelForm" />
                </children>
             </Pane>
          </children>
