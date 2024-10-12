@@ -34,7 +34,7 @@ public class TemplateFormController {
     }
 
     public interface TemplateFormSubmitListener {
-        void onFormSubmit(String submittedTemplate);
+        void onFormSubmit(ImageTemplate imageTemplate);
     }
 
     @FXML
@@ -195,7 +195,6 @@ public class TemplateFormController {
     @FXML
     private void validateFormatChange() {
         String input = validatorService.sanitizeString(selectFormat.getValue());
-        System.out.println(input);
         ValidationResponse validationState = templateFormValidatorService.validateFormatInput(input);
         if (!validationState.getIsSuccess()) {
             showInputError(selectFormatError, validationState.getMessage());
@@ -217,16 +216,25 @@ public class TemplateFormController {
         }
         try {
             String templateName = validatorService.sanitizeString(inputTemplateName.getText());
-            // ImageTemplate templateToAdd = new ImageTemplate(
-            //     null,
-            //     0,
-            //     0,
-            //     null,
-            //     null,
-            //     null,
-            //     null,
-            //     null);
-            this.submitListener.onFormSubmit(templateName);
+            String baseName = validatorService.sanitizeString(inputFileBaseName.getText());
+            String prefix = validatorService.sanitizeString(inputFilePrefix.getText());
+            String suffix = validatorService.sanitizeString(inputFileSuffix.getText());
+            int width = validatorService.sanitizeStringAsInteger(inputWidth.getText());
+            int height = validatorService.sanitizeStringAsInteger(inputHeight.getText());
+            int resolution = validatorService.sanitizeStringAsInteger(inputResolution.getText());
+            String format = validatorService.sanitizeString(selectFormat.getValue());
+
+            ImageTemplate templateToAdd = new ImageTemplate(
+                templateName,
+                width,
+                height,
+                resolution,
+                prefix,
+                baseName,
+                suffix,
+                format);
+
+            this.submitListener.onFormSubmit(templateToAdd);
         } catch (Exception e) {
             System.err.println("handle submit - catch");
             System.err.println(e.getMessage());

@@ -107,8 +107,8 @@ public class MainController {
             Parent root = loader.load();
 
             TemplateFormController templateFormController = loader.getController();
-            templateFormController.setFormSubmitListener(test -> {
-                handleSubmittedNewTemplate(test);
+            templateFormController.setFormSubmitListener(newTemplate -> {
+                addSubmittedTemplateToPreset(newTemplate);
             }
             );
 
@@ -159,7 +159,7 @@ public class MainController {
         return new ImageTemplate(null, 600, 400, null, null, null, null, "jpg");
     }
 
-    private void handleSubmittedNewTemplate(String test) {
-        System.out.println("submitted template : "+test);
+    private void addSubmittedTemplateToPreset(ImageTemplate template) {
+        System.out.println("submitted template : "+template.getTemplateName());
     }
 }
