@@ -177,7 +177,7 @@ public class MainController {
     private void addSubmittedTemplateToPreset(ImageTemplate template) {
         System.out.println("submitted template : "+template.getTemplateName());
         presetManagementService.addTemplateToPreset(template, Selectedpreset);
-        System.out.println("template was added; preset '"+presetManagementService.getPresetByKey(Selectedpreset).getName()+
-        "' -> template '"+presetManagementService.getPresetByKey(Selectedpreset).getTemplates().get(0).getTemplateName()+"'");
+        System.out.println("template was added; preset '"+presetManagementService.getPresetFromKey(Selectedpreset).getName()+
+        "' -> template '"+presetManagementService.getPresetFromKey(Selectedpreset).getTemplates().get(0).getTemplateName()+"'");
     }
 }
