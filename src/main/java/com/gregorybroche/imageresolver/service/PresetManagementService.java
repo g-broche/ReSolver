@@ -35,13 +35,24 @@ public class PresetManagementService {
     public Map<String, Preset> getPresets() {
         return presets;
     }
+
     public Preset getPresetFromKey(String key) {
         return presets.get(key);
     }
+
+    /**
+     * add a template to one of the loaded presets using its name key for reference
+     * @param template template to add
+     * @param presetKey name of the preset to which template must be added
+     * @return true if operation is successfull, otherwise false
+     */
     public boolean addTemplateToPreset(ImageTemplate template, String presetKey) {
         try {
-            presets.get(presetKey).addTemplate(template);
-            return true;
+            Preset presetToModify = presets.get(presetKey);
+            if (presetToModify.isTemplateNameAlreadyPresent(template.getTemplateName())) {
+                return false;
+            }
+            return presetToModify.addTemplate(template);
         } catch (Exception e) {
             return false;
         }

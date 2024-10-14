@@ -15,6 +15,7 @@ public class Preset {
     public void setName(String presetName) {
         this.name = presetName.length() > 0 ? presetName : "unnamed preset";
     }
+
     public String getName() {
         return this.name;
     }
@@ -22,14 +23,27 @@ public class Preset {
     public void setTemplates(List<ImageTemplate> templates) {
         this.templates = templates;
     }
+
     public List<ImageTemplate> getTemplates() {
         return this.templates;
     }
 
+    public boolean isTemplateNameAlreadyPresent(String name) {
+        for (ImageTemplate template : templates) {
+            if (template.getTemplateName().equals(name)){
+                return true;
+            }
+        }
+        return false;
+    }
+
     public boolean addTemplate(ImageTemplate imageTemplate){
         try {
+            if(isTemplateNameAlreadyPresent(imageTemplate.getTemplateName())){
+                return false;
+            }
             this.templates.add(imageTemplate);
-            return true;
+            return this.templates.getLast().getTemplateName().equals(imageTemplate.getTemplateName());
         } catch (Exception e) {
             return false;
         }

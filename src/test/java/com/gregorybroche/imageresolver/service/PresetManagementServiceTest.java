@@ -1,6 +1,7 @@
 package com.gregorybroche.imageresolver.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -112,6 +113,57 @@ public class PresetManagementServiceTest {
             assertEquals(nameFirstTemplateOfSecondSetPreset, templateTest3.getTemplateName());
             assertEquals(nameSecondTemplateOfSecondSetPreset, templateTest4.getTemplateName());
 
+        } catch (Exception e) {
+            fail();
+        }
+    }
+
+    @Test
+    void addTemplateToPreset_addingValidTemplate_shouldReturnTrue(){
+        try {
+            List<Preset> presetList = new ArrayList<Preset>();
+            List<ImageTemplate> presetTestContent = new ArrayList<ImageTemplate>();
+            Preset preset = new Preset("presetTest", presetTestContent);
+            presetList.add(preset);
+            presetManagementService.setPresets(presetList);
+        
+            boolean result = presetManagementService.addTemplateToPreset(templateTest1, "presetTest");
+            assertTrue(result);
+        } catch (Exception e) {
+            fail();
+        }
+    }
+
+    @Test
+    void addTemplateToPreset_addingNull_shouldReturnFalse(){
+        try {
+            List<Preset> presetList = new ArrayList<Preset>();
+            List<ImageTemplate> presetTestContent = new ArrayList<ImageTemplate>();
+            Preset preset = new Preset("presetTest", presetTestContent);
+            presetList.add(preset);
+            presetManagementService.setPresets(presetList);
+        
+            boolean result = presetManagementService.addTemplateToPreset(null, "presetTest");
+            assertFalse(result);
+        } catch (Exception e) {
+            fail();
+        }
+    }
+
+    @Test
+    void addTemplateToPreset_addingTemplateWithNameCollision_shouldReturnFalse(){
+        try {
+            List<Preset> presetList = new ArrayList<Preset>();
+            List<ImageTemplate> presetTestContent = new ArrayList<ImageTemplate>();
+            Preset preset = new Preset("presetTest", presetTestContent);
+            presetList.add(preset);
+            presetManagementService.setPresets(presetList);
+        
+            boolean resultFirstAddition = presetManagementService.addTemplateToPreset(templateTest1, "presetTest");
+            assertTrue(resultFirstAddition);
+
+            boolean resultCollision = presetManagementService.addTemplateToPreset(templateTest1, "presetTest");
+            assertFalse(resultCollision);
         } catch (Exception e) {
             fail();
         }
