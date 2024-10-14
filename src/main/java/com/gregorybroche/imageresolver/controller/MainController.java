@@ -4,13 +4,19 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
+import com.gregorybroche.imageresolver.classes.Preset;
 import com.gregorybroche.imageresolver.classes.ImageTemplate;
 import com.gregorybroche.imageresolver.service.FileHandlerService;
 import com.gregorybroche.imageresolver.service.ImageEditorService;
+import com.gregorybroche.imageresolver.service.PresetManagementService;
 import com.gregorybroche.imageresolver.service.ResolverProcessorService;
 import com.gregorybroche.imageresolver.service.UserDialogService;
 import com.gregorybroche.imageresolver.service.ValidatorService;
@@ -36,7 +42,9 @@ public class MainController {
     private ValidatorService validatorService;
     private ImageEditorService imageEditorService;
     private ResolverProcessorService resolverProcessorService;
+    PresetManagementService presetManagementService;
     private File imageToResolve = null;
+    private String Selectedpreset = "test";
 
     public MainController(
             ApplicationContext applicationContext,
@@ -44,7 +52,8 @@ public class MainController {
             FileHandlerService fileHandlerService,
             ValidatorService validatorService,
             ImageEditorService imageEditorService,
-            ResolverProcessorService resolverProcessorService
+            ResolverProcessorService resolverProcessorService,
+            PresetManagementService presetManagementService
             ) {
         this.applicationContext = applicationContext;
         this.userDialogService = userDialogService;
@@ -52,6 +61,7 @@ public class MainController {
         this.validatorService = validatorService;
         this.imageEditorService = imageEditorService;
         this.resolverProcessorService = resolverProcessorService;
+        this.presetManagementService = presetManagementService;
     }
 
     @FXML
@@ -70,16 +80,21 @@ public class MainController {
     private VBox templateContainer;
 
     @FXML
+    public void initialize() {
+        presetManagementService.loadPresets();
+    }
+
+    @FXML
     void selectImage(MouseEvent event) {
         try {
             File selectedFile = userDialogService.selectImageFile();
             if (!validatorService.isFileValidImageFormat(selectedFile)) {
-                this.userDialogService.showInvalidSelectedFileFormatError();
+                userDialogService.showInvalidSelectedFileFormatError();
                 return;
             }
-            this.imageToResolve = fileHandlerService.saveFileToTemp(selectedFile).toFile();
+            imageToResolve = fileHandlerService.saveFileToTemp(selectedFile).toFile();
             Image previewImage = getImageFromFilePath(imageToResolve.toPath());
-            this.displaySelectedImagePreview(previewImage);
+            displaySelectedImagePreview(previewImage);
         } catch (Exception e) {
             userDialogService.showErrorMessage("failed to select image", e.getMessage());
             throw new RuntimeException(e);
@@ -156,10 +171,13 @@ public class MainController {
     // Proof of concept testing until proper definition of templates through user
     // inputs
     private ImageTemplate getTemplateParameters() {
-        return new ImageTemplate(null, 600, 400, null, null, null, null, "jpg");
+        return new ImageTemplate("testTemplate", 600, 400, 96, null, "testImage", null, "jpg");
     }
 
     private void addSubmittedTemplateToPreset(ImageTemplate template) {
         System.out.println("submitted template : "+template.getTemplateName());
+        presetManagementService.addTemplateToPreset(template, Selectedpreset);
+        System.out.println("template was added; preset '"+presetManagementService.getPresetByKey(Selectedpreset).getName()+
+        "' -> template '"+presetManagementService.getPresetByKey(Selectedpreset).getTemplates().get(0).getTemplateName()+"'");
     }
 }

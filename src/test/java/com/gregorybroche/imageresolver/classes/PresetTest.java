@@ -2,6 +2,8 @@ package com.gregorybroche.imageresolver.classes;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.ArrayList;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -46,7 +48,7 @@ public class PresetTest {
 
     @Test
     void testAddTemplate_addingOneTemplate_ShouldHaveOneElementInList() {
-        Preset testPreset = new Preset("testPreset");
+        Preset testPreset = new Preset("testPreset", new ArrayList<ImageTemplate>());
         testPreset.addTemplate(template1);
         assertTrue(testPreset.getTemplates().size() == 1, "Should have one element");
         assertTrue(testPreset.getTemplates().get(0).getTemplateName().equals("template1"), "Should retrieve name of added template");
