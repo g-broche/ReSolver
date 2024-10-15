@@ -42,7 +42,7 @@ public class TemplateFormValidatorService {
     private int maxLengthImageSuffix = 16;
 
     private boolean isImageBaseNameRequired = true;
-    private int minLengthImageBaseName = 5;
+    private int minLengthImageBaseName = 3;
     private int maxLengthImageBaseName = 50;
 
     private boolean isFormatRequired = true;

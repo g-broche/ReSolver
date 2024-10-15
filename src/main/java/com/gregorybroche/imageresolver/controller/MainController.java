@@ -5,14 +5,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
-import com.gregorybroche.imageresolver.classes.Preset;
 import com.gregorybroche.imageresolver.classes.ImageTemplate;
 import com.gregorybroche.imageresolver.service.FileHandlerService;
 import com.gregorybroche.imageresolver.service.ImageEditorService;
@@ -21,6 +18,7 @@ import com.gregorybroche.imageresolver.service.ResolverProcessorService;
 import com.gregorybroche.imageresolver.service.UserDialogService;
 import com.gregorybroche.imageresolver.service.ValidatorService;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -29,7 +27,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -85,7 +83,7 @@ public class MainController {
     }
 
     @FXML
-    void selectImage(MouseEvent event) {
+    void selectImage() {
         try {
             File selectedFile = userDialogService.selectImageFile();
             if (!validatorService.isFileValidImageFormat(selectedFile)) {
@@ -102,7 +100,7 @@ public class MainController {
     }
 
     @FXML
-    void resolveImage(MouseEvent event) {
+    void resolveImage() {
         try {
             BufferedImage sourceBufferedImage = imageEditorService.getImageContentFromFile(imageToResolve);
             ImageTemplate template = getTemplateParameters();
@@ -115,7 +113,7 @@ public class MainController {
     }
 
     @FXML
-    void openTemplateForm(MouseEvent event) {
+    void openTemplateForm(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("../views/templateForm.fxml"));
             loader.setControllerFactory(applicationContext::getBean);
@@ -174,10 +172,24 @@ public class MainController {
         return new ImageTemplate("testTemplate", 600, 400, 96, null, "testImage", null, "jpg");
     }
 
+    /**
+     * adds a template to currently managed preset and refresh the template list display
+     * @param template display to add
+     */
     private void addSubmittedTemplateToPreset(ImageTemplate template) {
-        System.out.println("submitted template : "+template.getTemplateName());
         presetManagementService.addTemplateToPreset(template, Selectedpreset);
-        System.out.println("template was added; preset '"+presetManagementService.getPresetFromKey(Selectedpreset).getName()+
-        "' -> template '"+presetManagementService.getPresetFromKey(Selectedpreset).getTemplates().get(0).getTemplateName()+"'");
+        displayLoadedTemplates();
+    }
+
+    /**
+     * display templates belonging to the current preset in the dedicated component list
+     */
+    private void displayLoadedTemplates(){
+        List<ImageTemplate> templates = presetManagementService.getPresetFromKey(Selectedpreset).getTemplates();
+        List<HBox> templateComponents = new ArrayList<HBox>();
+        for (int i = 0; i < templates.size(); i++) {
+            templateComponents.add(templates.get(i).createTemplateComponent(i)) ;
+        }
+        templateContainer.getChildren().setAll(templateComponents);
     }
 }

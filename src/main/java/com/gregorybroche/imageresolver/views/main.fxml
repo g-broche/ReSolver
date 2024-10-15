@@ -21,8 +21,8 @@
                   </Pane>
                </children>
             </Pane>
-            <Button id="imageSelectorButton" fx:id="imageSelectorButton" layoutX="333.0" layoutY="515.0" mnemonicParsing="false" onMouseClicked="#selectImage" text="Select Image" />
-            <Button id="imageResolverButton" fx:id="imageResolverButton" layoutX="678.0" layoutY="515.0" mnemonicParsing="false" onMouseClicked="#resolveImage" text="Resolve" />
+            <Button id="imageSelectorButton" fx:id="imageSelectorButton" layoutX="333.0" layoutY="515.0" mnemonicParsing="false" onAction="#selectImage" text="Select Image" />
+            <Button id="imageResolverButton" fx:id="imageResolverButton" layoutX="678.0" layoutY="515.0" mnemonicParsing="false" onAction="#resolveImage" text="Resolve" />
          </children>
       </Pane>
       <Pane id="controlWrapper" layoutX="770.0" layoutY="50.0" prefHeight="615.0" prefWidth="300.0">
@@ -36,7 +36,7 @@
                         <VBox fx:id="templateContainer" spacing="10.0" />
                      </content>
                   </ScrollPane>
-                  <Button fx:id="createTemplateButton" layoutX="234.0" layoutY="10.0" mnemonicParsing="false" onMouseClicked="#openTemplateForm" style="-fx-background-color: #5BB2E2;" text="Add" />
+                  <Button fx:id="createTemplateButton" layoutX="234.0" layoutY="10.0" mnemonicParsing="false" onAction="#openTemplateForm" style="-fx-background-color: #5BB2E2;" text="Add" />
                </children>
             </Pane>
          </children>

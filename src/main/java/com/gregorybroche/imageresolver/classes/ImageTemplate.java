@@ -99,7 +99,7 @@ public class ImageTemplate {
      * Creates and returns the FXML component view with data corresponding to this instance of ImageTemplate
      * @return
      */
-    public HBox createTemplatePane(Integer indexInPreset) {
+    public HBox createTemplateComponent(Integer indexInPreset) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("../views/templateComponent.fxml"));
             HBox templatePane = loader.load();

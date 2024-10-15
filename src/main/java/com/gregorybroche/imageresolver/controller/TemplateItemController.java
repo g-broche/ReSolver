@@ -12,10 +12,11 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.MouseEvent;
 
 @Component
 public class TemplateItemController {
+    private int indexInTemplateList;
+
     @FXML
     private Label templateName;
 
@@ -59,23 +60,26 @@ public class TemplateItemController {
     @FXML
     /**
      * placeholder for editing this template
-     * @param event
      */
-    void editTemplate(MouseEvent event) {
-        System.out.println("implement edit window action");
+    void editTemplate() {
+        System.out.println("implement edit window action on "+indexInTemplateList);
     }
 
     @FXML
     /**
      * placeholder for deleting this template
-     * @param event
      */
-    void deleteTemplate(MouseEvent event) {
-        System.out.println("implement delete action");
+    void deleteTemplate() {
+        System.out.println("implement delete action on "+indexInTemplateList);
     }
 
-    // Method to set the data in the HBox
-    public void setTemplateData(ImageTemplate imageTemplate, Integer indexInPreset) {
+    /**
+     * sets this template data using a template instance and an index
+     * @param imageTemplate
+     * @param indexInPreset index of the template inside a preset's template list
+     */
+    public void setTemplateData(ImageTemplate imageTemplate, int indexInPreset) {
+        indexInTemplateList = indexInPreset;
         setLabels(imageTemplate);
         setFileNamingConvention(imageTemplate);
         setSizeInfo(imageTemplate);

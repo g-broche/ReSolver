@@ -53,6 +53,18 @@ public class PresetTest {
         assertTrue(testPreset.getTemplates().size() == 1, "Should have one element");
         assertTrue(testPreset.getTemplates().get(0).getTemplateName().equals("template1"), "Should retrieve name of added template");
     }
+    @Test
+
+    void testAddTemplate_addingThreeSuccessiveTemplate_ShouldHaveThreeElementsInList() {
+        Preset testPreset = new Preset("testPreset", new ArrayList<ImageTemplate>());
+        testPreset.addTemplate(template1);
+        testPreset.addTemplate(template2);
+        testPreset.addTemplate(template3);
+        assertTrue(testPreset.getTemplates().size() == 3, "Should have one element");
+        assertTrue(testPreset.getTemplates().get(0).getTemplateName().equals("template1"), "Should retrieve name of first added template");
+        assertTrue(testPreset.getTemplates().get(1).getTemplateName().equals("template2"), "Should retrieve name of second added template");
+        assertTrue(testPreset.getTemplates().get(2).getTemplateName().equals("template3"), "Should retrieve name of third added template");
+    }
 
     
 }
