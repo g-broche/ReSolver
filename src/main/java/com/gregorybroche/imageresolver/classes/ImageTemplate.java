@@ -1,7 +1,6 @@
 package com.gregorybroche.imageresolver.classes;
 
 import java.io.IOException;
-
 import com.gregorybroche.imageresolver.controller.TemplateItemController;
 
 import javafx.fxml.FXMLLoader;
@@ -16,9 +15,28 @@ public class ImageTemplate {
     private String newImageBaseName = "test_editing";
     private String newImageSuffix = "-post";
     private String format = "jpg";
+    private int defaultResolution = 90;
+
+    public ImageTemplate(String templateName,
+                        int width,
+                        int height,
+                        Integer resolution,
+                        String newImagePrefix,
+                        String newImageBaseName,
+                        String newImageSuffix,
+                        String format){
+        setTemplateName(templateName);
+        setWidth(width);
+        setHeight(height);
+        setResolution(resolution);
+        setNewImagePrefix(newImagePrefix);
+        setNewImageBaseName(newImageBaseName);
+        setNewImageSuffix(newImageSuffix);
+        setFormat(format);
+    }
 
     public void setTemplateName(String templateName) {
-        this.templateName = templateName;
+        this.templateName = templateName.length() > 0 ? templateName : "unnamed template";
     }
     public String getTemplateName() {
         return this.templateName;
@@ -38,15 +56,15 @@ public class ImageTemplate {
         return this.width;
     }
 
-    public void setResolution(int resolution) {
-        this.resolution = resolution;
+    public void setResolution(Integer resolution) {
+        this.resolution = resolution != null ? resolution : this.defaultResolution;
     }
     public int getResolution() {
         return this.resolution;
     }
 
     public void setNewImagePrefix(String prefix) {
-        this.newImagePrefix = prefix;
+        this.newImagePrefix = prefix == null || prefix.length() == 0 ? "" : prefix;
     }
     public String getNewImagePrefix() {
         return this.newImagePrefix;
@@ -60,7 +78,7 @@ public class ImageTemplate {
     }
 
     public void setNewImageSuffix(String suffix) {
-        this.newImageSuffix = suffix;
+        this.newImageSuffix = suffix == null || suffix.length() == 0 ? "" : suffix;
     }
     public String getNewImageSuffix() {
         return this.newImageSuffix;
@@ -81,7 +99,7 @@ public class ImageTemplate {
      * Creates and returns the FXML component view with data corresponding to this instance of ImageTemplate
      * @return
      */
-    public HBox createTemplatePane(Integer indexInPreset) {
+    public HBox createTemplateComponent(Integer indexInPreset) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("../views/templateComponent.fxml"));
             HBox templatePane = loader.load();

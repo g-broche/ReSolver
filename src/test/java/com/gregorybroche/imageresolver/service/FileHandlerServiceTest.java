@@ -72,7 +72,6 @@ public class FileHandlerServiceTest {
         ReflectionTestUtils.setField(fileHandlerService, "appTempDirectoryPath", testTempDirectory);
 
         testImageBufferedContent = imageEditorService.createTestImageContent();
-
     }
 
     void tearDownTestFolder(Path TestFolderToDestroy) {
