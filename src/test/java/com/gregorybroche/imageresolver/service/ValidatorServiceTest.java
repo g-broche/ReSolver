@@ -25,7 +25,7 @@ public class ValidatorServiceTest {
     ValidatorService validatorService;
     ImageEditorService imageEditorService;
     UserDialogService userDialogService;
-    TemplateFormValidatorService templateSubmitterService;
+    TemplateFormService templateFormService;
     BufferedImage testImageBufferedContent;
 
     @TempDir
@@ -36,7 +36,7 @@ public class ValidatorServiceTest {
         validatorService = new ValidatorService(); 
         userDialogService = new UserDialogService(validatorService);
         imageEditorService = new ImageEditorService(validatorService, userDialogService);
-        templateSubmitterService = new TemplateFormValidatorService(this.validatorService, userDialogService);
+        templateFormService = new TemplateFormService(null, this.validatorService, userDialogService);
         ReflectionTestUtils.setField(validatorService, "allowedImageMimeTypes", testAllowedImageMimeTypes);
         ReflectionTestUtils.setField(validatorService, "allowedImageFormats", testAllowedImageFormats);
     }
@@ -422,13 +422,13 @@ public class ValidatorServiceTest {
     @Test
     void isIncludedIn_valueIsNotInArrayUsingRealConstraint_ShouldReturnFalse() {
         String value = "tiff";
-        assertFalse(validatorService.isIncludedIn(value, templateSubmitterService.getAllowedFormats()));
+        assertFalse(validatorService.isIncludedIn(value, templateFormService.getAllowedFormats()));
     }
 
     @Test
     void isIncludedIn_valueIsInArrayUsingRealConstraint_ShouldReturnTrue() {
         String value = "webp";
-        assertTrue(validatorService.isIncludedIn(value, templateSubmitterService.getAllowedFormats()));
+        assertTrue(validatorService.isIncludedIn(value, templateFormService.getAllowedFormats()));
     }
 
     /* ***** isConstraintValidated ***** */

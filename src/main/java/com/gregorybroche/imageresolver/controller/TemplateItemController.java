@@ -56,13 +56,11 @@ public class TemplateItemController {
     @FXML
     private Button templateDeleteButton;
 
-
     @FXML
     /**
      * placeholder for editing this template
      */
-    void editTemplate() {
-        System.out.println("implement edit window action on "+indexInTemplateList);
+    void openEditTemplateModal() {
     }
 
     @FXML
@@ -70,11 +68,12 @@ public class TemplateItemController {
      * placeholder for deleting this template
      */
     void deleteTemplate() {
-        System.out.println("implement delete action on "+indexInTemplateList);
+        System.out.println("implement delete action on " + indexInTemplateList);
     }
 
     /**
      * sets this template data using a template instance and an index
+     * 
      * @param imageTemplate
      * @param indexInPreset index of the template inside a preset's template list
      */
@@ -86,7 +85,8 @@ public class TemplateItemController {
     }
 
     private void setLabels(ImageTemplate imageTemplate) {
-        templateName.setText(imageTemplate.getTemplateName().length() > 0 ? imageTemplate.getTemplateName() : "unnamed");
+        templateName
+                .setText(imageTemplate.getTemplateName().length() > 0 ? imageTemplate.getTemplateName() : "unnamed");
     }
 
     private void setFileNamingConvention(ImageTemplate imageTemplate) {

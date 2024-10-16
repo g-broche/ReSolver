@@ -15,9 +15,9 @@
          <children>
             <Pane layoutX="15.0" layoutY="14.0" prefHeight="65.0" prefWidth="471.0">
                <children>
+                  <Text fx:id="templateFormTitleText" layoutX="138.0" layoutY="20.0" text="ADD TEMPLATE" />
                   <TextField fx:id="inputTemplateName" layoutX="250.0" layoutY="3.0" onKeyTyped="#validateTemplateNameChange" />
-                  <Label fx:id="templateFormTitleLabel" layoutX="140.0" layoutY="8.0" text="ADD TEMPLATE" />
-                  <Text fx:id="inputTemplateNameError" fill="#cd2828" layoutX="164.0" layoutY="46.0" strokeType="OUTSIDE" strokeWidth="0.0" visible="false" text="" />
+                  <Text fx:id="inputTemplateNameError" fill="#cd2828" layoutX="164.0" layoutY="46.0" strokeType="OUTSIDE" strokeWidth="0.0" text="" visible="false" />
                </children>
             </Pane>
             <Pane layoutX="15.0" layoutY="80.0" prefHeight="105.0" prefWidth="470.0">
@@ -28,9 +28,9 @@
                   <TextField fx:id="inputFileBaseName" layoutX="46.0" layoutY="8.0" onKeyTyped="#validateImageBaseNameChange" />
                   <TextField fx:id="inputFilePrefix" layoutX="46.0" layoutY="41.0" onKeyTyped="#validateImagePrefixChange" />
                   <TextField fx:id="inputFileSuffix" layoutX="46.0" layoutY="73.0" onKeyTyped="#validateImageSuffixChange" />
-                  <Text fx:id="inputFileBaseNameError" fill="#cd2828" layoutX="211.0" layoutY="25.0" strokeType="OUTSIDE" strokeWidth="0.0" visible="false" text="" />
-                  <Text fx:id="inputFilePrefixError" fill="#cd2828" layoutX="211.0" layoutY="60.0" strokeType="OUTSIDE" strokeWidth="0.0" visible="false" text="" />
-                  <Text fx:id="inputFileSuffixError" fill="#cd2828" layoutX="211.0" layoutY="90.0" strokeType="OUTSIDE" strokeWidth="0.0" visible="false" text="" />
+                  <Text fx:id="inputFileBaseNameError" fill="#cd2828" layoutX="211.0" layoutY="25.0" strokeType="OUTSIDE" strokeWidth="0.0" text="" visible="false" />
+                  <Text fx:id="inputFilePrefixError" fill="#cd2828" layoutX="211.0" layoutY="60.0" strokeType="OUTSIDE" strokeWidth="0.0" text="" visible="false" />
+                  <Text fx:id="inputFileSuffixError" fill="#cd2828" layoutX="211.0" layoutY="90.0" strokeType="OUTSIDE" strokeWidth="0.0" text="" visible="false" />
                </children>
             </Pane>
             <Pane layoutX="15.0" layoutY="185.0" prefHeight="160.0" prefWidth="470.0">
@@ -43,18 +43,18 @@
                   <Label layoutX="-1.0" layoutY="133.0" text="Res" />
                   <TextField fx:id="inputResolution" layoutX="45.0" layoutY="129.0" onKeyTyped="#validateResolutionChange" prefHeight="25.0" prefWidth="101.0" />
                   <Label layoutY="100.0" text="Format" />
-                  <ChoiceBox fx:id="selectFormat" layoutX="45.0" layoutY="96.0" prefWidth="150.0" onAction="#validateFormatChange"/>
+                  <ChoiceBox fx:id="selectFormat" layoutX="45.0" layoutY="96.0" onAction="#validateFormatChange" prefWidth="150.0" />
                   <Label layoutX="146.0" layoutY="133.0" text="px/inc" />
-                  <Text fx:id="inputWidthError" fill="#cd2828" layoutX="210.0" layoutY="49.0" strokeType="OUTSIDE" strokeWidth="0.0" visible="false" text="" />
-                  <Text fx:id="inputHeightError" fill="#cd2828" layoutX="210.0" layoutY="80.0" strokeType="OUTSIDE" strokeWidth="0.0" visible="false" text="" />
-                  <Text fx:id="selectFormatError" fill="#cd2828" layoutX="210.0" layoutY="113.0" strokeType="OUTSIDE" strokeWidth="0.0" visible="false" text="" />
-                  <Text fx:id="inputResolutionError" fill="#cd2828" layoutX="210.0" layoutY="146.0" strokeType="OUTSIDE" strokeWidth="0.0" visible="false" text="" />
+                  <Text fx:id="inputWidthError" fill="#cd2828" layoutX="210.0" layoutY="49.0" strokeType="OUTSIDE" strokeWidth="0.0" text="" visible="false" />
+                  <Text fx:id="inputHeightError" fill="#cd2828" layoutX="210.0" layoutY="80.0" strokeType="OUTSIDE" strokeWidth="0.0" text="" visible="false" />
+                  <Text fx:id="selectFormatError" fill="#cd2828" layoutX="210.0" layoutY="113.0" strokeType="OUTSIDE" strokeWidth="0.0" text="" visible="false" />
+                  <Text fx:id="inputResolutionError" fill="#cd2828" layoutX="210.0" layoutY="146.0" strokeType="OUTSIDE" strokeWidth="0.0" text="" visible="false" />
                </children>
             </Pane>
             <Pane layoutX="15.0" layoutY="345.0" prefHeight="50.0" prefWidth="470.0">
                <children>
-                  <Button fx:id="buttonSave" layoutX="355.0" layoutY="13.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="75.0" text="Save" onAction="#handleSubmit" disable="true" />
-                  <Button fx:id="buttonCancel" layoutX="255.0" layoutY="13.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="75.0" text="Cancel" onAction="#cancelForm" />
+                  <Button fx:id="buttonSave" disable="true" layoutX="355.0" layoutY="13.0" mnemonicParsing="false" onAction="#handleSubmit" prefHeight="25.0" prefWidth="75.0" text="Save" />
+                  <Button fx:id="buttonCancel" layoutX="255.0" layoutY="13.0" mnemonicParsing="false" onAction="#cancelForm" prefHeight="25.0" prefWidth="75.0" text="Cancel" />
                </children>
             </Pane>
          </children>

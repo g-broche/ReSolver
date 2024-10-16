@@ -1,19 +1,30 @@
 package com.gregorybroche.imageresolver.service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
 import com.gregorybroche.imageresolver.Enums.ConstraintType;
 import com.gregorybroche.imageresolver.classes.InputConstraint;
 import com.gregorybroche.imageresolver.classes.ValidationResponse;
+import com.gregorybroche.imageresolver.controller.TemplateFormController;
+import com.gregorybroche.imageresolver.interfaces.TemplateFormSubmitListener;
+
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 @Service
-public class TemplateFormValidatorService {
+public class TemplateFormService {
+    private ApplicationContext applicationContext;
     private ValidatorService validatorService;
     private UserDialogService userDialogService;
 
@@ -50,7 +61,8 @@ public class TemplateFormValidatorService {
 
     private final Map<String, InputConstraint[]> formConstraints = new HashMap<String, InputConstraint[]>();
 
-    public TemplateFormValidatorService(ValidatorService validatorService, UserDialogService userDialogService) {
+    public TemplateFormService(ApplicationContext applicationContext, ValidatorService validatorService, UserDialogService userDialogService) {
+        this.applicationContext = applicationContext;
         this.validatorService = validatorService;
         this.userDialogService = userDialogService;
         Set<String> allowedFormatsSet = validatorService.getAllowedImageFormatsAsExtension();
@@ -89,6 +101,34 @@ public class TemplateFormValidatorService {
     }
     public boolean isFormatRequired(){
         return this.isFormatRequired;
+    }
+
+    /**
+     * Method responsible for creating the stage of the modal window for adding a new template
+     * @param callBackAction action to trigger on form submission based on defined interface
+     * @return stage of the modal window
+     * @throws IOException
+     */
+    public Stage createAddTemplateForm(TemplateFormSubmitListener callBackAction) throws IOException{
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("../views/templateForm.fxml"));
+            loader.setControllerFactory(applicationContext::getBean);
+            Parent root = loader.load();
+
+            TemplateFormController templateFormController = loader.getController();
+            templateFormController.setFormSubmitListener(newTemplate -> {
+                callBackAction.onFormSubmit(newTemplate);
+            }
+            );
+
+            Stage stage = new Stage();
+            stage.setTitle("Add Template Form");
+
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+
+            stage.initModality(Modality.WINDOW_MODAL);
+
+            return stage;
     }
 
     /**

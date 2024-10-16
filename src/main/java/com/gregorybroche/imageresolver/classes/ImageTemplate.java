@@ -17,14 +17,16 @@ public class ImageTemplate {
     private String format = "jpg";
     private int defaultResolution = 90;
 
-    public ImageTemplate(String templateName,
-                        int width,
-                        int height,
-                        Integer resolution,
-                        String newImagePrefix,
-                        String newImageBaseName,
-                        String newImageSuffix,
-                        String format){
+    public ImageTemplate(
+        String templateName,
+        int width,
+        int height,
+        Integer resolution,
+        String newImagePrefix,
+        String newImageBaseName,
+        String newImageSuffix,
+        String format
+        ){
         setTemplateName(templateName);
         setWidth(width);
         setHeight(height);

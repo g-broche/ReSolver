@@ -8,7 +8,8 @@ import org.springframework.stereotype.Component;
 
 import com.gregorybroche.imageresolver.classes.ImageTemplate;
 import com.gregorybroche.imageresolver.classes.ValidationResponse;
-import com.gregorybroche.imageresolver.service.TemplateFormValidatorService;
+import com.gregorybroche.imageresolver.interfaces.TemplateFormSubmitListener;
+import com.gregorybroche.imageresolver.service.TemplateFormService;
 import com.gregorybroche.imageresolver.service.ValidatorService;
 
 import javafx.fxml.FXML;
@@ -23,9 +24,10 @@ import javafx.stage.Stage;
 public class TemplateFormController {
     private TemplateFormSubmitListener submitListener;
     private Map<String, Boolean> inputValidationMap = new HashMap<String, Boolean>();
+    private Integer indexOfTemplateToEdit = null;
 
     @Autowired
-    private TemplateFormValidatorService templateFormValidatorService;
+    private TemplateFormService templateFormValidatorService;
 
     @Autowired
     private ValidatorService validatorService;
@@ -34,9 +36,8 @@ public class TemplateFormController {
         this.submitListener = listener;
     }
 
-    public interface TemplateFormSubmitListener {
-        void onFormSubmit(ImageTemplate imageTemplate);
-    }
+    @FXML
+    Text templateFormTitleText;
 
     @FXML
     TextField inputTemplateName;
@@ -96,9 +97,13 @@ public class TemplateFormController {
     Button buttonSave;
 
     @FXML
-    public void initialize() {
+    private void initialize() {
         initializeInputValidationMap();
         String[] allowedOutputFormats = templateFormValidatorService.getAllowedFormats();
+        if(indexOfTemplateToEdit != null && indexOfTemplateToEdit < 0){
+            indexOfTemplateToEdit = null;
+        }
+        templateFormTitleText.setText(indexOfTemplateToEdit == null ? "ADD TEMPLATE" : "EDIT TEMPLATE");
         selectFormat.getItems().addAll(allowedOutputFormats);
         selectFormat.setValue(allowedOutputFormats[0]);
     }
@@ -255,17 +260,17 @@ public class TemplateFormController {
         modalStage.close();
     }
 
-    public void showInputError(Text textElement, String text) {
+    private void showInputError(Text textElement, String text) {
         textElement.setText(text);
         textElement.setVisible(true);
     }
 
-    public void hideInputError(Text textElement) {
+    private void hideInputError(Text textElement) {
         textElement.setVisible(false);
         textElement.setText("");
     }
 
-    public void initializeInputValidationMap() {
+    private void initializeInputValidationMap() {
         setInputValidationForTemplateName(!templateFormValidatorService.isTemplateNameRequired());
         setInputValidationForBaseName(!templateFormValidatorService.isImageBaseNameRequired());
         setInputValidationForPrefix(!templateFormValidatorService.isImagePrefixRequired());
@@ -276,11 +281,11 @@ public class TemplateFormController {
         setInputValidationForFormat(!templateFormValidatorService.isFormatRequired());
     }
 
-    public void toggleSaveButton(boolean mustEnableButton) {
+    private void toggleSaveButton(boolean mustEnableButton) {
         buttonSave.setDisable(!mustEnableButton);
     }
 
-    public boolean areInputsValid() {
+    private boolean areInputsValid() {
         return (inputValidationMap.get("templateName")
         && inputValidationMap.get("baseName")
         && inputValidationMap.get("prefix")
@@ -292,35 +297,35 @@ public class TemplateFormController {
         );
     }
 
-    public void setInputValidationForTemplateName(boolean isInputValid) {
+    private void setInputValidationForTemplateName(boolean isInputValid) {
         inputValidationMap.put("templateName", isInputValid);
     }
 
-    public void setInputValidationForBaseName(boolean isInputValid) {
+    private void setInputValidationForBaseName(boolean isInputValid) {
         inputValidationMap.put("baseName", isInputValid);
     }
 
-    public void setInputValidationForPrefix(boolean isInputValid) {
+    private void setInputValidationForPrefix(boolean isInputValid) {
         inputValidationMap.put("prefix", isInputValid);
     }
 
-    public void setInputValidationForSuffix(boolean isInputValid) {
+    private void setInputValidationForSuffix(boolean isInputValid) {
         inputValidationMap.put("suffix", isInputValid);
     }
 
-    public void setInputValidationForWidth(boolean isInputValid) {
+    private void setInputValidationForWidth(boolean isInputValid) {
         inputValidationMap.put("width", isInputValid);
     }
 
-    public void setInputValidationForHeight(boolean isInputValid) {
+    private void setInputValidationForHeight(boolean isInputValid) {
         inputValidationMap.put("height", isInputValid);
     }
 
-    public void setInputValidationForResolution(boolean isInputValid) {
+    private void setInputValidationForResolution(boolean isInputValid) {
         inputValidationMap.put("resolution", isInputValid);
     }
 
-    public void setInputValidationForFormat(boolean isInputValid) {
+    private void setInputValidationForFormat(boolean isInputValid) {
         inputValidationMap.put("format", isInputValid);
     }
 }
