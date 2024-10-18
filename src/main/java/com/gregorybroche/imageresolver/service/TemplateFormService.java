@@ -11,10 +11,12 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
 import com.gregorybroche.imageresolver.Enums.ConstraintType;
+import com.gregorybroche.imageresolver.classes.ImageTemplate;
 import com.gregorybroche.imageresolver.classes.InputConstraint;
 import com.gregorybroche.imageresolver.classes.ValidationResponse;
 import com.gregorybroche.imageresolver.controller.TemplateFormController;
-import com.gregorybroche.imageresolver.interfaces.TemplateFormSubmitListener;
+import com.gregorybroche.imageresolver.interfaces.TemplateAddFormSubmitListener;
+import com.gregorybroche.imageresolver.interfaces.TemplateEditFormSubmitListener;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -61,7 +63,11 @@ public class TemplateFormService {
 
     private final Map<String, InputConstraint[]> formConstraints = new HashMap<String, InputConstraint[]>();
 
-    public TemplateFormService(ApplicationContext applicationContext, ValidatorService validatorService, UserDialogService userDialogService) {
+    public TemplateFormService(
+            ApplicationContext applicationContext,
+            ValidatorService validatorService,
+            UserDialogService userDialogService
+            ) {
         this.applicationContext = applicationContext;
         this.validatorService = validatorService;
         this.userDialogService = userDialogService;
@@ -109,19 +115,48 @@ public class TemplateFormService {
      * @return stage of the modal window
      * @throws IOException
      */
-    public Stage createAddTemplateForm(TemplateFormSubmitListener callBackAction) throws IOException{
+    public Stage createTemplateForm(TemplateAddFormSubmitListener callBackAction) throws IOException{
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("../views/templateForm.fxml"));
+        loader.setControllerFactory(applicationContext::getBean);
+            Parent root = loader.load();
+
+            TemplateFormController templateFormController = loader.getController();
+            templateFormController.setAddFormSubmitListener(submittedTemplate -> {
+                callBackAction.onFormSubmit(submittedTemplate);
+            });
+
+            Stage stage = new Stage();
+            stage.setTitle("Add Template Form");
+
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+
+            stage.initModality(Modality.WINDOW_MODAL);
+
+            return stage;
+    }
+
+    /**
+     * Method responsible for creating the stage of the modal window for editing an existing template
+     * @param templateToEdit action to trigger on form submission based on defined interface
+     * @param indexOfTemplate index of template based on the preset it belongs to
+     * @param callBackAction action to trigger on form submission based on defined interface
+     * @return stage of the modal window
+     * @throws IOException
+     */
+    public Stage createTemplateForm(ImageTemplate templateToEdit, int indexOfTemplate, TemplateEditFormSubmitListener callBackAction) throws IOException{
             FXMLLoader loader = new FXMLLoader(getClass().getResource("../views/templateForm.fxml"));
             loader.setControllerFactory(applicationContext::getBean);
             Parent root = loader.load();
 
             TemplateFormController templateFormController = loader.getController();
-            templateFormController.setFormSubmitListener(newTemplate -> {
-                callBackAction.onFormSubmit(newTemplate);
-            }
+            templateFormController.setTemplateToEdit(templateToEdit, indexOfTemplate);
+            templateFormController.setEditFormSubmitListener( (submittedTemplate, templateIndex) -> {
+                callBackAction.onFormSubmit(submittedTemplate, templateIndex);}
             );
 
             Stage stage = new Stage();
-            stage.setTitle("Add Template Form");
+            stage.setTitle("Edit Template "+templateToEdit.getTemplateName());
 
             Scene scene = new Scene(root);
             stage.setScene(scene);

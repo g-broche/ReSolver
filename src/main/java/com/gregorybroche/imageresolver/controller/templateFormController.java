@@ -3,12 +3,15 @@ package com.gregorybroche.imageresolver.controller;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.management.RuntimeErrorException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.gregorybroche.imageresolver.classes.ImageTemplate;
 import com.gregorybroche.imageresolver.classes.ValidationResponse;
-import com.gregorybroche.imageresolver.interfaces.TemplateFormSubmitListener;
+import com.gregorybroche.imageresolver.interfaces.TemplateAddFormSubmitListener;
+import com.gregorybroche.imageresolver.interfaces.TemplateEditFormSubmitListener;
 import com.gregorybroche.imageresolver.service.TemplateFormService;
 import com.gregorybroche.imageresolver.service.ValidatorService;
 
@@ -22,10 +25,11 @@ import javafx.stage.Stage;
 
 @Component
 public class TemplateFormController {
-    private TemplateFormSubmitListener submitListener;
+    private TemplateAddFormSubmitListener submitAddListener = null;
+    private TemplateEditFormSubmitListener submitEditListener = null;
     private Map<String, Boolean> inputValidationMap = new HashMap<String, Boolean>();
-    private Integer indexOfTemplateToEdit = null;
     private ImageTemplate templateToEdit = null;
+    private Integer indexOfTemplateToEdit = null;
 
     @Autowired
     private TemplateFormService templateFormValidatorService;
@@ -33,8 +37,11 @@ public class TemplateFormController {
     @Autowired
     private ValidatorService validatorService;
 
-    public void setFormSubmitListener(TemplateFormSubmitListener listener) {
-        this.submitListener = listener;
+    public void setAddFormSubmitListener(TemplateAddFormSubmitListener listener) {
+        this.submitAddListener = listener;
+    }
+    public void setEditFormSubmitListener(TemplateEditFormSubmitListener listener) {
+        this.submitEditListener = listener;
     }
 
     @FXML
@@ -101,10 +108,9 @@ public class TemplateFormController {
     private void initialize() {
         initializeInputValidationMap();
         templateFormTitleText.setText(templateToEdit == null ? "ADD TEMPLATE" : "EDIT TEMPLATE");
-        setFormatChoiceBox(templateToEdit);
-        if(templateToEdit != null){
-            setFieldsOnEditForm(templateToEdit);
-        }
+        String[] allowedOutputFormats = templateFormValidatorService.getAllowedFormats();
+        selectFormat.getItems().addAll(allowedOutputFormats);
+        selectFormat.setValue(allowedOutputFormats[0]);
     }
 
     @FXML
@@ -212,14 +218,16 @@ public class TemplateFormController {
     }
 
     @FXML
-    private void handleSubmit() {
+    private void handleSubmit() { 
+        if(this.submitAddListener == null && this.submitEditListener == null){
+            Exception noListenerError = new Exception("No listener set on template form");
+            throw new RuntimeException(noListenerError);
+        }
+
         if(!areInputsValid()){
             return;
         }
-        if(this.submitListener == null){
-            System.err.println("listener not set");
-            return;
-        }
+        System.out.println("<TEMPLATE FORM CONTROLLER> index on submit :"+indexOfTemplateToEdit);
         try {
             String templateName = validatorService.sanitizeString(inputTemplateName.getText());
             String baseName = validatorService.sanitizeString(inputFileBaseName.getText());
@@ -230,7 +238,7 @@ public class TemplateFormController {
             int resolution = validatorService.sanitizeStringAsInteger(inputResolution.getText());
             String format = validatorService.sanitizeString(selectFormat.getValue());
 
-            ImageTemplate templateToAdd = new ImageTemplate(
+            ImageTemplate submittedTemplate = new ImageTemplate(
                 templateName,
                 width,
                 height,
@@ -240,18 +248,44 @@ public class TemplateFormController {
                 suffix,
                 format);
 
-            this.submitListener.onFormSubmit(templateToAdd);
+            if(submitEditListener != null){
+                submitEditListener.onFormSubmit(submittedTemplate, indexOfTemplateToEdit);
+                closeModal();
+                return;
+            }
+            submitAddListener.onFormSubmit(submittedTemplate);
             closeModal();
+            return;
             
         } catch (Exception e) {
-            System.err.println("handle submit - catch");
-            System.err.println(e.getMessage());
+            throw new RuntimeException(e);
         }
     }
 
     @FXML
     private void cancelForm(){
         closeModal();
+    }
+
+    public void setTemplateToEdit(ImageTemplate templateToEdit, int indexToEdit){
+        System.out.println("<TEMPLATE FORM CONTROLLER> index on set Template to edit data :"+indexToEdit);
+        this.templateToEdit = templateToEdit;
+        this.indexOfTemplateToEdit = indexToEdit;
+        setFormatChoiceBox(templateToEdit);
+        setFieldsOnEditForm(templateToEdit);
+        validateAllInputs();
+
+    }
+
+    private void validateAllInputs(){
+        validateTemplateNameChange();
+        validateImageBaseNameChange();
+        validateImagePrefixChange();
+        validateImageSuffixChange();
+        validateWidthChange();
+        validateHeightChange();
+        validateResolutionChange();
+        validateFormatChange();
     }
 
     private void closeModal(){
@@ -352,7 +386,6 @@ public class TemplateFormController {
      */
     private void setFormatChoiceBox(ImageTemplate template){
         String[] allowedOutputFormats = templateFormValidatorService.getAllowedFormats();
-        selectFormat.getItems().addAll(allowedOutputFormats);
         String defaultSelectedValue = template != null && validatorService.isIncludedIn(template.getFormat(), allowedOutputFormats)
             ? template.getFormat()
             : allowedOutputFormats[0];

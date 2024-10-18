@@ -28,8 +28,61 @@ public class PresetManagementService {
     public List<Preset> getPresetsFromFile(){
         List<Preset> presetList = new ArrayList<Preset>();
         Preset testPreset = new Preset("test", new ArrayList<ImageTemplate>());
+        addTestTemplates(testPreset);
         presetList.add(testPreset);
         return presetList;
+    }
+
+    private void addTestTemplates(Preset preset){
+        ImageTemplate templateTest1 = new ImageTemplate(
+            "templateTest1",
+            1920,
+            1080,
+            96,
+            "XL",
+            "test-image",
+            null,
+            "jpg"
+        );
+    
+        ImageTemplate templateTest2 = new ImageTemplate(
+            "templateTest2",
+            1080,
+            720,
+            96,
+            "L",
+            "test-image",
+            null,
+            "jpg"
+        );
+    
+        ImageTemplate templateTest3 = new ImageTemplate(
+            "templateTest3",
+            720,
+            480,
+            96,
+            "M",
+            "test-image",
+            null,
+            "jpg"
+        );
+    
+        ImageTemplate templateTest4 = new ImageTemplate(
+            "templateTest4",
+            360,
+            240,
+            96,
+            "S",
+            "test-image",
+            null,
+            "jpg"
+        );
+
+        preset.addTemplate(templateTest1);
+        preset.addTemplate(templateTest2);
+        preset.addTemplate(templateTest3);
+        preset.addTemplate(templateTest4);
+        
     }
 
     public Map<String, Preset> getPresets() {
@@ -49,13 +102,18 @@ public class PresetManagementService {
     public boolean addTemplateToPreset(ImageTemplate template, String presetKey) {
         try {
             Preset presetToModify = presets.get(presetKey);
-            if (presetToModify.isTemplateNameAlreadyPresent(template.getTemplateName())) {
-                return false;
-            }
             return presetToModify.addTemplate(template);
         } catch (Exception e) {
             return false;
         }
-        
+    }
+
+    public boolean editTemplateOfPreset(ImageTemplate newTemplateData, int indexOfPresetToReplace, String presetKey){
+        try {
+            Preset presetToModify = presets.get(presetKey);
+            return presetToModify.editTemplate(newTemplateData, indexOfPresetToReplace);
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

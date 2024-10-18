@@ -1,7 +1,11 @@
 package com.gregorybroche.imageresolver.classes;
 
 import java.io.IOException;
+
+import org.springframework.context.ApplicationContext;
+
 import com.gregorybroche.imageresolver.controller.TemplateItemController;
+import com.gregorybroche.imageresolver.interfaces.TemplateEditFormSubmitListener;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.HBox;
@@ -101,18 +105,18 @@ public class ImageTemplate {
      * Creates and returns the FXML component view with data corresponding to this instance of ImageTemplate
      * @return
      */
-    public HBox createTemplateComponent(Integer indexInPreset) {
+    public HBox createTemplateComponent(Integer indexInPreset, ApplicationContext applicationContext, TemplateEditFormSubmitListener callbackOnEditAction){
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("../views/templateComponent.fxml"));
-            HBox templatePane = loader.load();
-
+            loader.setControllerFactory(applicationContext::getBean);
+            HBox templateHBox = loader.load();
             TemplateItemController controller = loader.getController();
-
             controller.setTemplateData(this, indexInPreset);
-
-            return templatePane;
+            controller.setEmitEditListener(callbackOnEditAction);
+            return templateHBox;
 
         } catch (IOException e) {
+            System.err.println(e.getMessage());
             e.printStackTrace();
             return null;
         }
