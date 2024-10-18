@@ -7,14 +7,14 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.HBox;
 
 public class ImageTemplate {
-    private String templateName = "PlaceHolder name";
-    private int width = 600;
-    private int height = 400;
-    private int resolution = 72;
-    private String newImagePrefix = "pre-";
-    private String newImageBaseName = "test_editing";
-    private String newImageSuffix = "-post";
-    private String format = "jpg";
+    private String templateName;
+    private int width;
+    private int height;
+    private int resolution;
+    private String newImagePrefix;
+    private String newImageBaseName;
+    private String newImageSuffix;
+    private String format;
     private int defaultResolution = 90;
 
     public ImageTemplate(

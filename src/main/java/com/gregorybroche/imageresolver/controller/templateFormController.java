@@ -25,6 +25,7 @@ public class TemplateFormController {
     private TemplateFormSubmitListener submitListener;
     private Map<String, Boolean> inputValidationMap = new HashMap<String, Boolean>();
     private Integer indexOfTemplateToEdit = null;
+    private ImageTemplate templateToEdit = null;
 
     @Autowired
     private TemplateFormService templateFormValidatorService;
@@ -99,13 +100,11 @@ public class TemplateFormController {
     @FXML
     private void initialize() {
         initializeInputValidationMap();
-        String[] allowedOutputFormats = templateFormValidatorService.getAllowedFormats();
-        if(indexOfTemplateToEdit != null && indexOfTemplateToEdit < 0){
-            indexOfTemplateToEdit = null;
+        templateFormTitleText.setText(templateToEdit == null ? "ADD TEMPLATE" : "EDIT TEMPLATE");
+        setFormatChoiceBox(templateToEdit);
+        if(templateToEdit != null){
+            setFieldsOnEditForm(templateToEdit);
         }
-        templateFormTitleText.setText(indexOfTemplateToEdit == null ? "ADD TEMPLATE" : "EDIT TEMPLATE");
-        selectFormat.getItems().addAll(allowedOutputFormats);
-        selectFormat.setValue(allowedOutputFormats[0]);
     }
 
     @FXML
@@ -327,5 +326,36 @@ public class TemplateFormController {
 
     private void setInputValidationForFormat(boolean isInputValid) {
         inputValidationMap.put("format", isInputValid);
+    }
+
+    private void setFieldsOnEditForm(ImageTemplate template){
+        setTextInputValue(inputTemplateName, template.getTemplateName());
+        setTextInputValue(inputFileBaseName, template.getNewImageBaseName());
+        setTextInputValue(inputFilePrefix, template.getNewImagePrefix());
+        setTextInputValue(inputFileSuffix, template.getNewImageSuffix());
+        setTextInputValue(inputWidth, String.valueOf(template.getWidth()));
+        setTextInputValue(inputHeight, String.valueOf(template.getHeight()));
+        setTextInputValue(inputResolution, String.valueOf(template.getResolution()));
+    }
+
+    private void setTextInputValue(TextField inputField, String value){
+        if(inputField == null || value == null){
+            return;
+        }
+        inputField.setText(value);
+    }
+
+    /**
+     * Fills the choice box for format using allowed formats defined in ValidatorService. Will initialize selected value to first format
+     * or if there is a template instance given will set the selected value to the template format.
+     * @param template
+     */
+    private void setFormatChoiceBox(ImageTemplate template){
+        String[] allowedOutputFormats = templateFormValidatorService.getAllowedFormats();
+        selectFormat.getItems().addAll(allowedOutputFormats);
+        String defaultSelectedValue = template != null && validatorService.isIncludedIn(template.getFormat(), allowedOutputFormats)
+            ? template.getFormat()
+            : allowedOutputFormats[0];
+        selectFormat.setValue(defaultSelectedValue);
     }
 }
