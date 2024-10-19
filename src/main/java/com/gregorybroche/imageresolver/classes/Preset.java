@@ -28,18 +28,27 @@ public class Preset {
         return this.templates;
     }
 
-    public boolean isTemplateNameAlreadyPresent(String name, Integer excludedIndex) {
+    /**
+     * checks if a name string already corresponds to an existing template name in the template list
+     * @param templateName string of the name to test
+     * @param excludedIndex use an index to ignore a specific template from the check, used in case of validating edit action with an unchanged
+     * template name
+     * @return true if a template matches the given string, otherwise false
+     */
+    public boolean isTemplateNameAlreadyPresent(String templateName, Integer excludedIndex) {
         for (int i = 0; i < templates.size(); i++) {
-            if (templates.get(i).getTemplateName().equals(name) && (excludedIndex==null || i != excludedIndex)){
+            if (templates.get(i).getTemplateName().equals(templateName) && (excludedIndex==null || i != excludedIndex)){
                 return true;
             }
-        }
-        for (ImageTemplate template : templates) {
-
         }
         return false;
     }
 
+    /**
+     * Adds a template to the list of templates
+     * @param imageTemplate
+     * @return true if adding was successful, otherwise false
+     */
     public boolean addTemplate(ImageTemplate imageTemplate){
         try {
             if(isTemplateNameAlreadyPresent(imageTemplate.getTemplateName(), null)){
@@ -52,12 +61,18 @@ public class Preset {
         }
     }
 
-    public boolean editTemplate(ImageTemplate newTemplateData, int indexOfPresetToReplace){
+    /**
+     * Edits a template using an other template's data
+     * @param newTemplateData
+     * @param indexOfTemplateToReplace index of template to edit in this preset's template list
+     * @return true if editing the template's properties was successful, otherwise false
+     */
+    public boolean editTemplate(ImageTemplate newTemplateData, int indexOfTemplateToReplace){
         try {
-            if(isTemplateNameAlreadyPresent(newTemplateData.getTemplateName(), indexOfPresetToReplace)){
+            if(isTemplateNameAlreadyPresent(newTemplateData.getTemplateName(), indexOfTemplateToReplace)){
                 return false;
             }
-            ImageTemplate templateToEdit = this.templates.get(indexOfPresetToReplace);
+            ImageTemplate templateToEdit = this.templates.get(indexOfTemplateToReplace);
 
             templateToEdit.setTemplateName(newTemplateData.getTemplateName());
             templateToEdit.setNewImageBaseName(newTemplateData.getNewImageBaseName());

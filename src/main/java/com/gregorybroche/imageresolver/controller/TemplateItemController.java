@@ -77,11 +77,11 @@ public class TemplateItemController {
 
     @FXML
     /**
-     * placeholder for opening the modal to edit this template
+     * opens a modal window to edit the template associated with this controller
+     * @param event
      */
     void openEditTemplateModal(ActionEvent event) {
         try {
-            System.out.println("<TEMPLATE ITEM CONTROLLER> index on open modal :"+this.templateIndex);
             Stage stage = templateFormService.createTemplateForm(
                 template,
                 templateIndex,
@@ -112,36 +112,18 @@ public class TemplateItemController {
     }
 
     /**
-     * sets this template data using a template instance and an index
+     * sets this controller's template data using a template instance and an index
      * 
      * @param imageTemplate
      * @param indexInPreset index of the template inside a preset's template list
      */
     public void setTemplateData(ImageTemplate imageTemplate, int indexInPreset) {
-        System.out.println("<TEMPLATE ITEM CONTROLLER> index on set template data :"+indexInPreset);
         this.templateIndex = indexInPreset;
         this.template = imageTemplate;
         setLabels(imageTemplate);
         setFileNamingConvention(imageTemplate);
         setSizeInfo(imageTemplate);
     }
-
-    // private void storeTemplate (ImageTemplate template){
-    //     templateDescriptors.getProperties().put("template", template);
-    // }
-
-    // private ImageTemplate retrieveTemplate(){
-    //     return (ImageTemplate) templateDescriptors.getProperties().get("template");
-    // }
-
-    // private void storeIndexOfTemplate (int index){
-    //     templateDescriptors.getProperties().put("templateIndex", index);
-    // }
-
-    // private int retrieveIndexOfTemplate(){
-    //     Integer index = (Integer) templateDescriptors.getProperties().get("templateIndex");
-    //     return index.intValue();
-    // }
 
     private void setLabels(ImageTemplate imageTemplate) {
         templateName.setText(imageTemplate.getTemplateName().length() > 0 ? imageTemplate.getTemplateName() : "unnamed");

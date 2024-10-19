@@ -3,8 +3,6 @@ package com.gregorybroche.imageresolver.controller;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.management.RuntimeErrorException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -218,6 +216,11 @@ public class TemplateFormController {
     }
 
     @FXML
+    /**
+     * On form submit will verify if a listener is defined as callback to handle the action and if the inputs are valid
+     * if these conditions are true, an ImageTemplate instance is created and passed to the listener that has been set
+     * for the submit action (either add or edit template)
+     */
     private void handleSubmit() { 
         if(this.submitAddListener == null && this.submitEditListener == null){
             Exception noListenerError = new Exception("No listener set on template form");
@@ -227,7 +230,6 @@ public class TemplateFormController {
         if(!areInputsValid()){
             return;
         }
-        System.out.println("<TEMPLATE FORM CONTROLLER> index on submit :"+indexOfTemplateToEdit);
         try {
             String templateName = validatorService.sanitizeString(inputTemplateName.getText());
             String baseName = validatorService.sanitizeString(inputFileBaseName.getText());
@@ -267,8 +269,12 @@ public class TemplateFormController {
         closeModal();
     }
 
+    /**
+     * set this controllers associated template and its index in case of editing form, also triggers auto filling of fields using the template's data
+     * @param templateToEdit
+     * @param indexToEdit
+     */
     public void setTemplateToEdit(ImageTemplate templateToEdit, int indexToEdit){
-        System.out.println("<TEMPLATE FORM CONTROLLER> index on set Template to edit data :"+indexToEdit);
         this.templateToEdit = templateToEdit;
         this.indexOfTemplateToEdit = indexToEdit;
         setFormatChoiceBox(templateToEdit);
@@ -303,6 +309,9 @@ public class TemplateFormController {
         textElement.setText("");
     }
 
+    /**
+     * sets the value of all input validation booleans to reflect if the associated values are required by defined template contraints
+     */
     private void initializeInputValidationMap() {
         setInputValidationForTemplateName(!templateFormValidatorService.isTemplateNameRequired());
         setInputValidationForBaseName(!templateFormValidatorService.isImageBaseNameRequired());
@@ -318,6 +327,10 @@ public class TemplateFormController {
         buttonSave.setDisable(!mustEnableButton);
     }
 
+    /**
+     * checks if the map of booleans corresponding to validation state of all inputs contains only true values
+     * @return
+     */
     private boolean areInputsValid() {
         return (inputValidationMap.get("templateName")
         && inputValidationMap.get("baseName")
@@ -362,6 +375,10 @@ public class TemplateFormController {
         inputValidationMap.put("format", isInputValid);
     }
 
+    /**
+     * fills all form fields using a template instance as data source, used for loading infos of a template to edit
+     * @param template
+     */
     private void setFieldsOnEditForm(ImageTemplate template){
         setTextInputValue(inputTemplateName, template.getTemplateName());
         setTextInputValue(inputFileBaseName, template.getNewImageBaseName());

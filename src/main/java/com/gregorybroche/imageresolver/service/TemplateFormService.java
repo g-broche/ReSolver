@@ -66,8 +66,7 @@ public class TemplateFormService {
     public TemplateFormService(
             ApplicationContext applicationContext,
             ValidatorService validatorService,
-            UserDialogService userDialogService
-            ) {
+            UserDialogService userDialogService) {
         this.applicationContext = applicationContext;
         this.validatorService = validatorService;
         this.userDialogService = userDialogService;
@@ -84,86 +83,101 @@ public class TemplateFormService {
         return this.allowedFormats;
     }
 
-    public boolean isTemplateNameRequired(){
+    public boolean isTemplateNameRequired() {
         return this.isTemplateNameRequired;
     }
-    public boolean isWidthRequired(){
+
+    public boolean isWidthRequired() {
         return this.isWidthRequired;
     }
-    public boolean isHeightRequired(){
+
+    public boolean isHeightRequired() {
         return this.isHeightRequired;
     }
-    public boolean isResolutionRequired(){
+
+    public boolean isResolutionRequired() {
         return this.isResolutionRequired;
     }
-    public boolean isImagePrefixRequired(){
+
+    public boolean isImagePrefixRequired() {
         return this.isImagePrefixRequired;
     }
-    public boolean isImageSuffixRequired(){
+
+    public boolean isImageSuffixRequired() {
         return this.isImageSuffixRequired;
     }
-    public boolean isImageBaseNameRequired(){
+
+    public boolean isImageBaseNameRequired() {
         return this.isImageBaseNameRequired;
     }
-    public boolean isFormatRequired(){
+
+    public boolean isFormatRequired() {
         return this.isFormatRequired;
     }
 
     /**
-     * Method responsible for creating the stage of the modal window for adding a new template
-     * @param callBackAction action to trigger on form submission based on defined interface
+     * Method responsible for creating the stage of the modal window for adding a
+     * new template
+     * 
+     * @param callBackAction action to trigger on form submission based on defined
+     *                       interface
      * @return stage of the modal window
      * @throws IOException
      */
-    public Stage createTemplateForm(TemplateAddFormSubmitListener callBackAction) throws IOException{
+    public Stage createTemplateForm(TemplateAddFormSubmitListener callBackAction) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("../views/templateForm.fxml"));
         loader.setControllerFactory(applicationContext::getBean);
-            Parent root = loader.load();
+        Parent root = loader.load();
 
-            TemplateFormController templateFormController = loader.getController();
-            templateFormController.setAddFormSubmitListener(submittedTemplate -> {
-                callBackAction.onFormSubmit(submittedTemplate);
-            });
+        TemplateFormController templateFormController = loader.getController();
+        templateFormController.setAddFormSubmitListener(submittedTemplate -> {
+            callBackAction.onFormSubmit(submittedTemplate);
+        });
 
-            Stage stage = new Stage();
-            stage.setTitle("Add Template Form");
+        Stage stage = new Stage();
+        stage.setTitle("Add Template Form");
 
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
 
-            stage.initModality(Modality.WINDOW_MODAL);
+        stage.initModality(Modality.WINDOW_MODAL);
 
-            return stage;
+        return stage;
     }
 
     /**
-     * Method responsible for creating the stage of the modal window for editing an existing template
-     * @param templateToEdit action to trigger on form submission based on defined interface
+     * Method responsible for creating the stage of the modal window for editing an
+     * existing template
+     * 
+     * @param templateToEdit  action to trigger on form submission based on defined
+     *                        interface
      * @param indexOfTemplate index of template based on the preset it belongs to
-     * @param callBackAction action to trigger on form submission based on defined interface
+     * @param callBackAction  action to trigger on form submission based on defined
+     *                        interface
      * @return stage of the modal window
      * @throws IOException
      */
-    public Stage createTemplateForm(ImageTemplate templateToEdit, int indexOfTemplate, TemplateEditFormSubmitListener callBackAction) throws IOException{
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("../views/templateForm.fxml"));
-            loader.setControllerFactory(applicationContext::getBean);
-            Parent root = loader.load();
+    public Stage createTemplateForm(ImageTemplate templateToEdit, int indexOfTemplate,
+            TemplateEditFormSubmitListener callBackAction) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("../views/templateForm.fxml"));
+        loader.setControllerFactory(applicationContext::getBean);
+        Parent root = loader.load();
 
-            TemplateFormController templateFormController = loader.getController();
-            templateFormController.setTemplateToEdit(templateToEdit, indexOfTemplate);
-            templateFormController.setEditFormSubmitListener( (submittedTemplate, templateIndex) -> {
-                callBackAction.onFormSubmit(submittedTemplate, templateIndex);}
-            );
+        TemplateFormController templateFormController = loader.getController();
+        templateFormController.setTemplateToEdit(templateToEdit, indexOfTemplate);
+        templateFormController.setEditFormSubmitListener((submittedTemplate, templateIndex) -> {
+            callBackAction.onFormSubmit(submittedTemplate, templateIndex);
+        });
 
-            Stage stage = new Stage();
-            stage.setTitle("Edit Template "+templateToEdit.getTemplateName());
+        Stage stage = new Stage();
+        stage.setTitle("Edit Template " + templateToEdit.getTemplateName());
 
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
 
-            stage.initModality(Modality.WINDOW_MODAL);
+        stage.initModality(Modality.WINDOW_MODAL);
 
-            return stage;
+        return stage;
     }
 
     /**

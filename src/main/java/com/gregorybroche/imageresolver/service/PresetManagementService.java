@@ -33,6 +33,10 @@ public class PresetManagementService {
         return presetList;
     }
 
+    /**
+     * Appends predifined templates to a preset for easier testing of GUI interactions without needing to add templates manually every time
+     * @param preset
+     */
     private void addTestTemplates(Preset preset){
         ImageTemplate templateTest1 = new ImageTemplate(
             "templateTest1",
@@ -108,6 +112,13 @@ public class PresetManagementService {
         }
     }
 
+    /**
+     * modifies the data of a template inside of a preset
+     * @param newTemplateData valid ImageTemplate instance providing the data
+     * @param indexOfPresetToReplace index of the template to modify in the preset template list
+     * @param presetKey key identifying the preset on which a template needs editing
+     * @return true if operation has been successful, otherwise false
+     */
     public boolean editTemplateOfPreset(ImageTemplate newTemplateData, int indexOfPresetToReplace, String presetKey){
         try {
             Preset presetToModify = presets.get(presetKey);

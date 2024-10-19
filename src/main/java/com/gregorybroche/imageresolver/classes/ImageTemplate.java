@@ -117,7 +117,6 @@ public class ImageTemplate {
 
         } catch (IOException e) {
             System.err.println(e.getMessage());
-            e.printStackTrace();
             return null;
         }
     }
