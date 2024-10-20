@@ -17,6 +17,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -105,7 +106,6 @@ public class TemplateFormController {
     @FXML
     private void initialize() {
         initializeInputValidationMap();
-        templateFormTitleText.setText(templateToEdit == null ? "ADD TEMPLATE" : "EDIT TEMPLATE");
         String[] allowedOutputFormats = templateFormValidatorService.getAllowedFormats();
         selectFormat.getItems().addAll(allowedOutputFormats);
         selectFormat.setValue(allowedOutputFormats[0]);
@@ -269,6 +269,10 @@ public class TemplateFormController {
         closeModal();
     }
 
+    public void setTitleLabel(String labelText){
+        templateFormTitleText.setText(labelText);
+    }
+
     /**
      * set this controllers associated template and its index in case of editing form, also triggers auto filling of fields using the template's data
      * @param templateToEdit
@@ -280,7 +284,6 @@ public class TemplateFormController {
         setFormatChoiceBox(templateToEdit);
         setFieldsOnEditForm(templateToEdit);
         validateAllInputs();
-
     }
 
     private void validateAllInputs(){

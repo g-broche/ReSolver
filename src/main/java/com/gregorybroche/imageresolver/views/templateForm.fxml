@@ -15,8 +15,8 @@
          <children>
             <Pane layoutX="15.0" layoutY="14.0" prefHeight="65.0" prefWidth="471.0">
                <children>
-                  <Text fx:id="templateFormTitleText" layoutX="138.0" layoutY="20.0" text="ADD TEMPLATE" />
-                  <TextField fx:id="inputTemplateName" layoutX="250.0" layoutY="3.0" onKeyTyped="#validateTemplateNameChange" />
+                  <Text fx:id="templateFormTitleText" layoutX="120.0" layoutY="20.0" text="" />
+                  <TextField fx:id="inputTemplateName" layoutX="225.0" layoutY="3.0" onKeyTyped="#validateTemplateNameChange" />
                   <Text fx:id="inputTemplateNameError" fill="#cd2828" layoutX="164.0" layoutY="46.0" strokeType="OUTSIDE" strokeWidth="0.0" text="" visible="false" />
                </children>
             </Pane>

@@ -133,9 +133,10 @@ public class TemplateFormService {
         templateFormController.setAddFormSubmitListener(submittedTemplate -> {
             callBackAction.onFormSubmit(submittedTemplate);
         });
-
+        templateFormController.setTitleLabel("ADD TEMPLATE");
         Stage stage = new Stage();
         stage.setTitle("Add Template Form");
+        
 
         Scene scene = new Scene(root);
         stage.setScene(scene);
@@ -168,6 +169,7 @@ public class TemplateFormService {
         templateFormController.setEditFormSubmitListener((submittedTemplate, templateIndex) -> {
             callBackAction.onFormSubmit(submittedTemplate, templateIndex);
         });
+        templateFormController.setTitleLabel("EDIT TEMPLATE");
 
         Stage stage = new Stage();
         stage.setTitle("Edit Template " + templateToEdit.getTemplateName());
