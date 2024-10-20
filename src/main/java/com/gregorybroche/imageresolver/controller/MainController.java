@@ -15,21 +15,18 @@ import com.gregorybroche.imageresolver.service.FileHandlerService;
 import com.gregorybroche.imageresolver.service.ImageEditorService;
 import com.gregorybroche.imageresolver.service.PresetManagementService;
 import com.gregorybroche.imageresolver.service.ResolverProcessorService;
+import com.gregorybroche.imageresolver.service.TemplateFormService;
 import com.gregorybroche.imageresolver.service.UserDialogService;
 import com.gregorybroche.imageresolver.service.ValidatorService;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 @Component
@@ -40,7 +37,8 @@ public class MainController {
     private ValidatorService validatorService;
     private ImageEditorService imageEditorService;
     private ResolverProcessorService resolverProcessorService;
-    PresetManagementService presetManagementService;
+    private TemplateFormService templateFormService;
+    private PresetManagementService presetManagementService;
     private File imageToResolve = null;
     private String Selectedpreset = "test";
 
@@ -51,7 +49,8 @@ public class MainController {
             ValidatorService validatorService,
             ImageEditorService imageEditorService,
             ResolverProcessorService resolverProcessorService,
-            PresetManagementService presetManagementService
+            PresetManagementService presetManagementService,
+            TemplateFormService templateFormService
             ) {
         this.applicationContext = applicationContext;
         this.userDialogService = userDialogService;
@@ -60,6 +59,7 @@ public class MainController {
         this.imageEditorService = imageEditorService;
         this.resolverProcessorService = resolverProcessorService;
         this.presetManagementService = presetManagementService;
+        this.templateFormService = templateFormService;
     }
 
     @FXML
@@ -80,6 +80,7 @@ public class MainController {
     @FXML
     public void initialize() {
         presetManagementService.loadPresets();
+        displayLoadedTemplates();
     }
 
     @FXML
@@ -115,23 +116,9 @@ public class MainController {
     @FXML
     void openTemplateForm(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("../views/templateForm.fxml"));
-            loader.setControllerFactory(applicationContext::getBean);
-            Parent root = loader.load();
-
-            TemplateFormController templateFormController = loader.getController();
-            templateFormController.setFormSubmitListener(newTemplate -> {
+            Stage stage = templateFormService.createTemplateForm(newTemplate -> {
                 addSubmittedTemplateToPreset(newTemplate);
-            }
-            );
-
-            Stage stage = new Stage();
-            stage.setTitle("Template Form");
-
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-
-            stage.initModality(Modality.WINDOW_MODAL);
+            });
 
             stage.initOwner(((Node) event.getSource()).getScene().getWindow());
 
@@ -174,10 +161,19 @@ public class MainController {
 
     /**
      * adds a template to currently managed preset and refresh the template list display
+     * @param template template to add
+     */
+    private void addSubmittedTemplateToPreset(ImageTemplate submittedTemplate) {
+        presetManagementService.addTemplateToPreset(submittedTemplate, Selectedpreset);
+        displayLoadedTemplates();
+    }
+
+    /**
+     * edit a template and refresh the template list display
      * @param template display to add
      */
-    private void addSubmittedTemplateToPreset(ImageTemplate template) {
-        presetManagementService.addTemplateToPreset(template, Selectedpreset);
+    private void editTemplate(ImageTemplate submittedTemplate, int indexOfTemplateToEdit) {
+        presetManagementService.editTemplateOfPreset(submittedTemplate, indexOfTemplateToEdit, Selectedpreset);
         displayLoadedTemplates();
     }
 
@@ -188,7 +184,13 @@ public class MainController {
         List<ImageTemplate> templates = presetManagementService.getPresetFromKey(Selectedpreset).getTemplates();
         List<HBox> templateComponents = new ArrayList<HBox>();
         for (int i = 0; i < templates.size(); i++) {
-            templateComponents.add(templates.get(i).createTemplateComponent(i)) ;
+            templateComponents.add(templates.get(i).createTemplateComponent(
+                i,
+                applicationContext,
+                (submittedTemplateData, indexOfTemplateToEdit) -> {
+                editTemplate(submittedTemplateData, indexOfTemplateToEdit);
+            }
+            )) ;
         }
         templateContainer.getChildren().setAll(templateComponents);
     }

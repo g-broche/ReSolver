@@ -1,21 +1,40 @@
 package com.gregorybroche.imageresolver.controller;
 
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import com.gregorybroche.imageresolver.classes.ImageTemplate;
+import com.gregorybroche.imageresolver.interfaces.TemplateEditFormSubmitListener;
+import com.gregorybroche.imageresolver.service.PresetManagementService;
+import com.gregorybroche.imageresolver.service.TemplateFormService;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
 
 @Component
+@Scope("prototype")
 public class TemplateItemController {
-    private int indexInTemplateList;
+    private TemplateFormService templateFormService;
+    private TemplateEditFormSubmitListener editActionListener;
+    private int templateIndex;
+    private ImageTemplate template;
+
+    public TemplateItemController(TemplateFormService templateFormService, PresetManagementService presetManagementService) {
+        this.templateFormService = templateFormService;
+    }
+
+    @FXML
+    private Pane templateDescriptors;
 
     @FXML
     private Label templateName;
@@ -56,13 +75,32 @@ public class TemplateItemController {
     @FXML
     private Button templateDeleteButton;
 
-
     @FXML
     /**
-     * placeholder for editing this template
+     * opens a modal window to edit the template associated with this controller
+     * @param event
      */
-    void editTemplate() {
-        System.out.println("implement edit window action on "+indexInTemplateList);
+    void openEditTemplateModal(ActionEvent event) {
+        try {
+            Stage stage = templateFormService.createTemplateForm(
+                template,
+                templateIndex,
+                (submittedTemplate, indexInTemplateList) -> {
+                    editActionListener.onFormSubmit(submittedTemplate, indexInTemplateList);
+                }
+            );
+
+            stage.initOwner(((Node) event.getSource()).getScene().getWindow());
+
+            stage.showAndWait();
+
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
+    }
+
+    public void setEmitEditListener(TemplateEditFormSubmitListener listener) {
+        this.editActionListener = listener;
     }
 
     @FXML
@@ -70,16 +108,18 @@ public class TemplateItemController {
      * placeholder for deleting this template
      */
     void deleteTemplate() {
-        System.out.println("implement delete action on "+indexInTemplateList);
+        System.out.println("implement delete action");
     }
 
     /**
-     * sets this template data using a template instance and an index
+     * sets this controller's template data using a template instance and an index
+     * 
      * @param imageTemplate
      * @param indexInPreset index of the template inside a preset's template list
      */
     public void setTemplateData(ImageTemplate imageTemplate, int indexInPreset) {
-        indexInTemplateList = indexInPreset;
+        this.templateIndex = indexInPreset;
+        this.template = imageTemplate;
         setLabels(imageTemplate);
         setFileNamingConvention(imageTemplate);
         setSizeInfo(imageTemplate);
@@ -93,7 +133,6 @@ public class TemplateItemController {
         prefixColumn.setCellValueFactory(new PropertyValueFactory<>("newImagePrefix"));
         baseNameColumn.setCellValueFactory(new PropertyValueFactory<>("newImageBaseName"));
         suffixColumn.setCellValueFactory(new PropertyValueFactory<>("newImageSuffix"));
-
         ObservableList<ImageTemplate> data = FXCollections.observableArrayList(imageTemplate);
         templateNamingTable.setItems(data);
     }
@@ -103,7 +142,6 @@ public class TemplateItemController {
         heigthColumn.setCellValueFactory(new PropertyValueFactory<>("height"));
         resolutionColumn.setCellValueFactory(new PropertyValueFactory<>("resolution"));
         formatColumn.setCellValueFactory(new PropertyValueFactory<>("format"));
-
         ObservableList<ImageTemplate> data = FXCollections.observableArrayList(imageTemplate);
         templateSpecsTable.setItems(data);
     }

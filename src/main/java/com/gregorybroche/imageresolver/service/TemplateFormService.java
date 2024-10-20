@@ -1,19 +1,32 @@
 package com.gregorybroche.imageresolver.service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
 import com.gregorybroche.imageresolver.Enums.ConstraintType;
+import com.gregorybroche.imageresolver.classes.ImageTemplate;
 import com.gregorybroche.imageresolver.classes.InputConstraint;
 import com.gregorybroche.imageresolver.classes.ValidationResponse;
+import com.gregorybroche.imageresolver.controller.TemplateFormController;
+import com.gregorybroche.imageresolver.interfaces.TemplateAddFormSubmitListener;
+import com.gregorybroche.imageresolver.interfaces.TemplateEditFormSubmitListener;
+
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 @Service
-public class TemplateFormValidatorService {
+public class TemplateFormService {
+    private ApplicationContext applicationContext;
     private ValidatorService validatorService;
     private UserDialogService userDialogService;
 
@@ -50,7 +63,11 @@ public class TemplateFormValidatorService {
 
     private final Map<String, InputConstraint[]> formConstraints = new HashMap<String, InputConstraint[]>();
 
-    public TemplateFormValidatorService(ValidatorService validatorService, UserDialogService userDialogService) {
+    public TemplateFormService(
+            ApplicationContext applicationContext,
+            ValidatorService validatorService,
+            UserDialogService userDialogService) {
+        this.applicationContext = applicationContext;
         this.validatorService = validatorService;
         this.userDialogService = userDialogService;
         Set<String> allowedFormatsSet = validatorService.getAllowedImageFormatsAsExtension();
@@ -66,29 +83,103 @@ public class TemplateFormValidatorService {
         return this.allowedFormats;
     }
 
-    public boolean isTemplateNameRequired(){
+    public boolean isTemplateNameRequired() {
         return this.isTemplateNameRequired;
     }
-    public boolean isWidthRequired(){
+
+    public boolean isWidthRequired() {
         return this.isWidthRequired;
     }
-    public boolean isHeightRequired(){
+
+    public boolean isHeightRequired() {
         return this.isHeightRequired;
     }
-    public boolean isResolutionRequired(){
+
+    public boolean isResolutionRequired() {
         return this.isResolutionRequired;
     }
-    public boolean isImagePrefixRequired(){
+
+    public boolean isImagePrefixRequired() {
         return this.isImagePrefixRequired;
     }
-    public boolean isImageSuffixRequired(){
+
+    public boolean isImageSuffixRequired() {
         return this.isImageSuffixRequired;
     }
-    public boolean isImageBaseNameRequired(){
+
+    public boolean isImageBaseNameRequired() {
         return this.isImageBaseNameRequired;
     }
-    public boolean isFormatRequired(){
+
+    public boolean isFormatRequired() {
         return this.isFormatRequired;
+    }
+
+    /**
+     * Method responsible for creating the stage of the modal window for adding a
+     * new template
+     * 
+     * @param callBackAction action to trigger on form submission based on defined
+     *                       interface
+     * @return stage of the modal window
+     * @throws IOException
+     */
+    public Stage createTemplateForm(TemplateAddFormSubmitListener callBackAction) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("../views/templateForm.fxml"));
+        loader.setControllerFactory(applicationContext::getBean);
+        Parent root = loader.load();
+
+        TemplateFormController templateFormController = loader.getController();
+        templateFormController.setAddFormSubmitListener(submittedTemplate -> {
+            callBackAction.onFormSubmit(submittedTemplate);
+        });
+        templateFormController.setTitleLabel("ADD TEMPLATE");
+        Stage stage = new Stage();
+        stage.setTitle("Add Template Form");
+        
+
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+
+        stage.initModality(Modality.WINDOW_MODAL);
+
+        return stage;
+    }
+
+    /**
+     * Method responsible for creating the stage of the modal window for editing an
+     * existing template
+     * 
+     * @param templateToEdit  action to trigger on form submission based on defined
+     *                        interface
+     * @param indexOfTemplate index of template based on the preset it belongs to
+     * @param callBackAction  action to trigger on form submission based on defined
+     *                        interface
+     * @return stage of the modal window
+     * @throws IOException
+     */
+    public Stage createTemplateForm(ImageTemplate templateToEdit, int indexOfTemplate,
+            TemplateEditFormSubmitListener callBackAction) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("../views/templateForm.fxml"));
+        loader.setControllerFactory(applicationContext::getBean);
+        Parent root = loader.load();
+
+        TemplateFormController templateFormController = loader.getController();
+        templateFormController.setTemplateToEdit(templateToEdit, indexOfTemplate);
+        templateFormController.setEditFormSubmitListener((submittedTemplate, templateIndex) -> {
+            callBackAction.onFormSubmit(submittedTemplate, templateIndex);
+        });
+        templateFormController.setTitleLabel("EDIT TEMPLATE");
+
+        Stage stage = new Stage();
+        stage.setTitle("Edit Template " + templateToEdit.getTemplateName());
+
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+
+        stage.initModality(Modality.WINDOW_MODAL);
+
+        return stage;
     }
 
     /**

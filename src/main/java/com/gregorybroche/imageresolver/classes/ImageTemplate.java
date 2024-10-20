@@ -1,30 +1,36 @@
 package com.gregorybroche.imageresolver.classes;
 
 import java.io.IOException;
+
+import org.springframework.context.ApplicationContext;
+
 import com.gregorybroche.imageresolver.controller.TemplateItemController;
+import com.gregorybroche.imageresolver.interfaces.TemplateEditFormSubmitListener;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.HBox;
 
 public class ImageTemplate {
-    private String templateName = "PlaceHolder name";
-    private int width = 600;
-    private int height = 400;
-    private int resolution = 72;
-    private String newImagePrefix = "pre-";
-    private String newImageBaseName = "test_editing";
-    private String newImageSuffix = "-post";
-    private String format = "jpg";
+    private String templateName;
+    private int width;
+    private int height;
+    private int resolution;
+    private String newImagePrefix;
+    private String newImageBaseName;
+    private String newImageSuffix;
+    private String format;
     private int defaultResolution = 90;
 
-    public ImageTemplate(String templateName,
-                        int width,
-                        int height,
-                        Integer resolution,
-                        String newImagePrefix,
-                        String newImageBaseName,
-                        String newImageSuffix,
-                        String format){
+    public ImageTemplate(
+        String templateName,
+        int width,
+        int height,
+        Integer resolution,
+        String newImagePrefix,
+        String newImageBaseName,
+        String newImageSuffix,
+        String format
+        ){
         setTemplateName(templateName);
         setWidth(width);
         setHeight(height);
@@ -99,19 +105,18 @@ public class ImageTemplate {
      * Creates and returns the FXML component view with data corresponding to this instance of ImageTemplate
      * @return
      */
-    public HBox createTemplateComponent(Integer indexInPreset) {
+    public HBox createTemplateComponent(Integer indexInPreset, ApplicationContext applicationContext, TemplateEditFormSubmitListener callbackOnEditAction){
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("../views/templateComponent.fxml"));
-            HBox templatePane = loader.load();
-
+            loader.setControllerFactory(applicationContext::getBean);
+            HBox templateHBox = loader.load();
             TemplateItemController controller = loader.getController();
-
             controller.setTemplateData(this, indexInPreset);
-
-            return templatePane;
+            controller.setEmitEditListener(callbackOnEditAction);
+            return templateHBox;
 
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println(e.getMessage());
             return null;
         }
     }

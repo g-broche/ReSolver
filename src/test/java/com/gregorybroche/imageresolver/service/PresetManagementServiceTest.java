@@ -16,6 +16,8 @@ import com.gregorybroche.imageresolver.classes.Preset;
 
 public class PresetManagementServiceTest {
     private PresetManagementService presetManagementService;
+    private Preset preset1 = new Preset("preset1", new ArrayList<ImageTemplate>());
+    private Preset preset2 = new Preset("preset2", new ArrayList<ImageTemplate>());
     private ImageTemplate templateTest1 = new ImageTemplate(
         "templateTest1",
         1920,
@@ -164,6 +166,122 @@ public class PresetManagementServiceTest {
 
             boolean resultCollision = presetManagementService.addTemplateToPreset(templateTest1, "presetTest");
             assertFalse(resultCollision);
+        } catch (Exception e) {
+            fail();
+        }
+    }
+
+    @Test
+    void editTemplateOfPreset_presetKeyIsNull_shouldReturnFalseAndUnchangedTemplateWhenEditing(){
+        try {
+            preset1.addTemplate(templateTest1);
+            List<Preset> testPresets = new ArrayList<Preset>();
+            testPresets.add(preset1);
+            testPresets.add(preset2);
+            presetManagementService.setPresets(testPresets);
+            assertEquals(presetManagementService.getPresetFromKey("preset1").getName(), "preset1");
+            assertEquals(presetManagementService.getPresetFromKey("preset2").getName(), "preset2");
+            assertEquals(presetManagementService.getPresetFromKey("preset1").getTemplates().getFirst().getTemplateName(), "templateTest1");
+            boolean editResult = presetManagementService.editTemplateOfPreset(templateTest3, 0, null);
+            assertFalse(editResult);
+            assertEquals(presetManagementService.getPresetFromKey("preset1").getTemplates().getFirst().getTemplateName(), "templateTest1");
+        } catch (Exception e) {
+            fail();
+        }
+    }
+
+    @Test
+    void editTemplateOfPreset_presetKeyIsWrong_shouldReturnFalseAndUnchangedTemplateWhenEditing(){
+        try {
+            preset1.addTemplate(templateTest1);
+            List<Preset> testPresets = new ArrayList<Preset>();
+            testPresets.add(preset1);
+            testPresets.add(preset2);
+            presetManagementService.setPresets(testPresets);
+            assertEquals(presetManagementService.getPresetFromKey("preset1").getName(), "preset1");
+            assertEquals(presetManagementService.getPresetFromKey("preset2").getName(), "preset2");
+            assertEquals(presetManagementService.getPresetFromKey("preset1").getTemplates().getFirst().getTemplateName(), "templateTest1");
+            boolean editResult = presetManagementService.editTemplateOfPreset(templateTest3, 0, "wrongKey");
+            assertFalse(editResult);
+            assertEquals(presetManagementService.getPresetFromKey("preset1").getTemplates().getFirst().getTemplateName(), "templateTest1");
+        } catch (Exception e) {
+            fail();
+        }
+    }
+
+    @Test
+    void editTemplateOfPreset_presetKeyIsRightButTemplateNameTaken_shouldReturnFalseAndUnchangedTemplateWhenEditing(){
+        try {
+            preset1.addTemplate(templateTest1);
+            preset1.addTemplate(templateTest2);
+            preset1.addTemplate(templateTest3);
+            List<Preset> testPresets = new ArrayList<Preset>();
+            testPresets.add(preset1);
+            testPresets.add(preset2);
+            presetManagementService.setPresets(testPresets);
+            assertEquals(presetManagementService.getPresetFromKey("preset1").getName(), "preset1");
+            assertEquals(presetManagementService.getPresetFromKey("preset2").getName(), "preset2");
+            assertEquals(presetManagementService.getPresetFromKey("preset1").getTemplates().getFirst().getTemplateName(), "templateTest1");
+            ImageTemplate editSourceTemplateWithNameCollision = new ImageTemplate(
+                "templateTest2",
+                1081,
+                721,
+                90,
+                "L_edit-",
+                "test_edit",
+                "-edited_ver",
+                "webp"
+                );
+            boolean editResult = presetManagementService.editTemplateOfPreset(
+                editSourceTemplateWithNameCollision,
+                0,
+                "preset1"
+                );
+            assertFalse(editResult);
+            assertEquals(presetManagementService.getPresetFromKey("preset1").getTemplates().getFirst().getTemplateName(), "templateTest1");
+        } catch (Exception e) {
+            fail();
+        }
+    }
+
+    @Test
+    void editTemplateOfPreset_presetKeyIsRightAndEditTemplateDataIsValid_shouldReturnTrueAndChangedTemplateWhenEditing(){
+        try {
+            preset1.addTemplate(templateTest1);
+            preset1.addTemplate(templateTest2);
+            preset1.addTemplate(templateTest3);
+            List<Preset> testPresets = new ArrayList<Preset>();
+            testPresets.add(preset1);
+            testPresets.add(preset2);
+            presetManagementService.setPresets(testPresets);
+            assertEquals(presetManagementService.getPresetFromKey("preset1").getName(), "preset1");
+            assertEquals(presetManagementService.getPresetFromKey("preset2").getName(), "preset2");
+            assertEquals(presetManagementService.getPresetFromKey("preset1").getTemplates().getFirst().getTemplateName(), "templateTest1");
+            ImageTemplate editSourceTemplate = new ImageTemplate(
+                "templateTest1-edited",
+                1921,
+                1081,
+                90,
+                "XL_edit-",
+                "test_edit",
+                "-edited_ver",
+                "webp"
+                );
+            boolean editResult = presetManagementService.editTemplateOfPreset(
+                editSourceTemplate,
+                0,
+                "preset1"
+                );
+            assertTrue(editResult);
+            ImageTemplate editedTemplate = presetManagementService.getPresetFromKey("preset1").getTemplates().getFirst();
+            assertEquals(editedTemplate.getTemplateName(), "templateTest1-edited");
+            assertEquals(editedTemplate.getWidth(), 1921);
+            assertEquals(editedTemplate.getHeight(), 1081);
+            assertEquals(editedTemplate.getResolution(), 90);
+            assertEquals(editedTemplate.getNewImagePrefix(), "XL_edit-");
+            assertEquals(editedTemplate.getNewImageBaseName(), "test_edit");
+            assertEquals(editedTemplate.getNewImageSuffix(), "-edited_ver");
+            assertEquals(editedTemplate.getFormat(), "webp");
         } catch (Exception e) {
             fail();
         }

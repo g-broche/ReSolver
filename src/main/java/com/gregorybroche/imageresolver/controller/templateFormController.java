@@ -8,35 +8,43 @@ import org.springframework.stereotype.Component;
 
 import com.gregorybroche.imageresolver.classes.ImageTemplate;
 import com.gregorybroche.imageresolver.classes.ValidationResponse;
-import com.gregorybroche.imageresolver.service.TemplateFormValidatorService;
+import com.gregorybroche.imageresolver.interfaces.TemplateAddFormSubmitListener;
+import com.gregorybroche.imageresolver.interfaces.TemplateEditFormSubmitListener;
+import com.gregorybroche.imageresolver.service.TemplateFormService;
 import com.gregorybroche.imageresolver.service.ValidatorService;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 @Component
 public class TemplateFormController {
-    private TemplateFormSubmitListener submitListener;
+    private TemplateAddFormSubmitListener submitAddListener = null;
+    private TemplateEditFormSubmitListener submitEditListener = null;
     private Map<String, Boolean> inputValidationMap = new HashMap<String, Boolean>();
+    private ImageTemplate templateToEdit = null;
+    private Integer indexOfTemplateToEdit = null;
 
     @Autowired
-    private TemplateFormValidatorService templateFormValidatorService;
+    private TemplateFormService templateFormValidatorService;
 
     @Autowired
     private ValidatorService validatorService;
 
-    public void setFormSubmitListener(TemplateFormSubmitListener listener) {
-        this.submitListener = listener;
+    public void setAddFormSubmitListener(TemplateAddFormSubmitListener listener) {
+        this.submitAddListener = listener;
+    }
+    public void setEditFormSubmitListener(TemplateEditFormSubmitListener listener) {
+        this.submitEditListener = listener;
     }
 
-    public interface TemplateFormSubmitListener {
-        void onFormSubmit(ImageTemplate imageTemplate);
-    }
+    @FXML
+    Text templateFormTitleText;
 
     @FXML
     TextField inputTemplateName;
@@ -96,7 +104,7 @@ public class TemplateFormController {
     Button buttonSave;
 
     @FXML
-    public void initialize() {
+    private void initialize() {
         initializeInputValidationMap();
         String[] allowedOutputFormats = templateFormValidatorService.getAllowedFormats();
         selectFormat.getItems().addAll(allowedOutputFormats);
@@ -208,12 +216,18 @@ public class TemplateFormController {
     }
 
     @FXML
-    private void handleSubmit() {
-        if(!areInputsValid()){
-            return;
+    /**
+     * On form submit will verify if a listener is defined as callback to handle the action and if the inputs are valid
+     * if these conditions are true, an ImageTemplate instance is created and passed to the listener that has been set
+     * for the submit action (either add or edit template)
+     */
+    private void handleSubmit() { 
+        if(this.submitAddListener == null && this.submitEditListener == null){
+            Exception noListenerError = new Exception("No listener set on template form");
+            throw new RuntimeException(noListenerError);
         }
-        if(this.submitListener == null){
-            System.err.println("listener not set");
+
+        if(!areInputsValid()){
             return;
         }
         try {
@@ -226,7 +240,7 @@ public class TemplateFormController {
             int resolution = validatorService.sanitizeStringAsInteger(inputResolution.getText());
             String format = validatorService.sanitizeString(selectFormat.getValue());
 
-            ImageTemplate templateToAdd = new ImageTemplate(
+            ImageTemplate submittedTemplate = new ImageTemplate(
                 templateName,
                 width,
                 height,
@@ -236,12 +250,17 @@ public class TemplateFormController {
                 suffix,
                 format);
 
-            this.submitListener.onFormSubmit(templateToAdd);
+            if(submitEditListener != null){
+                submitEditListener.onFormSubmit(submittedTemplate, indexOfTemplateToEdit);
+                closeModal();
+                return;
+            }
+            submitAddListener.onFormSubmit(submittedTemplate);
             closeModal();
+            return;
             
         } catch (Exception e) {
-            System.err.println("handle submit - catch");
-            System.err.println(e.getMessage());
+            throw new RuntimeException(e);
         }
     }
 
@@ -250,22 +269,53 @@ public class TemplateFormController {
         closeModal();
     }
 
+    public void setTitleLabel(String labelText){
+        templateFormTitleText.setText(labelText);
+    }
+
+    /**
+     * set this controllers associated template and its index in case of editing form, also triggers auto filling of fields using the template's data
+     * @param templateToEdit
+     * @param indexToEdit
+     */
+    public void setTemplateToEdit(ImageTemplate templateToEdit, int indexToEdit){
+        this.templateToEdit = templateToEdit;
+        this.indexOfTemplateToEdit = indexToEdit;
+        setFormatChoiceBox(templateToEdit);
+        setFieldsOnEditForm(templateToEdit);
+        validateAllInputs();
+    }
+
+    private void validateAllInputs(){
+        validateTemplateNameChange();
+        validateImageBaseNameChange();
+        validateImagePrefixChange();
+        validateImageSuffixChange();
+        validateWidthChange();
+        validateHeightChange();
+        validateResolutionChange();
+        validateFormatChange();
+    }
+
     private void closeModal(){
         Stage modalStage = (Stage) buttonSave.getScene().getWindow();
         modalStage.close();
     }
 
-    public void showInputError(Text textElement, String text) {
+    private void showInputError(Text textElement, String text) {
         textElement.setText(text);
         textElement.setVisible(true);
     }
 
-    public void hideInputError(Text textElement) {
+    private void hideInputError(Text textElement) {
         textElement.setVisible(false);
         textElement.setText("");
     }
 
-    public void initializeInputValidationMap() {
+    /**
+     * sets the value of all input validation booleans to reflect if the associated values are required by defined template contraints
+     */
+    private void initializeInputValidationMap() {
         setInputValidationForTemplateName(!templateFormValidatorService.isTemplateNameRequired());
         setInputValidationForBaseName(!templateFormValidatorService.isImageBaseNameRequired());
         setInputValidationForPrefix(!templateFormValidatorService.isImagePrefixRequired());
@@ -276,11 +326,15 @@ public class TemplateFormController {
         setInputValidationForFormat(!templateFormValidatorService.isFormatRequired());
     }
 
-    public void toggleSaveButton(boolean mustEnableButton) {
+    private void toggleSaveButton(boolean mustEnableButton) {
         buttonSave.setDisable(!mustEnableButton);
     }
 
-    public boolean areInputsValid() {
+    /**
+     * checks if the map of booleans corresponding to validation state of all inputs contains only true values
+     * @return
+     */
+    private boolean areInputsValid() {
         return (inputValidationMap.get("templateName")
         && inputValidationMap.get("baseName")
         && inputValidationMap.get("prefix")
@@ -292,35 +346,69 @@ public class TemplateFormController {
         );
     }
 
-    public void setInputValidationForTemplateName(boolean isInputValid) {
+    private void setInputValidationForTemplateName(boolean isInputValid) {
         inputValidationMap.put("templateName", isInputValid);
     }
 
-    public void setInputValidationForBaseName(boolean isInputValid) {
+    private void setInputValidationForBaseName(boolean isInputValid) {
         inputValidationMap.put("baseName", isInputValid);
     }
 
-    public void setInputValidationForPrefix(boolean isInputValid) {
+    private void setInputValidationForPrefix(boolean isInputValid) {
         inputValidationMap.put("prefix", isInputValid);
     }
 
-    public void setInputValidationForSuffix(boolean isInputValid) {
+    private void setInputValidationForSuffix(boolean isInputValid) {
         inputValidationMap.put("suffix", isInputValid);
     }
 
-    public void setInputValidationForWidth(boolean isInputValid) {
+    private void setInputValidationForWidth(boolean isInputValid) {
         inputValidationMap.put("width", isInputValid);
     }
 
-    public void setInputValidationForHeight(boolean isInputValid) {
+    private void setInputValidationForHeight(boolean isInputValid) {
         inputValidationMap.put("height", isInputValid);
     }
 
-    public void setInputValidationForResolution(boolean isInputValid) {
+    private void setInputValidationForResolution(boolean isInputValid) {
         inputValidationMap.put("resolution", isInputValid);
     }
 
-    public void setInputValidationForFormat(boolean isInputValid) {
+    private void setInputValidationForFormat(boolean isInputValid) {
         inputValidationMap.put("format", isInputValid);
+    }
+
+    /**
+     * fills all form fields using a template instance as data source, used for loading infos of a template to edit
+     * @param template
+     */
+    private void setFieldsOnEditForm(ImageTemplate template){
+        setTextInputValue(inputTemplateName, template.getTemplateName());
+        setTextInputValue(inputFileBaseName, template.getNewImageBaseName());
+        setTextInputValue(inputFilePrefix, template.getNewImagePrefix());
+        setTextInputValue(inputFileSuffix, template.getNewImageSuffix());
+        setTextInputValue(inputWidth, String.valueOf(template.getWidth()));
+        setTextInputValue(inputHeight, String.valueOf(template.getHeight()));
+        setTextInputValue(inputResolution, String.valueOf(template.getResolution()));
+    }
+
+    private void setTextInputValue(TextField inputField, String value){
+        if(inputField == null || value == null){
+            return;
+        }
+        inputField.setText(value);
+    }
+
+    /**
+     * Fills the choice box for format using allowed formats defined in ValidatorService. Will initialize selected value to first format
+     * or if there is a template instance given will set the selected value to the template format.
+     * @param template
+     */
+    private void setFormatChoiceBox(ImageTemplate template){
+        String[] allowedOutputFormats = templateFormValidatorService.getAllowedFormats();
+        String defaultSelectedValue = template != null && validatorService.isIncludedIn(template.getFormat(), allowedOutputFormats)
+            ? template.getFormat()
+            : allowedOutputFormats[0];
+        selectFormat.setValue(defaultSelectedValue);
     }
 }
