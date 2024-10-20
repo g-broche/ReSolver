@@ -9,4 +9,4 @@ To make this task less redundant i'd like to create a software able to handle th
 
 ## Context
 
-Since Java is quite in demand in my area and because i wanted to extend my knowledge, i decided to learn the very basics of Java through a small project that i did before starting this project. This project is intended to be the next step in that learning process by this time adding the Spring framework to the dev environment.
+Since Java is quite in demand in my area and because i wanted to extend my knowledge, i decided to learn the very basics of Java through a small project that i did before starting this project. This project is intended to be the next step in that learning process by this time adding the Spring framework to the dev environment. This project is also the opportunity to do a software oriented approach instead of a web solution and will let me experiment with JavaFX and FXML for the GUI.
