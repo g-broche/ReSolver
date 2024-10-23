@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.springframework.context.ApplicationContext;
 
 import com.gregorybroche.imageresolver.controller.TemplateItemController;
+import com.gregorybroche.imageresolver.interfaces.TemplateDeleteActionListener;
 import com.gregorybroche.imageresolver.interfaces.TemplateEditFormSubmitListener;
 
 import javafx.fxml.FXMLLoader;
@@ -103,9 +104,18 @@ public class ImageTemplate {
 
     /**
      * Creates and returns the FXML component view with data corresponding to this instance of ImageTemplate
-     * @return
+     * @param indexInPreset index of the template in its container preset list
+     * @param applicationContext spring context to provide to fxml
+     * @param callbackOnEditAction callback action to emit the edit action to the main window component
+     * @param callbackOnDeleteAction callback action to emit the delete action to the main window component
+     * @return JavaFX HBox instance corresponding the template
      */
-    public HBox createTemplateComponent(Integer indexInPreset, ApplicationContext applicationContext, TemplateEditFormSubmitListener callbackOnEditAction){
+    public HBox createTemplateComponent(
+            Integer indexInPreset,
+            ApplicationContext applicationContext,
+            TemplateEditFormSubmitListener callbackOnEditAction,
+            TemplateDeleteActionListener callbackOnDeleteAction
+            ){
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("../views/templateComponent.fxml"));
             loader.setControllerFactory(applicationContext::getBean);
@@ -113,6 +123,7 @@ public class ImageTemplate {
             TemplateItemController controller = loader.getController();
             controller.setTemplateData(this, indexInPreset);
             controller.setEmitEditListener(callbackOnEditAction);
+            controller.setEmitDeleteListener(callbackOnDeleteAction);
             return templateHBox;
 
         } catch (IOException e) {

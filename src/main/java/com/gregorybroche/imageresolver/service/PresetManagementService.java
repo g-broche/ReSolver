@@ -115,14 +115,35 @@ public class PresetManagementService {
     /**
      * modifies the data of a template inside of a preset
      * @param newTemplateData valid ImageTemplate instance providing the data
-     * @param indexOfPresetToReplace index of the template to modify in the preset template list
+     * @param indexOfTemplateToReplace index of the template to modify in the preset template list
      * @param presetKey key identifying the preset on which a template needs editing
      * @return true if operation has been successful, otherwise false
      */
-    public boolean editTemplateOfPreset(ImageTemplate newTemplateData, int indexOfPresetToReplace, String presetKey){
+    public boolean editTemplateOfPreset(ImageTemplate newTemplateData, int indexOfTemplateToReplace, String presetKey){
         try {
             Preset presetToModify = presets.get(presetKey);
-            return presetToModify.editTemplate(newTemplateData, indexOfPresetToReplace);
+            if(presetToModify == null){
+                return false;
+            }
+            return presetToModify.editTemplate(newTemplateData, indexOfTemplateToReplace);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    /**
+     * deletes a template from a preset template list
+     * @param indexOfTemplateToDelete index of the template to delete in the preset template list
+     * @param presetKey key to retrieve the appropriate preset on which a template must be remove
+     * @return true if delete action was successful, false otherwise
+     */
+    public boolean deleteTemplateOfPreset(int indexOfTemplateToDelete, String presetKey){
+        try {
+            Preset presetToModify = presets.get(presetKey);
+            if(presetToModify == null){
+                return false;
+            }
+            return presetToModify.deleteTemplate(indexOfTemplateToDelete);
         } catch (Exception e) {
             return false;
         }

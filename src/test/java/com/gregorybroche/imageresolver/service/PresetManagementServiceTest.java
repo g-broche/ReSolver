@@ -286,4 +286,81 @@ public class PresetManagementServiceTest {
             fail();
         }
     }
+
+    
+    @Test
+    void deleteTemplateOfPreset_presetKeyIsNull_shouldReturnFalseAndUnchangedTemplatesWhenDeleting(){
+        try {
+            preset1.addTemplate(templateTest1);
+            preset1.addTemplate(templateTest2);
+            preset1.addTemplate(templateTest3);
+            List<Preset> testPresets = new ArrayList<Preset>();
+            testPresets.add(preset1);
+            testPresets.add(preset2);
+            presetManagementService.setPresets(testPresets);
+            boolean deleteResult = presetManagementService.deleteTemplateOfPreset(0, null);
+            assertFalse(deleteResult);
+            assertEquals(presetManagementService.getPresetFromKey("preset1").getTemplates().getFirst().getTemplateName(), "templateTest1");
+            assertEquals(presetManagementService.getPresetFromKey("preset1").getTemplates().size(), 3);
+        } catch (Exception e) {
+            fail();
+        }
+    }
+
+    @Test
+    void deleteTemplateOfPreset_presetKeyIsWrong_shouldReturnFalseAndUnchangedTemplatesWhenDeleting(){
+        try {
+            preset1.addTemplate(templateTest1);
+            preset1.addTemplate(templateTest2);
+            preset1.addTemplate(templateTest3);
+            List<Preset> testPresets = new ArrayList<Preset>();
+            testPresets.add(preset1);
+            testPresets.add(preset2);
+            presetManagementService.setPresets(testPresets);
+            boolean deleteResult = presetManagementService.deleteTemplateOfPreset(0, "wrongKey");
+            assertFalse(deleteResult);
+            assertEquals(presetManagementService.getPresetFromKey("preset1").getTemplates().getFirst().getTemplateName(), "templateTest1");
+            assertEquals(presetManagementService.getPresetFromKey("preset1").getTemplates().size(), 3);
+        } catch (Exception e) {
+            fail();
+        }
+    }
+
+    @Test
+    void deleteTemplateOfPreset_presetKeyIsRightButIndexIsOutOfBounds_shouldReturnFalseAndUnchangedTemplatesWhenDeleting(){
+        try {
+            preset1.addTemplate(templateTest1);
+            preset1.addTemplate(templateTest2);
+            preset1.addTemplate(templateTest3);
+            List<Preset> testPresets = new ArrayList<Preset>();
+            testPresets.add(preset1);
+            testPresets.add(preset2);
+            presetManagementService.setPresets(testPresets);
+            boolean editResult = presetManagementService.deleteTemplateOfPreset(3, "preset1");
+            assertFalse(editResult);
+            assertEquals(presetManagementService.getPresetFromKey("preset1").getTemplates().getFirst().getTemplateName(), "templateTest1");
+            assertEquals(presetManagementService.getPresetFromKey("preset1").getTemplates().size(), 3);
+        } catch (Exception e) {
+            fail();
+        }
+    }
+
+    @Test
+    void deleteTemplateOfPreset_presetKeyIsRightAndIndexIsValid_shouldReturnTrueAndRemoveTemplateWhenDeleting(){
+        try {
+            preset1.addTemplate(templateTest1);
+            preset1.addTemplate(templateTest2);
+            preset1.addTemplate(templateTest3);
+            List<Preset> testPresets = new ArrayList<Preset>();
+            testPresets.add(preset1);
+            testPresets.add(preset2);
+            presetManagementService.setPresets(testPresets);
+            boolean editResult = presetManagementService.deleteTemplateOfPreset(0, "preset1");
+            assertTrue(editResult);
+            assertEquals(presetManagementService.getPresetFromKey("preset1").getTemplates().getFirst().getTemplateName(), "templateTest2");
+            assertEquals(presetManagementService.getPresetFromKey("preset1").getTemplates().size(), 2);
+        } catch (Exception e) {
+            fail();
+        }
+    }
 }
