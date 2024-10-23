@@ -131,6 +131,12 @@ public class PresetManagementService {
         }
     }
 
+    /**
+     * deletes a template from a preset template list
+     * @param indexOfTemplateToDelete index of the template to delete in the preset template list
+     * @param presetKey key to retrieve the appropriate preset on which a template must be remove
+     * @return true if delete action was successful, false otherwise
+     */
     public boolean deleteTemplateOfPreset(int indexOfTemplateToDelete, String presetKey){
         try {
             Preset presetToModify = presets.get(presetKey);

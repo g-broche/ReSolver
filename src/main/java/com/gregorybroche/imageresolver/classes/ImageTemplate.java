@@ -104,7 +104,11 @@ public class ImageTemplate {
 
     /**
      * Creates and returns the FXML component view with data corresponding to this instance of ImageTemplate
-     * @return
+     * @param indexInPreset index of the template in its container preset list
+     * @param applicationContext spring context to provide to fxml
+     * @param callbackOnEditAction callback action to emit the edit action to the main window component
+     * @param callbackOnDeleteAction callback action to emit the delete action to the main window component
+     * @return JavaFX HBox instance corresponding the template
      */
     public HBox createTemplateComponent(
             Integer indexInPreset,

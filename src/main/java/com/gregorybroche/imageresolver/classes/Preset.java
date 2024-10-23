@@ -97,6 +97,11 @@ public class Preset {
         }
     }
 
+    /**
+     * delete template from this preset
+     * @param indexOfTemplateToDelete
+     * @return true if delete is successful, otherwise false
+     */
     public boolean deleteTemplate(int indexOfTemplateToDelete) {
         try {
             if (this.templates.size() < indexOfTemplateToDelete) {
