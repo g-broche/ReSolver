@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import com.gregorybroche.imageresolver.classes.ImageTemplate;
+import com.gregorybroche.imageresolver.interfaces.TemplateDeleteActionListener;
 import com.gregorybroche.imageresolver.interfaces.TemplateEditFormSubmitListener;
 import com.gregorybroche.imageresolver.service.PresetManagementService;
 import com.gregorybroche.imageresolver.service.TemplateFormService;
@@ -26,6 +27,7 @@ import javafx.stage.Stage;
 public class TemplateItemController {
     private TemplateFormService templateFormService;
     private TemplateEditFormSubmitListener editActionListener;
+    private TemplateDeleteActionListener deleteActionListener;
     private int templateIndex;
     private ImageTemplate template;
 
@@ -102,13 +104,19 @@ public class TemplateItemController {
     public void setEmitEditListener(TemplateEditFormSubmitListener listener) {
         this.editActionListener = listener;
     }
+    public void setEmitDeleteListener(TemplateDeleteActionListener listener) {
+        this.deleteActionListener = listener;
+    }
 
     @FXML
     /**
-     * placeholder for deleting this template
+     * call set listener for the delete action
      */
     void deleteTemplate() {
-        System.out.println("implement delete action");
+        if(this.deleteActionListener == null){
+            return;
+        }
+        this.deleteActionListener.onDeleteAction(templateIndex);
     }
 
     /**

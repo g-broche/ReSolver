@@ -170,10 +170,20 @@ public class MainController {
 
     /**
      * edit a template and refresh the template list display
-     * @param template display to add
+     * @param template display data source for the edit
+     * @param indexOfTemplateToEdit index of template to edit
      */
     private void editTemplate(ImageTemplate submittedTemplate, int indexOfTemplateToEdit) {
         presetManagementService.editTemplateOfPreset(submittedTemplate, indexOfTemplateToEdit, Selectedpreset);
+        displayLoadedTemplates();
+    }
+
+    /**
+     * delete a template and refresh the template list display
+     * @param indexOfTemplateToEdit
+     */
+    private void deleteTemplate(int indexOfTemplateToEdit) {
+        presetManagementService.deleteTemplateOfPreset(indexOfTemplateToEdit, Selectedpreset);
         displayLoadedTemplates();
     }
 
@@ -189,7 +199,10 @@ public class MainController {
                 applicationContext,
                 (submittedTemplateData, indexOfTemplateToEdit) -> {
                 editTemplate(submittedTemplateData, indexOfTemplateToEdit);
-            }
+                },
+                indexOfTemplateToDelete -> {
+                    deleteTemplate(indexOfTemplateToDelete);
+                }
             )) ;
         }
         templateContainer.getChildren().setAll(templateComponents);
