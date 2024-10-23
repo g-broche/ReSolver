@@ -1,5 +1,7 @@
 package com.gregorybroche.imageresolver.classes;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
@@ -47,15 +49,15 @@ public class PresetTest {
 
 
     @Test
-    void testAddTemplate_addingOneTemplate_ShouldHaveOneElementInList() {
+    void testAddTemplate_addingOneTemplate_shouldHaveOneElementInList() {
         Preset testPreset = new Preset("testPreset", new ArrayList<ImageTemplate>());
         testPreset.addTemplate(template1);
         assertTrue(testPreset.getTemplates().size() == 1, "Should have one element");
         assertTrue(testPreset.getTemplates().get(0).getTemplateName().equals("template1"), "Should retrieve name of added template");
     }
-    @Test
 
-    void testAddTemplate_addingThreeSuccessiveTemplate_ShouldHaveThreeElementsInList() {
+    @Test
+    void testAddTemplate_addingThreeSuccessiveTemplate_shouldHaveThreeElementsInList() {
         Preset testPreset = new Preset("testPreset", new ArrayList<ImageTemplate>());
         testPreset.addTemplate(template1);
         testPreset.addTemplate(template2);
@@ -66,5 +68,25 @@ public class PresetTest {
         assertTrue(testPreset.getTemplates().get(2).getTemplateName().equals("template3"), "Should retrieve name of third added template");
     }
 
-    
+    @Test
+    void testDeleteTemplate_deleteOutOfBoundIndex_shouldHaveUnchangedSizeAndReturnFalse() {
+        Preset testPreset = new Preset("testPreset", new ArrayList<ImageTemplate>());
+        testPreset.addTemplate(template1);
+        testPreset.addTemplate(template2);
+        testPreset.addTemplate(template3);
+        boolean result = testPreset.deleteTemplate(3);
+        assertEquals(testPreset.getTemplates().size(), 3);
+        assertFalse(result);
+    }
+
+    @Test
+    void testDeleteTemplate_deletevalidIndex_shouldMinusOneSizeAndReturnTrue() {
+        Preset testPreset = new Preset("testPreset", new ArrayList<ImageTemplate>());
+        testPreset.addTemplate(template1);
+        testPreset.addTemplate(template2);
+        testPreset.addTemplate(template3);
+        boolean result = testPreset.deleteTemplate(1);
+        assertEquals(testPreset.getTemplates().size(), 2);
+        assertTrue(result);
+    }
 }

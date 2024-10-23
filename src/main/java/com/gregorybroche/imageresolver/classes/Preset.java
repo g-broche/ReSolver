@@ -7,7 +7,7 @@ public class Preset {
     private String name;
     private List<ImageTemplate> templates = new ArrayList<ImageTemplate>();
 
-    public Preset(String presetName, List<ImageTemplate> templates){
+    public Preset(String presetName, List<ImageTemplate> templates) {
         setName(presetName);
         setTemplates(templates);
     }
@@ -29,15 +29,20 @@ public class Preset {
     }
 
     /**
-     * checks if a name string already corresponds to an existing template name in the template list
-     * @param templateName string of the name to test
-     * @param excludedIndex use an index to ignore a specific template from the check, used in case of validating edit action with an unchanged
-     * template name
+     * checks if a name string already corresponds to an existing template name in
+     * the template list
+     * 
+     * @param templateName  string of the name to test
+     * @param excludedIndex use an index to ignore a specific template from the
+     *                      check, used in case of validating edit action with an
+     *                      unchanged
+     *                      template name
      * @return true if a template matches the given string, otherwise false
      */
     public boolean isTemplateNameAlreadyPresent(String templateName, Integer excludedIndex) {
         for (int i = 0; i < templates.size(); i++) {
-            if (templates.get(i).getTemplateName().equals(templateName) && (excludedIndex==null || i != excludedIndex)){
+            if (templates.get(i).getTemplateName().equals(templateName)
+                    && (excludedIndex == null || i != excludedIndex)) {
                 return true;
             }
         }
@@ -46,12 +51,13 @@ public class Preset {
 
     /**
      * Adds a template to the list of templates
+     * 
      * @param imageTemplate
      * @return true if adding was successful, otherwise false
      */
-    public boolean addTemplate(ImageTemplate imageTemplate){
+    public boolean addTemplate(ImageTemplate imageTemplate) {
         try {
-            if(isTemplateNameAlreadyPresent(imageTemplate.getTemplateName(), null)){
+            if (isTemplateNameAlreadyPresent(imageTemplate.getTemplateName(), null)) {
                 return false;
             }
             this.templates.add(imageTemplate);
@@ -63,13 +69,16 @@ public class Preset {
 
     /**
      * Edits a template using an other template's data
+     * 
      * @param newTemplateData
-     * @param indexOfTemplateToReplace index of template to edit in this preset's template list
-     * @return true if editing the template's properties was successful, otherwise false
+     * @param indexOfTemplateToReplace index of template to edit in this preset's
+     *                                 template list
+     * @return true if editing the template's properties was successful, otherwise
+     *         false
      */
-    public boolean editTemplate(ImageTemplate newTemplateData, int indexOfTemplateToReplace){
+    public boolean editTemplate(ImageTemplate newTemplateData, int indexOfTemplateToReplace) {
         try {
-            if(isTemplateNameAlreadyPresent(newTemplateData.getTemplateName(), indexOfTemplateToReplace)){
+            if (isTemplateNameAlreadyPresent(newTemplateData.getTemplateName(), indexOfTemplateToReplace)) {
                 return false;
             }
             ImageTemplate templateToEdit = this.templates.get(indexOfTemplateToReplace);
@@ -86,6 +95,19 @@ public class Preset {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    public boolean deleteTemplate(int indexOfTemplateToDelete) {
+        try {
+            if (this.templates.size() < indexOfTemplateToDelete) {
+                return false;
+            }
+            this.templates.remove(indexOfTemplateToDelete);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+
     }
 
 }
