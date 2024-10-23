@@ -1,6 +1,9 @@
 package com.gregorybroche.imageresolver.classes;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class Preset {
@@ -27,6 +30,17 @@ public class Preset {
     public List<ImageTemplate> getTemplates() {
         return this.templates;
     }
+
+    /**
+     * comparator to sort templates by decreasing width property
+     */
+    public static Comparator<ImageTemplate> decreasingWidthComparator = new Comparator<ImageTemplate>() {
+        public int compare(ImageTemplate template1, ImageTemplate template2){
+            int width1 = template1.getWidth();
+            int width2 = template2.getWidth();
+            return width2 - width1;
+        }
+    };
 
     /**
      * checks if a name string already corresponds to an existing template name in
@@ -112,7 +126,10 @@ public class Preset {
         } catch (Exception e) {
             return false;
         }
+    }
 
+    public void orderTemplatesByWidth(){
+        Collections.sort(this.templates, Preset.decreasingWidthComparator);
     }
 
 }

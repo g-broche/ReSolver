@@ -89,4 +89,16 @@ public class PresetTest {
         assertEquals(testPreset.getTemplates().size(), 2);
         assertTrue(result);
     }
+
+    @Test
+    void orderTemplatesByWidth_shouldOrderTemplateListByDecreasingWidthValue() {
+        Preset testPreset = new Preset("testPreset", new ArrayList<ImageTemplate>());
+        testPreset.addTemplate(template1);
+        testPreset.addTemplate(template2);
+        testPreset.addTemplate(template3);
+        testPreset.orderTemplatesByWidth();
+        assertEquals(testPreset.getTemplates().get(0), template3);
+        assertEquals(testPreset.getTemplates().get(1), template2);
+        assertEquals(testPreset.getTemplates().get(2), template1);
+    }
 }

@@ -80,6 +80,7 @@ public class MainController {
     @FXML
     public void initialize() {
         presetManagementService.loadPresets();
+        presetManagementService.orderTemplatesOfPresetByWidth(Selectedpreset);
         displayLoadedTemplates();
     }
 
@@ -165,6 +166,7 @@ public class MainController {
      */
     private void addSubmittedTemplateToPreset(ImageTemplate submittedTemplate) {
         presetManagementService.addTemplateToPreset(submittedTemplate, Selectedpreset);
+        presetManagementService.orderTemplatesOfPresetByWidth(Selectedpreset);
         displayLoadedTemplates();
     }
 
@@ -175,6 +177,7 @@ public class MainController {
      */
     private void editTemplate(ImageTemplate submittedTemplate, int indexOfTemplateToEdit) {
         presetManagementService.editTemplateOfPreset(submittedTemplate, indexOfTemplateToEdit, Selectedpreset);
+        presetManagementService.orderTemplatesOfPresetByWidth(Selectedpreset);
         displayLoadedTemplates();
     }
 
