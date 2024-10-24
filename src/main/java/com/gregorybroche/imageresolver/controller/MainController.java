@@ -105,10 +105,10 @@ public class MainController {
     void resolveImage() {
         try {
             BufferedImage sourceBufferedImage = imageEditorService.getImageContentFromFile(imageToResolve);
-            ImageTemplate template = getTemplateParameters();
             Path directory = fileHandlerService.getAppDirectoryPath(); // Temporary for testing until logic for defining
                                                                        // templates and presets through inputs is done
-            resolverProcessorService.processImageForTemplate(sourceBufferedImage, template, directory);
+            List<ImageTemplate> loadedTemplates = presetManagementService.getPresetFromKey(Selectedpreset).getTemplates();
+            resolverProcessorService.resolveImageForAllTemplates(sourceBufferedImage, loadedTemplates, directory);
         } catch (Exception e) {
             userDialogService.showErrorMessage("failed to resolve image", e.getMessage());
         }

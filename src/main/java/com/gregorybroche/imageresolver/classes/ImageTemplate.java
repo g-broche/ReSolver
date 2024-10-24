@@ -99,7 +99,7 @@ public class ImageTemplate {
     }
 
     public String getCompleteFileName() {
-        return this.newImagePrefix+this.newImageBaseName+this.newImageSuffix+this.format;
+        return this.newImagePrefix+this.newImageBaseName+this.newImageSuffix+'.'+this.format;
     }
 
     /**

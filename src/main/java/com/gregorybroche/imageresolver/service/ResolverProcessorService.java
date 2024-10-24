@@ -3,11 +3,15 @@ package com.gregorybroche.imageresolver.service;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 
 import com.gregorybroche.imageresolver.classes.ImageTemplate;
+import com.gregorybroche.imageresolver.classes.ValidationResponse;
 
 @Service
 public class ResolverProcessorService {
@@ -28,7 +32,7 @@ public class ResolverProcessorService {
      * @param saveToDirectory Path instance of the directory where the edit image must be saved
      * @throws IOException
      */
-    public void processImageForTemplate(BufferedImage sourceImageContent, ImageTemplate imageTemplate, Path saveToDirectory) throws IOException{
+    public File processImageForTemplate(BufferedImage sourceImageContent, ImageTemplate imageTemplate, Path saveToDirectory) throws IOException{
 
         String templateExtension = imageTemplate.getFormat();
         if(!validatorService.isExtensionValid(templateExtension)){
@@ -70,6 +74,49 @@ public class ResolverProcessorService {
                 editedImageContent = imageEditorService.editImage(sourceImageContent, imageTemplate, BufferedImage.TYPE_INT_RGB);
                 imageEditorService.createImage(editedImageContent, templateExtension, editedImageFile);
                 break;
+        }
+        if(!Files.exists(editedImageFile.toPath())){
+            return null;
+        }
+        return editedImageFile;
+    }
+
+    public ValidationResponse resolveImageForAllTemplates(BufferedImage sourceImageContent, List<ImageTemplate> templates, Path saveToDirectory){
+        if(sourceImageContent == null || templates == null || saveToDirectory == null || templates.size()==0){
+            List<String> errorMessageComponents = new ArrayList<>();
+            if (sourceImageContent == null) {
+                errorMessageComponents.add("Source image content is missing");
+            }
+            if (templates == null) {
+                errorMessageComponents.add("Templates list is missing");
+            }
+            if (templates != null && templates.size() == 0) {
+                errorMessageComponents.add("Templates list is empty");
+            }
+            if (saveToDirectory == null) {
+                errorMessageComponents.add("Save directory is missing");
+            }
+            return new ValidationResponse(false, null, String.join(", ", errorMessageComponents));
+        }
+        List<File> createdFiles = new ArrayList<File>();
+        try {   
+            for (ImageTemplate template : templates) {
+                File createdFile = processImageForTemplate(sourceImageContent, template, saveToDirectory);
+                if(createdFile == null){
+                    throw new Exception(
+                        "Could not save image for template '"+template.getTemplateName()+"'"+
+                        " to directory : '"+saveToDirectory.toString()+"'"+
+                        " with file name '"+template.getCompleteFileName()+"'"
+                        );
+                }
+                createdFiles.add(createdFile);
+            }
+            return new ValidationResponse(true, null, null);
+        } catch (Exception e) {
+            for (File createdFile : createdFiles) {
+                createdFile.delete();
+            }
+            return new ValidationResponse(false, null, "An error occured while processing and saving images : "+e.getMessage());
         }
     }
 }
