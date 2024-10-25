@@ -22,12 +22,12 @@ import org.springframework.test.util.ReflectionTestUtils;
 @SpringBootTest
 @TestPropertySource(locations = "classpath:custom.properties")
 public class FileHandlerServiceTest {
-    FileHandlerService fileHandlerService;
+    private FileHandlerService fileHandlerService;
 
     @Autowired
     private ApplicationContext applicationContext;
-    ImageEditorService imageEditorService;
-    BufferedImage testImageBufferedContent;
+    private ImageEditorService imageEditorService;
+    private BufferedImage testImageBufferedContent;
 
     @Value("${resolver.directory.main}")
     private String mainDirectoryName;
@@ -61,7 +61,8 @@ public class FileHandlerServiceTest {
                 tempDirectoryName,
                 presetFileName,
                 windowsAppMainDirectoryRoot,
-                unixAppMainDirectoryRoot);
+                unixAppMainDirectoryRoot
+                );
 
         String testAppPath = fileHandlerService.getAppDirectoryPath().toString() + "-test";
         testAppDirectory = Paths.get(testAppPath);
