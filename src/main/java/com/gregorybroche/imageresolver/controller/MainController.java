@@ -111,7 +111,9 @@ public class MainController {
             ValidationResponse resolveResult = resolverProcessorService.resolveImageForAllTemplates(sourceBufferedImage, loadedTemplates, directory);
             if (!resolveResult.isSuccess()){
                 userDialogService.showErrorMessage("Error resolving image", resolveResult.getMessage());
+                return;
             }
+            userDialogService.showInformationMessage("Copies created", "Resolving of image is done, ready for next operation");
         } catch (Exception e) {
             userDialogService.showErrorMessage("failed to resolve image : ", e.getMessage());
         }
@@ -155,12 +157,6 @@ public class MainController {
      */
     private void displaySelectedImagePreview(Image image) {
         imagePreview.setImage(image);
-    }
-
-    // Proof of concept testing until proper definition of templates through user
-    // inputs
-    private ImageTemplate getTemplateParameters() {
-        return new ImageTemplate("testTemplate", 600, 400, 96, null, "testImage", null, "jpg");
     }
 
     /**
