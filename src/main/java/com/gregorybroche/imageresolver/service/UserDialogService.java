@@ -55,6 +55,19 @@ public final class UserDialogService {
         alert.show();
     }
 
+    /**
+     * Display information popup
+     * @param title
+     * @param message
+     */
+    public void showInformationMessage(String title, String message){
+        Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.show();
+    }
+
     public void showInvalidSelectedFileFormatError(){
         String title = "File is not valid";
         String message = "The file must be an image with one of the following type: " + validatorService.getAllowedImageFormatsAsString();

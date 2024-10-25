@@ -12,6 +12,7 @@ public class Preset {
 
     public Preset(String presetName, List<ImageTemplate> templates) {
         setName(presetName);
+        templates = templates != null ? templates : new ArrayList<ImageTemplate>();
         setTemplates(templates);
     }
 

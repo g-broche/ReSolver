@@ -115,12 +115,12 @@ public class TemplateFormController {
     private void validateTemplateNameChange() {
         String input = validatorService.sanitizeString(inputTemplateName.getText());
         ValidationResponse validationState = templateFormValidatorService.validateTemplateNameInput(input);
-        if (!validationState.getIsSuccess()) {
+        if (!validationState.isSuccess()) {
             showInputError(inputTemplateNameError, validationState.getMessage());
         } else {
             hideInputError(inputTemplateNameError);
         }
-        setInputValidationForTemplateName(validationState.getIsSuccess());
+        setInputValidationForTemplateName(validationState.isSuccess());
         toggleSaveButton(areInputsValid());
     }
 
@@ -128,12 +128,12 @@ public class TemplateFormController {
     private void validateImageBaseNameChange() {
         String input = validatorService.sanitizeString(inputFileBaseName.getText());
         ValidationResponse validationState = templateFormValidatorService.validateBaseNameInput(input);
-        if (!validationState.getIsSuccess()) {
+        if (!validationState.isSuccess()) {
             showInputError(inputFileBaseNameError, validationState.getMessage());
         } else {
             hideInputError(inputFileBaseNameError);
         }
-        setInputValidationForBaseName(validationState.getIsSuccess());
+        setInputValidationForBaseName(validationState.isSuccess());
         toggleSaveButton(areInputsValid());
     }
 
@@ -141,12 +141,12 @@ public class TemplateFormController {
     private void validateImagePrefixChange() {
         String input = validatorService.sanitizeString(inputFilePrefix.getText());
         ValidationResponse validationState = templateFormValidatorService.validatePrefixInput(input);
-        if (!validationState.getIsSuccess()) {
+        if (!validationState.isSuccess()) {
             showInputError(inputFilePrefixError, validationState.getMessage());
         } else {
             hideInputError(inputFilePrefixError);
         }
-        setInputValidationForPrefix(validationState.getIsSuccess());
+        setInputValidationForPrefix(validationState.isSuccess());
         toggleSaveButton(areInputsValid());
     }
 
@@ -154,12 +154,12 @@ public class TemplateFormController {
     private void validateImageSuffixChange() {
         String input = validatorService.sanitizeString(inputFileSuffix.getText());
         ValidationResponse validationState = templateFormValidatorService.validateSuffixInput(input);
-        if (!validationState.getIsSuccess()) {
+        if (!validationState.isSuccess()) {
             showInputError(inputFileSuffixError, validationState.getMessage());
         } else {
             hideInputError(inputFileSuffixError);
         }
-        setInputValidationForSuffix(validationState.getIsSuccess());
+        setInputValidationForSuffix(validationState.isSuccess());
         toggleSaveButton(areInputsValid());
     }
 
@@ -167,12 +167,12 @@ public class TemplateFormController {
     private void validateWidthChange() {
         String input = validatorService.sanitizeString(inputWidth.getText());
         ValidationResponse validationState = templateFormValidatorService.validateWidthInput(input);
-        if (!validationState.getIsSuccess()) {
+        if (!validationState.isSuccess()) {
             showInputError(inputWidthError, validationState.getMessage());
         } else {
             hideInputError(inputWidthError);
         }
-        setInputValidationForWidth(validationState.getIsSuccess());
+        setInputValidationForWidth(validationState.isSuccess());
         toggleSaveButton(areInputsValid());
     }
 
@@ -180,12 +180,12 @@ public class TemplateFormController {
     private void validateHeightChange() {
         String input = validatorService.sanitizeString(inputHeight.getText());
         ValidationResponse validationState = templateFormValidatorService.validateHeightInput(input);
-        if (!validationState.getIsSuccess()) {
+        if (!validationState.isSuccess()) {
             showInputError(inputHeightError, validationState.getMessage());
         } else {
             hideInputError(inputHeightError);
         }
-        setInputValidationForHeight(validationState.getIsSuccess());
+        setInputValidationForHeight(validationState.isSuccess());
         toggleSaveButton(areInputsValid());
     }
 
@@ -193,12 +193,12 @@ public class TemplateFormController {
     private void validateResolutionChange() {
         String input = validatorService.sanitizeString(inputResolution.getText());
         ValidationResponse validationState = templateFormValidatorService.validateResolutionInput(input);
-        if (!validationState.getIsSuccess()) {
+        if (!validationState.isSuccess()) {
             showInputError(inputResolutionError, validationState.getMessage());
         } else {
             hideInputError(inputResolutionError);
         }
-        setInputValidationForResolution(validationState.getIsSuccess());
+        setInputValidationForResolution(validationState.isSuccess());
         toggleSaveButton(areInputsValid());
     }
 
@@ -206,12 +206,12 @@ public class TemplateFormController {
     private void validateFormatChange() {
         String input = validatorService.sanitizeString(selectFormat.getValue());
         ValidationResponse validationState = templateFormValidatorService.validateFormatInput(input);
-        if (!validationState.getIsSuccess()) {
+        if (!validationState.isSuccess()) {
             showInputError(selectFormatError, validationState.getMessage());
         } else {
             hideInputError(selectFormatError);
         }
-        setInputValidationForFormat(validationState.getIsSuccess());
+        setInputValidationForFormat(validationState.isSuccess());
         toggleSaveButton(areInputsValid());
     }
 

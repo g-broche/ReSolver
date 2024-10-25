@@ -56,7 +56,7 @@ public class TemplateFormServiceTest {
     void validateInput_widthIsNull_shouldReturnValidationResponseFalseWithErrorWidthIsRequired(){
         this.templateFormService.setAllConstraints();
         ValidationResponse testResponse = this.templateFormService.validateInput(null, "width");
-        assertFalse(testResponse.getIsSuccess());
+        assertFalse(testResponse.isSuccess());
         assertEquals(testResponse.getMessage(), "The width is required");
     }
 
@@ -66,7 +66,7 @@ public class TemplateFormServiceTest {
         String value = "5";
         String expectedMessage = "The width must be an int greater than";
         ValidationResponse testResponse = this.templateFormService.validateInput(value, "width");
-        assertFalse(testResponse.getIsSuccess());
+        assertFalse(testResponse.isSuccess());
         assertTrue(testResponse.getMessage().contains(expectedMessage));
     }
 
@@ -76,7 +76,7 @@ public class TemplateFormServiceTest {
         String value = "11000";
         String expectedMessage = "The width must be an int less than";
         ValidationResponse testResponse = this.templateFormService.validateInput(value, "width");
-        assertFalse(testResponse.getIsSuccess());
+        assertFalse(testResponse.isSuccess());
         assertTrue(testResponse.getMessage().contains(expectedMessage));
     }
 }

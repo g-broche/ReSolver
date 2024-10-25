@@ -11,7 +11,7 @@ public class ValidationResponse {
         this.message = message;
     }
 
-    public boolean getIsSuccess(){
+    public boolean isSuccess(){
         return this.isSuccess;
     }
 

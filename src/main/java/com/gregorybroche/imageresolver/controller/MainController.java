@@ -11,6 +11,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import com.gregorybroche.imageresolver.classes.ImageTemplate;
+import com.gregorybroche.imageresolver.classes.ValidationResponse;
 import com.gregorybroche.imageresolver.service.FileHandlerService;
 import com.gregorybroche.imageresolver.service.ImageEditorService;
 import com.gregorybroche.imageresolver.service.PresetManagementService;
@@ -97,7 +98,6 @@ public class MainController {
             displaySelectedImagePreview(previewImage);
         } catch (Exception e) {
             userDialogService.showErrorMessage("failed to select image", e.getMessage());
-            throw new RuntimeException(e);
         }
     }
 
@@ -105,12 +105,17 @@ public class MainController {
     void resolveImage() {
         try {
             BufferedImage sourceBufferedImage = imageEditorService.getImageContentFromFile(imageToResolve);
-            ImageTemplate template = getTemplateParameters();
             Path directory = fileHandlerService.getAppDirectoryPath(); // Temporary for testing until logic for defining
                                                                        // templates and presets through inputs is done
-            resolverProcessorService.processImageForTemplate(sourceBufferedImage, template, directory);
+            List<ImageTemplate> loadedTemplates = presetManagementService.getPresetFromKey(Selectedpreset).getTemplates();
+            ValidationResponse resolveResult = resolverProcessorService.resolveImageForAllTemplates(sourceBufferedImage, loadedTemplates, directory);
+            if (!resolveResult.isSuccess()){
+                userDialogService.showErrorMessage("Error resolving image", resolveResult.getMessage());
+                return;
+            }
+            userDialogService.showInformationMessage("Copies created", "Resolving of image is done, ready for next operation");
         } catch (Exception e) {
-            userDialogService.showErrorMessage("failed to resolve image", e.getMessage());
+            userDialogService.showErrorMessage("failed to resolve image : ", e.getMessage());
         }
     }
 
@@ -152,12 +157,6 @@ public class MainController {
      */
     private void displaySelectedImagePreview(Image image) {
         imagePreview.setImage(image);
-    }
-
-    // Proof of concept testing until proper definition of templates through user
-    // inputs
-    private ImageTemplate getTemplateParameters() {
-        return new ImageTemplate("testTemplate", 600, 400, 96, null, "testImage", null, "jpg");
     }
 
     /**

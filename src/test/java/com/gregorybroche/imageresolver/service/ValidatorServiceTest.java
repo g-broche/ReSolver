@@ -444,7 +444,7 @@ public class ValidatorServiceTest {
                 "test has failed"
                 );
             ValidationResponse testResult = validatorService.isConstraintValidated(value, testConstraint);
-            assertFalse(testResult.getIsSuccess());
+            assertFalse(testResult.isSuccess());
             assertNull(testResult.getData());
             assertEquals(testResult.getMessage(), "test has failed");
         } catch (Exception e) {
@@ -464,7 +464,7 @@ public class ValidatorServiceTest {
                 "test has passed"
                 );
             ValidationResponse testResult = validatorService.isConstraintValidated(value, testConstraint);
-            assertTrue(testResult.getIsSuccess());
+            assertTrue(testResult.isSuccess());
             assertNull(testResult.getData());
             assertNull(testResult.getMessage());
         } catch (Exception e) {

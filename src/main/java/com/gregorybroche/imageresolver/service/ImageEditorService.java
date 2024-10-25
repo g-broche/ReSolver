@@ -26,14 +26,12 @@ public class ImageEditorService {
      */
     public BufferedImage getImageContentFromFile(File imageFile){
         if(!validatorService.isFileValidImageFormat(imageFile)){
-            userDialogService.showErrorMessage("Invalid format", "The format of the file used is not a supported image format");
             return null;
         }
         try {
             BufferedImage imageContent = ImageIO.read(imageFile);
             return imageContent;
         } catch (Exception e) {
-            userDialogService.showErrorMessage("Image extraction error", "The content of the source image file could not be extracted");
             return null;
         }
     }
