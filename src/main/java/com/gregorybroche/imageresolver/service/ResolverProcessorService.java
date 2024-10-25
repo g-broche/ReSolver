@@ -30,13 +30,26 @@ public class ResolverProcessorService {
      * @param sourceImageContent BufferedImage content of the source image
      * @param imageTemplate Instance of ImageTemplate qui specification for the edited image to create
      * @param saveToDirectory Path instance of the directory where the edit image must be saved
+     * @return File instance representing the newly created file or null if method reached its end without creating a file
      * @throws IOException
      */
     public File processImageForTemplate(BufferedImage sourceImageContent, ImageTemplate imageTemplate, Path saveToDirectory) throws IOException{
-
+        if(sourceImageContent == null || imageTemplate == null || saveToDirectory == null){
+            List<String> errorMessageComponents = new ArrayList<>();
+            if (sourceImageContent == null) {
+                errorMessageComponents.add("source image content is null");
+            }
+            if (imageTemplate == null) {
+                errorMessageComponents.add("template is null");
+            }
+            if (saveToDirectory == null) {
+                errorMessageComponents.add("save directory is null");
+            }
+            throw new IOException(String.join(", ", errorMessageComponents));
+        }
         String templateExtension = imageTemplate.getFormat();
         if(!validatorService.isExtensionValid(templateExtension)){
-            String errorMessage = "Invalid format requested: requested "+templateExtension+" not in allowed formats ("+validatorService.getAllowedImageFormatsAsString()+")";
+            String errorMessage = "invalid format requested: requested "+templateExtension+" not in allowed formats ("+validatorService.getAllowedImageFormatsAsString()+")";
             throw new IOException(errorMessage);
         }
 
@@ -92,16 +105,16 @@ public class ResolverProcessorService {
         if(sourceImageContent == null || templates == null || saveToDirectory == null || templates.size()==0){
             List<String> errorMessageComponents = new ArrayList<>();
             if (sourceImageContent == null) {
-                errorMessageComponents.add("Source image content is missing");
+                errorMessageComponents.add("source image content is null");
             }
             if (templates == null) {
-                errorMessageComponents.add("Templates list is missing");
+                errorMessageComponents.add("templates list is null");
             }
             if (templates != null && templates.size() == 0) {
-                errorMessageComponents.add("Templates list is empty");
+                errorMessageComponents.add("templates list is empty");
             }
             if (saveToDirectory == null) {
-                errorMessageComponents.add("Save directory is missing");
+                errorMessageComponents.add("save directory is null");
             }
             return new ValidationResponse(false, null, String.join(", ", errorMessageComponents));
         }
@@ -111,9 +124,9 @@ public class ResolverProcessorService {
                 File createdFile = processImageForTemplate(sourceImageContent, template, saveToDirectory);
                 if(createdFile == null){
                     throw new Exception(
-                        "Could not save image for template '"+template.getTemplateName()+"'"+
-                        " to directory : '"+saveToDirectory.toString()+"'"+
-                        " with file name '"+template.getCompleteFileName()+"'"
+                        "aborted operation : could not save image for template '"+template.getTemplateName()+"' "+
+                        "to directory : '"+saveToDirectory.toString()+"' "+
+                        "with file name '"+template.getCompleteFileName()+"'"
                         );
                 }
                 createdFiles.add(createdFile);
@@ -123,7 +136,7 @@ public class ResolverProcessorService {
             for (File createdFile : createdFiles) {
                 createdFile.delete();
             }
-            return new ValidationResponse(false, null, "An error occured while processing and saving images : "+e.getMessage());
+            return new ValidationResponse(false, null, "an error occured while processing and operation was aborted : "+e.getMessage());
         }
     }
 }
