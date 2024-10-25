@@ -246,7 +246,7 @@ public class TemplateFormService {
             for (InputConstraint inputConstraint : inputConstraints) {
                 ValidationResponse inputContraintResponse = this.validatorService.isConstraintValidated(input,
                         inputConstraint);
-                if (!inputContraintResponse.getIsSuccess()) {
+                if (!inputContraintResponse.isSuccess()) {
                     return inputContraintResponse;
                 }
             }

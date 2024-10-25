@@ -81,6 +81,13 @@ public class ResolverProcessorService {
         return editedImageFile;
     }
 
+    /**
+     * creates the image copies of a source image after applying templates' specification and saving to defined directory
+     * @param sourceImageContent
+     * @param templates
+     * @param saveToDirectory
+     * @return ValidationResponse instance describing the success state of the operation
+     */
     public ValidationResponse resolveImageForAllTemplates(BufferedImage sourceImageContent, List<ImageTemplate> templates, Path saveToDirectory){
         if(sourceImageContent == null || templates == null || saveToDirectory == null || templates.size()==0){
             List<String> errorMessageComponents = new ArrayList<>();

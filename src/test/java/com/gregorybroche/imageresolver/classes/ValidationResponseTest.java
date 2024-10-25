@@ -11,7 +11,7 @@ public class ValidationResponseTest {
     @Test
         void constructor_passingNullParameters_ShouldConstructAndIsNullPropertyGettersReturnTrue() {
         ValidationResponse validationResponse = new ValidationResponse(false, null, null);
-        assertFalse(validationResponse.getIsSuccess());
+        assertFalse(validationResponse.isSuccess());
         assertTrue(validationResponse.isDataNull());
         assertTrue(validationResponse.isMessageNull());
     }

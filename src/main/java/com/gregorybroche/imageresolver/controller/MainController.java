@@ -11,6 +11,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import com.gregorybroche.imageresolver.classes.ImageTemplate;
+import com.gregorybroche.imageresolver.classes.ValidationResponse;
 import com.gregorybroche.imageresolver.service.FileHandlerService;
 import com.gregorybroche.imageresolver.service.ImageEditorService;
 import com.gregorybroche.imageresolver.service.PresetManagementService;
@@ -97,7 +98,6 @@ public class MainController {
             displaySelectedImagePreview(previewImage);
         } catch (Exception e) {
             userDialogService.showErrorMessage("failed to select image", e.getMessage());
-            throw new RuntimeException(e);
         }
     }
 
@@ -108,9 +108,12 @@ public class MainController {
             Path directory = fileHandlerService.getAppDirectoryPath(); // Temporary for testing until logic for defining
                                                                        // templates and presets through inputs is done
             List<ImageTemplate> loadedTemplates = presetManagementService.getPresetFromKey(Selectedpreset).getTemplates();
-            resolverProcessorService.resolveImageForAllTemplates(sourceBufferedImage, loadedTemplates, directory);
+            ValidationResponse resolveResult = resolverProcessorService.resolveImageForAllTemplates(sourceBufferedImage, loadedTemplates, directory);
+            if (!resolveResult.isSuccess()){
+                userDialogService.showErrorMessage("Error resolving image", resolveResult.getMessage());
+            }
         } catch (Exception e) {
-            userDialogService.showErrorMessage("failed to resolve image", e.getMessage());
+            userDialogService.showErrorMessage("failed to resolve image : ", e.getMessage());
         }
     }
 
