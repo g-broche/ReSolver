@@ -14,6 +14,7 @@ import com.gregorybroche.imageresolver.classes.ImageTemplate;
 import com.gregorybroche.imageresolver.classes.ValidationResponse;
 import com.gregorybroche.imageresolver.service.FileHandlerService;
 import com.gregorybroche.imageresolver.service.ImageEditorService;
+import com.gregorybroche.imageresolver.service.MetadataService;
 import com.gregorybroche.imageresolver.service.PresetManagementService;
 import com.gregorybroche.imageresolver.service.ResolverProcessorService;
 import com.gregorybroche.imageresolver.service.TemplateFormService;
@@ -40,6 +41,7 @@ public class MainController {
     private ResolverProcessorService resolverProcessorService;
     private TemplateFormService templateFormService;
     private PresetManagementService presetManagementService;
+    private MetadataService metadataService;
     private File imageToResolve = null;
     private String Selectedpreset = "test";
 
@@ -51,7 +53,8 @@ public class MainController {
             ImageEditorService imageEditorService,
             ResolverProcessorService resolverProcessorService,
             PresetManagementService presetManagementService,
-            TemplateFormService templateFormService
+            TemplateFormService templateFormService,
+            MetadataService metadataService
             ) {
         this.applicationContext = applicationContext;
         this.userDialogService = userDialogService;
@@ -61,6 +64,7 @@ public class MainController {
         this.resolverProcessorService = resolverProcessorService;
         this.presetManagementService = presetManagementService;
         this.templateFormService = templateFormService;
+        this.metadataService = metadataService;
     }
 
     @FXML
@@ -93,6 +97,7 @@ public class MainController {
                 userDialogService.showInvalidSelectedFileFormatError();
                 return;
             }
+            metadataService.printMetadata(selectedFile);
             imageToResolve = fileHandlerService.saveFileToTemp(selectedFile).toFile();
             Image previewImage = getImageFromFilePath(imageToResolve.toPath());
             displaySelectedImagePreview(previewImage);
