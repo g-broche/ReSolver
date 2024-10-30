@@ -29,6 +29,11 @@ public enum MetadataKey {
         return exifKey;
     }
 
+    /**
+     * Given a string key, find the corresponding MetadataKey enum type
+     * @param exifKey
+     * @return MetadataKey enum if found, null otherwise
+     */
     public static MetadataKey findMetadataKeyByExifKey(String exifKey){
         for (MetadataKey metadataKey : values()) {
             if (metadataKey.getExifKey().equalsIgnoreCase(exifKey)) {
@@ -38,12 +43,16 @@ public enum MetadataKey {
         return null;
     }
 
-    public static Map<String, MetadataKey> getExifKeysToMetadataKey(){
+    /**
+     * Generates a map object linking exifs keys to their correspond MetadataKey enum type
+     * @return Map containing for key a valid Exif string and for value its corresponding MetatadaKey enum
+     */
+    public static Map<String, MetadataKey> generateExifKeysToMetadataKeyMap(){
         Map<String, MetadataKey> exifKeysToMetadataKeys = new HashMap<String, MetadataKey>();
         for (MetadataKey metadataKey : values()) {
             String exifKey = metadataKey.getExifKey();
             if (exifKey != null) {
-                exifKeysToMetadataKeys.put(exifKey, metadataKey);
+                exifKeysToMetadataKeys.put(exifKey.toLowerCase(), metadataKey);
             }
         }
         return exifKeysToMetadataKeys;
