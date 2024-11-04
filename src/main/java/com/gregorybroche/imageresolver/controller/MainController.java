@@ -97,7 +97,10 @@ public class MainController {
                 userDialogService.showInvalidSelectedFileFormatError();
                 return;
             }
-            metadataService.printMetadata(selectedFile);
+            // metadataService.printMetadata(selectedFile);
+            metadataService.setMetadataItems(metadataService.extractMetadata(selectedFile));
+            // metadataService.printLoadedMetadata();
+
             imageToResolve = fileHandlerService.saveFileToTemp(selectedFile).toFile();
             Image previewImage = getImageFromFilePath(imageToResolve.toPath());
             displaySelectedImagePreview(previewImage);

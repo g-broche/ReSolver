@@ -121,7 +121,8 @@ public class ResolverProcessorServiceTest {
             unixAppMainDirectoryRoot
             );
         imageEditorService = new ImageEditorService(validatorService, userDialogService);
-        resolverProcessorService = new ResolverProcessorService(imageEditorService, fileHandlerService, validatorService);
+        MetadataService metadataService = new MetadataService();
+        resolverProcessorService = new ResolverProcessorService(imageEditorService, fileHandlerService, validatorService, metadataService);
         tempDir = Files.createTempDirectory("testResolverProcessorService");
         testSourceImageContent = imageEditorService.createTestImageContent();
 

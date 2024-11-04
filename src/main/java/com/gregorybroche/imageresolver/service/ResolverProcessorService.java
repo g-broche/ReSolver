@@ -18,11 +18,18 @@ public class ResolverProcessorService {
     private ImageEditorService imageEditorService;
     private FileHandlerService fileHandlerService;
     private ValidatorService validatorService;
+    private MetadataService metadataService;
 
-    public ResolverProcessorService(ImageEditorService imageEditorService, FileHandlerService fileHandlerService, ValidatorService validatorService){
+    public ResolverProcessorService(
+        ImageEditorService imageEditorService,
+        FileHandlerService fileHandlerService,
+        ValidatorService validatorService,
+        MetadataService metadataService
+        ){
         this.validatorService = validatorService;
         this.fileHandlerService = fileHandlerService;
         this.imageEditorService = imageEditorService;
+        this.metadataService = metadataService;
     }
 
     /**
@@ -60,11 +67,17 @@ public class ResolverProcessorService {
             case "jpg":
                 editedImageContent = imageEditorService.editImage(sourceImageContent, imageTemplate, BufferedImage.TYPE_INT_RGB);
                 imageEditorService.createJPGImage(editedImageContent, editedImageFile);
+                if (metadataService.isMetadataLoaded()) {
+                    metadataService.writeLoadedMetadataToJPEGFile(editedImageFile);
+                }
                 break;
         
             case "jpeg":
                 editedImageContent = imageEditorService.editImage(sourceImageContent, imageTemplate, BufferedImage.TYPE_INT_RGB);
                 imageEditorService.createJPEGImage(editedImageContent, editedImageFile);
+                if (metadataService.isMetadataLoaded()) {
+                    metadataService.writeLoadedMetadataToJPEGFile(editedImageFile);
+                }
                 break;
                 
             case "bmp":
