@@ -22,6 +22,12 @@ import com.gregorybroche.imageresolver.classes.ValidationResponse;
 
 @Service
 public class XmlService {
+    /**
+     * creates and XML document which content is based on a given list of presets
+     * @param presets
+     * @return Document instance for an XML document
+     * @throws ParserConfigurationException
+     */
     public Document createPresetsXMLDocument(List<Preset> presets) throws ParserConfigurationException{
         DocumentBuilderFactory documentFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder documentBuilder = documentFactory.newDocumentBuilder();
@@ -37,19 +43,100 @@ public class XmlService {
         return document;
     }
 
+    /**
+     * creates an element instance with its content representing the data of a given preset
+     * @param document document instance used to create new nodes
+     * @param preset
+     * @return Element node with the preset data as sub nodes, or null if missing arguments
+     */
     private Element createPresetNode(Document document, Preset preset){
+        if (document == null || preset == null) {
+            return null;
+        }
         Element presetNode = document.createElement("preset");
         Element presetName = document.createElement("name");
         presetName.setTextContent(preset.getName());
         presetNode.appendChild(presetName);
         Element templates = document.createElement("templates");
         for (ImageTemplate template : preset.getTemplates()) {
-            
+            Element templateNode = createTemplateNode(document, template);
+            templates.appendChild(templateNode);
         }
         presetNode.appendChild(templates);
         return presetNode;
     }
 
+    /**
+     * creates an element instance with its content representing the data of a given template
+     * @param document document instance used to create new nodes
+     * @param template instance of ImageTemplate
+     * @return Element node with the template data as sub nodes, or null if missing arguments
+     */
+    private Element createTemplateNode(Document document, ImageTemplate template){
+        if (template == null){
+            return null;
+        }
+        Element templateNode = document.createElement("template");
+
+        Element nameNode = createNode(document, "name", template.getTemplateName());
+        templateNode.appendChild(nameNode);
+        Element widthNode = createNode(document, "width", Integer.toString(template.getWidth()));
+        templateNode.appendChild(widthNode);
+        Element heightNode = createNode(document, "height", Integer.toString(template.getHeight()));
+        templateNode.appendChild(heightNode);
+        Element resolutionNode = createNode(document, "resolution", Integer.toString(template.getResolution()));
+        templateNode.appendChild(resolutionNode);
+        Element prefixNode = createNode(document, "prefix", template.getNewImagePrefix());
+        templateNode.appendChild(prefixNode);
+        Element baseNameNode = createNode(document, "baseName", template.getNewImageBaseName());
+        templateNode.appendChild(baseNameNode);
+        Element suffixNode = createNode(document, "suffix", template.getNewImageSuffix());
+        templateNode.appendChild(suffixNode);
+        Element formatNode = createNode(document, "format", template.getFormat());
+        templateNode.appendChild(formatNode);
+
+        return templateNode;
+    }
+
+    /**
+     * create document node
+     * @param document
+     * @param nodeName
+     * @return
+     */
+    private Element createNode(Document document, String nodeName){
+        if(document == null || nodeName == null || nodeName.isEmpty()){
+            return null;
+        }
+        Element newNode = document.createElement(nodeName);
+        return newNode;
+    }
+
+    /**
+     * create document node with added text content
+     * @param document
+     * @param nodeName
+     * @param textContent
+     * @return
+     */
+    private Element createNode(Document document, String nodeName, String textContent){
+        if(document == null || nodeName == null || nodeName.isEmpty()){
+            return null;
+        }
+        Element newNode = document.createElement(nodeName);
+        if(textContent != null && !textContent.isEmpty()){
+            newNode.setTextContent(textContent);
+        }
+        return newNode;
+    }
+
+
+    /**
+     * write xml file at a given location
+     * @param xmlDocument
+     * @param outputPath
+     * @return ValidationResponse instance giving the state of success and eventual error messages
+     */
     public ValidationResponse writeXML(Document xmlDocument, Path outputPath) {
         try (FileOutputStream output = new FileOutputStream(outputPath.toString())){
             TransformerFactory transformerFactory = TransformerFactory.newInstance();

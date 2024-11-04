@@ -1,7 +1,6 @@
 package com.gregorybroche.imageresolver.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.lang.reflect.Method;
@@ -16,7 +15,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import com.gregorybroche.imageresolver.classes.ImageTemplate;
-import com.gregorybroche.imageresolver.classes.InputConstraint;
 import com.gregorybroche.imageresolver.classes.Preset;
 
 public class XmlServiceTest {
@@ -72,7 +70,7 @@ public class XmlServiceTest {
     }
 
     @Test
-    void createPresetNode_withValidPreset_ShouldReturnCreatedNode(){
+    void createPresetNode_withValidEmptyPreset_ShouldReturnCreatedNode(){
         try {
             Method createPresetNodeMethod = XmlService.class.getDeclaredMethod("createPresetNode", Document.class, Preset.class);
             createPresetNodeMethod.setAccessible(true);
@@ -85,9 +83,37 @@ public class XmlServiceTest {
             NodeList presetDataNodes = createdNode.getChildNodes();
             Element nameNode = (Element) presetDataNodes.item(0);
             assertEquals(this.preset1.getName(), nameNode.getTextContent());
-            assertTrue(true);
         } catch (Exception e) {
-            System.err.println(e.getMessage());
+            System.out.println(e.getMessage());
+            fail();
+        }    
+    }
+
+    @Test
+    void createPresetNode_withValidPresetHavingTwoTemplates_ShouldReturnCreatedNodeHavingTwoTemplateSubNodes(){
+        try {
+            Method createPresetNodeMethod = XmlService.class.getDeclaredMethod("createPresetNode", Document.class, Preset.class);
+            createPresetNodeMethod.setAccessible(true);
+            DocumentBuilderFactory documentFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder documentBuilder = documentFactory.newDocumentBuilder();
+            Document document = documentBuilder.newDocument();
+            preset1.addTemplate(templateTest1);
+            preset1.addTemplate(templateTest2);
+
+            Object[] args = new Object[]{document, this.preset1};
+            Element createdNode = (Element) createPresetNodeMethod.invoke(this.xmlService, args);
+            NodeList presetDataNodes = createdNode.getChildNodes();
+
+            Element nameNode = (Element) presetDataNodes.item(0);
+            assertEquals(this.preset1.getName(), nameNode.getTextContent());
+
+            Element templateNodes = (Element) presetDataNodes.item(1);
+            Element firstTemplateNameNode = (Element) templateNodes.getChildNodes().item(0).getFirstChild();
+            Element SecondTemplateNameNode = (Element) templateNodes.getChildNodes().item(1).getFirstChild();
+            assertEquals(this.templateTest1.getTemplateName(), firstTemplateNameNode.getTextContent());
+            assertEquals(this.templateTest2.getTemplateName(), SecondTemplateNameNode.getTextContent());
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
             fail();
         }    
     }
