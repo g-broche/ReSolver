@@ -99,6 +99,7 @@ public class MainController {
             }
             // metadataService.printMetadata(selectedFile);
             metadataService.setMetadataItems(metadataService.extractMetadata(selectedFile));
+            metadataService.readSourceMetadataNodes(selectedFile);
             // metadataService.printLoadedMetadata();
 
             imageToResolve = fileHandlerService.saveFileToTemp(selectedFile).toFile();

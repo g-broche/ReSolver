@@ -10,6 +10,7 @@ import java.util.Map;
 
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
 import javax.imageio.ImageTypeSpecifier;
 import javax.imageio.ImageWriter;
 import javax.imageio.metadata.IIOMetadata;
@@ -22,6 +23,7 @@ import org.apache.commons.imaging.common.ImageMetadata;
 import org.apache.commons.imaging.common.ImageMetadata.ImageMetadataItem;
 import org.apache.commons.imaging.formats.jpeg.JpegImageMetadata;
 import org.springframework.stereotype.Service;
+import org.w3c.dom.Node;
 
 import com.gregorybroche.imageresolver.Enums.ExifNode;
 import com.gregorybroche.imageresolver.Enums.MetadataFormat;
@@ -164,6 +166,12 @@ public class MetadataService {
         return false;
     }
 
+    /**
+     * Method to write loaded metadata info into a jpeg compatible file. Does not currently work properly to import data
+     * except for JPEGvariety nodes
+     * @param file
+     * @return
+     */
     public ValidationResponse writeLoadedMetadataToJPEGFile(File file){
         ImageOutputStream outputStream = null;
         ImageWriter writer = null;
@@ -244,8 +252,40 @@ public class MetadataService {
         metadataNodeToAppendTo.appendChild(newNode);
         if (metadataItem.getmetadataKey() == MetadataKey.MODEL) {
             System.out.println("Metadata Model : "+exifAttribute+" -> "+exifValue);
-            System.out.println(metadataNodeToAppendTo);
+        }
+    }
+
+    // METHODS FOR REVERSE ENGINEERING OF JPEG NO STRUCTURE
+
+    public void readSourceMetadataNodes(File file){
+        try {
+            ImageReader reader = ImageIO.getImageReadersByFormatName("jpeg").next();
+            reader.setInput(ImageIO.createImageInputStream(file));
+            IIOMetadata metadata = reader.getImageMetadata(0);
+            String[] metadataFormatNames = metadata.getMetadataFormatNames();
+    
+            for (String formatName : metadataFormatNames) {
+                System.out.println("Format: " + formatName);
+                printMetadata(metadata.getAsTree(formatName), 0);
+            }
+        } catch (Exception e) {
+            System.err.println("couldn't print metadata nodes, error : "+e.getMessage());
         }
 
+    }
+
+    private static void printMetadata(Node node, int indent) {
+        for (int i = 0; i < indent; i++) System.out.print("  ");
+        System.out.println(node.getNodeName() + " " + node.getAttributes());
+        Node child = node.getFirstChild();
+        System.out.println(node.getNodeName());
+        while (child != null) {
+            if (!child.hasChildNodes()) {
+                System.out.println("node name : '"+child.getNodeName()+"' ; node value : '"+child.getNodeValue()+"'");
+            }
+            printMetadata(child, indent + 1);
+
+            child = child.getNextSibling();
+        }
     }
 }
