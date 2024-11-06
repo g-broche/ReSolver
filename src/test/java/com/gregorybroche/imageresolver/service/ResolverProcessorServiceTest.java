@@ -111,9 +111,11 @@ public class ResolverProcessorServiceTest {
     void setUp() throws IOException {
         ValidatorService validatorService = new ValidatorService();
         UserDialogService userDialogService = new UserDialogService(validatorService);
+        XmlService xmlService = new XmlService();
         FileHandlerService fileHandlerService = new FileHandlerService(
             applicationContext,
             userDialogService,
+            xmlService,
             mainDirectoryName,
             tempDirectoryName,
             presetFileName,

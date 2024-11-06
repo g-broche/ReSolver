@@ -25,13 +25,17 @@ public class PresetManagementService {
         });
     }
 
+
     // placeholder to maintain logic, to replace with proper method once saving to
     // file is implemented
     public List<Preset> getPresetsFromFile() {
         List<Preset> presetList = new ArrayList<Preset>();
         Preset testPreset = new Preset("test", new ArrayList<ImageTemplate>());
+        Preset testPreset2 = new Preset("test2", new ArrayList<ImageTemplate>());
         addTestTemplates(testPreset);
+        addTestTemplates(testPreset2);
         presetList.add(testPreset);
+        presetList.add(testPreset2);
         return presetList;
     }
 
@@ -91,6 +95,10 @@ public class PresetManagementService {
 
     public Map<String, Preset> getPresets() {
         return presets;
+    }
+
+    public List<Preset> getPresetsAsList() {
+        return new ArrayList<Preset>(presets.values());
     }
 
     public Preset getPresetFromKey(String key) {

@@ -11,6 +11,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import com.gregorybroche.imageresolver.classes.ImageTemplate;
+import com.gregorybroche.imageresolver.classes.Preset;
 import com.gregorybroche.imageresolver.classes.ValidationResponse;
 import com.gregorybroche.imageresolver.service.FileHandlerService;
 import com.gregorybroche.imageresolver.service.ImageEditorService;
@@ -42,6 +43,7 @@ public class MainController {
     private PresetManagementService presetManagementService;
     private File imageToResolve = null;
     private String Selectedpreset = "test";
+    private Image saveIcon;
 
     public MainController(
             ApplicationContext applicationContext,
@@ -61,6 +63,9 @@ public class MainController {
         this.resolverProcessorService = resolverProcessorService;
         this.presetManagementService = presetManagementService;
         this.templateFormService = templateFormService;
+
+        String saveIconLocation = applicationContext.getEnvironment().getProperty("resolver.icon.save");
+        this.saveIcon = new Image(saveIconLocation);
     }
 
     @FXML
@@ -73,6 +78,9 @@ public class MainController {
     private Button imageSelectorButton;
 
     @FXML
+    private ImageView savePresetButtonImage;
+
+    @FXML
     private Button createTemplateButton;
 
     @FXML
@@ -80,6 +88,7 @@ public class MainController {
 
     @FXML
     public void initialize() {
+        loadButtonIcons();
         presetManagementService.loadPresets();
         presetManagementService.orderTemplatesOfPresetByWidth(Selectedpreset);
         displayLoadedTemplates();
@@ -133,6 +142,31 @@ public class MainController {
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }
+    }
+
+    @FXML
+    void selectActivePreset(){
+        
+    }
+
+    @FXML
+    void addNewPreset(){
+        
+    }
+
+    @FXML
+    void savePresets(){
+        List<Preset> presets = presetManagementService.getPresetsAsList();
+        fileHandlerService.savePresets(presets);
+    }
+
+    @FXML
+    void deleteSelectedPreset(){
+
+    }
+
+    private void loadButtonIcons(){
+        savePresetButtonImage.setImage(saveIcon);
     }
 
     /**

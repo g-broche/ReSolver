@@ -53,10 +53,12 @@ public class FileHandlerServiceTest {
     void setUp() throws IOException {
         ValidatorService validatorService = new ValidatorService();
         UserDialogService userDialogService = new UserDialogService(validatorService);
+        XmlService xmlService = new XmlService();
         imageEditorService = new ImageEditorService(validatorService, userDialogService);
         fileHandlerService = new FileHandlerService(
                 applicationContext,
                 userDialogService,
+                xmlService,
                 mainDirectoryName,
                 tempDirectoryName,
                 presetFileName,

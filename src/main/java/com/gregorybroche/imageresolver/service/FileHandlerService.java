@@ -3,17 +3,22 @@ package com.gregorybroche.imageresolver.service;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
+import org.w3c.dom.Document;
 
 import com.gregorybroche.imageresolver.classes.ImageTemplate;
+import com.gregorybroche.imageresolver.classes.Preset;
+import com.gregorybroche.imageresolver.classes.ValidationResponse;
 
 @Service
 public class FileHandlerService {
     private ApplicationContext applicationContext;
     private UserDialogService userDialogService;
+    private XmlService xmlService;
     private final Path appDirectoryPath;
     private final Path appTempDirectoryPath;
     private final String appPresetsFileName;
@@ -21,6 +26,7 @@ public class FileHandlerService {
 
     public FileHandlerService(ApplicationContext applicationContext,
             UserDialogService userDialogService,
+            XmlService xmlService,
             @Value("${resolver.directory.main}") String mainDirectoryName,
             @Value("${resolver.directory.temp}") String tempDirectoryName,
             @Value("${resolver.file.presets}") String presetFileName,
@@ -28,6 +34,7 @@ public class FileHandlerService {
             @Value("${resolver.directory.unix}") String unixAppMainDirectoryRoot) {
         this.applicationContext = applicationContext;
         this.userDialogService = userDialogService;
+        this.xmlService = xmlService;
         String userTempDirectoryPath = System.getProperty("java.io.tmpdir");
         String userHomeDirectoryPath = System.getProperty("user.home");
 
@@ -109,6 +116,27 @@ public class FileHandlerService {
             userDialogService.showErrorMessage("Failed directory creation",
                     "Could not create \"" + directory + "\" ; Error : " + e.getLocalizedMessage());
             throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * saves a list of preset in a xml file at the location specificed by the application environment
+     * @param presets presets to save
+     * @return ValidationResponse instance with success state of the operation
+     */
+    public ValidationResponse savePresets(List<Preset> presets){
+        try {
+            if(!Files.exists(appDirectoryPath)){
+                createAppFolder();
+            }
+            if(presets == null || presets.isEmpty()){
+                return new ValidationResponse(false, null, "No currently managed presets");
+            }
+            Path pathToSaveTo = appDirectoryPath.resolve(appPresetsFileName);
+            Document presetListDocument = xmlService.createPresetsXMLDocument(presets);
+            return xmlService.writeXML(presetListDocument, pathToSaveTo);
+        } catch (Exception e) {
+            return new ValidationResponse(false, null, "could not save presets to file, error : "+e.getMessage());
         }
     }
 
